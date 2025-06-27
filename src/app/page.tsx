@@ -8,7 +8,7 @@ import { ReactLenis } from 'lenis/react';
 import MainLandingPage from './components/main_landing_page/page';
 import Committees from './components/Committies/page';
 import Domains from './components/Domains/page';
-import SecondLandingPage from './components/2nd_landing_page/page';
+import SecondLandingPage from './components/2nd_landing_page/StructureSection';
 import TeamsSection from './components/Teams/page';
 import FooterSection from './components/Footer/page';
 import Recruitment from './components/Recruitment/page'
