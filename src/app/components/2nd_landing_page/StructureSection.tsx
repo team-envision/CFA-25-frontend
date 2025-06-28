@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import '../../StructureSection.css';
+import './StructureSection.css'
 import Particles from '../Particles';
 
 const ArrowButton = ({ onClick }: { onClick?: () => void }) => (
