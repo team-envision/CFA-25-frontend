@@ -1,52 +1,81 @@
-import React from "react";
+'use client';
 
-const Home = () => {
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { BackgroundGradientAnimation } from '@/app/components/ui/background-gradient-animation';
+
+export default function MainLandingPage() {
+  const router = useRouter();
+
   return (
-    <div className="relative h-screen w-screen bg-black flex items-center justify-center overflow-hidden">
-      
-      <div className="relative h-screen w-screen flex flex-col bg-[radial-gradient(120%_100%_at_80%_20%,#ff7b2d_0%,#e35213_40%,#e5320f_80%,#2c2420_100%)] text-white overflow-hidden">
-        {/* Remove padding and max-width, full screen */}
-        
-        <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,_rgba(255,90,40,0.3)_0%,_rgba(255,90,40,0)_65%)] rounded-full -translate-x-1/2 -translate-y-1/2 animate-spin-slow blur-md z-0" />
-
-        <header className="relative z-10 flex justify-between items-center px-8 sm:px-12">
-          <img
+    <BackgroundGradientAnimation
+  gradientBackgroundStart="#831f00"
+  gradientBackgroundEnd="#ef6522"
+  firstColor="233,115,24"
+  secondColor="250,140,87"
+  thirdColor="239,101,34"
+  fourthColor="255,240,217"
+  fifthColor="131,31,0"
+  pointerColor="250,140,87"
+  size="180%"
+  blendingValue="screen"
+  containerClassName="rounded-[3rem] overflow-hidden"
+  className="relative flex flex-col min-h-screen justify-between px-4"
+>
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* Header */}
+        <header className="flex justify-between items-center px-8 pt-8">
+          <Image
             src="/images/a.png"
             alt="AARUUSH Logo"
-            className="w-[400px] max-w-[150px] sm:max-w-[400px]"
+            width={180}
+            height={40}
+            className="h-10 w-auto"
+            priority
           />
-          <button className="px-8 py-3 rounded-full bg-white/15 hover:bg-white/25 text-white font-medium backdrop-blur-md shadow-md">
+          <button
+            onClick={() => router.push('https://www.aaruush.org')}
+            className="px-7 py-2 rounded-full bg-white/15 text-white font-medium backdrop-blur-md shadow-md hover:bg-white/25 transition"
+          >
             Visit our Website
           </button>
         </header>
 
-        <main className="flex-grow flex items-center justify-center relative z-10 px-8 sm:px-12">
-          <div className="flex flex-col items-center justify-center">
-            <h2 className="text-2xl sm:text-3xl font-semibold mb-2">Call For</h2>
-            <div className="relative inline-block">
-              <h1 className="text-[3.2rem] sm:text-[5rem] font-extrabold tracking-wide">
-                AARUUSH
-              </h1>
-              <img
+        {/* Main Content */}
+        <main className="flex flex-1 flex-col items-center justify-center text-center px-4">
+          <h2 className="text-5xl md:text-5xl  font-semibold mb-1 text-white">Call For</h2>
+          <div className="relative flex items-center justify-center mb-8">
+            <h1 className="text-7xl md:text-7xl  font-extrabold text-white tracking-wide">
+              AARUUSH
+            </h1>
+            {/* Megaphone SVG or Image */}
+            <div className="absolute w-[65px] h-auto bottom-[35%] left-[75%] md:w-[80px] md:bottom-[38%] md:left-[80%] lg:w-[230px] lg:bottom-[42%] lg:left-[85%]">
+              <Image
                 src="/images/image.png"
                 alt="AARUUSH Graphic Icon"
-                className="absolute w-[65px] sm:w-[230px] bottom-[35%] sm:bottom-[42%] left-[75%] sm:left-[85%]"
+                width={230}
+                height={139}
+                className="w-full h-auto"
               />
             </div>
           </div>
+          {/* CTA Buttons */}
+          <div className="flex gap-6 mt-4 justify-center">
+            <button
+              onClick={() => router.push('/know-us')}
+              className="px-10 py-3 text-lg font-semibold text-white rounded-full bg-white/10 border border-white/20 shadow-inner backdrop-blur-sm hover:bg-white/20 transition"
+            >
+              Know Us
+            </button>
+            <button
+              onClick={() => router.push('/apply')}
+              className="px-10 py-3 text-lg font-semibold text-white rounded-full bg-white/10 border border-white/20 shadow-inner backdrop-blur-sm hover:bg-white/20 transition"
+            >
+              Apply Now
+            </button>
+          </div>
         </main>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 relative z-10 px-8 sm:px-12 pb-8">
-          <button className="px-8 sm:px-11 py-3 text-lg font-semibold text-white bg-white/15 hover:bg-white/25 rounded-full shadow-md backdrop-blur-md w-4/5 sm:w-auto">
-            Know Us
-          </button>
-          <button className="px-8 sm:px-11 py-3 text-lg font-semibold text-white bg-white/15 hover:bg-white/25 rounded-full shadow-md backdrop-blur-md w-4/5 sm:w-auto">
-            Apply Now
-          </button>
-        </div>
       </div>
-    </div>
+    </BackgroundGradientAnimation>
   );
-};
-
-export default Home;
+}
