@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import '../../StructureSection.css';
-import Particles from './Particles';
+import Particles from '../Particles';
 
 const ArrowButton = ({ onClick }: { onClick?: () => void }) => (
   <button 
@@ -32,14 +32,15 @@ const StructureSection = () => {
     <section className="structure-section" style={{ position: 'relative', overflow: 'hidden' }}>
       <div className="particles-bg" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
         <Particles
-          particleColors={['#ff6a00', '#ffa500', '#ffb347']} // Different orange tones
-          particleCount={200}
+          particleCount={300}
           particleSpread={10}
-          speed={0.1}
-          particleBaseSize={150}
-          moveParticlesOnHover={false}
-          alphaParticles={false}
-          disableRotation={true}
+          speed={0.05}
+          particleColors={["#ff6a1a", "#ffb347", "#fff3e0"]}
+          moveParticlesOnHover={true}
+          alphaParticles={true}
+          particleBaseSize={100}
+          sizeRandomness={1}
+          cameraDistance={20}
         />
       </div>
       <div style={{ position: 'relative', zIndex: 1 }}>
@@ -95,4 +96,4 @@ const StructureSection = () => {
   );
 };
 
-export default StructureSection; 
+export default StructureSection;
