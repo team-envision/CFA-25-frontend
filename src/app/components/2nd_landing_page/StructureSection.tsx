@@ -41,14 +41,15 @@ const StructureSection = () => {
     <section className="structure-section" style={{ position: 'relative', overflow: 'hidden' }}>
       <div className="particles-bg" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
         <Particles
-          particleColors={['#ff6a00', '#ffa500', '#ffb347']} // Different orange tones
-          particleCount={200}
-          particleSpread={10}
-          speed={0.1}
+          particleColors={['#ff6a00', '#ffa500', '#ffb347']} // Only orange tones
+          particleCount={300}
+          particleSpread={15}
+          speed={0.08}
           particleBaseSize={150}
           moveParticlesOnHover={false}
-          alphaParticles={false}
+          alphaParticles={true}
           disableRotation={true}
+          cameraDistance={30}
         />
       </div>
       <div style={{ position: 'relative', zIndex: 1 }}>
