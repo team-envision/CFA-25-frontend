@@ -49,13 +49,24 @@ const vertex = `
   void main() {
     vRandom = random;
     vColor = color;
-    // Move z forward over time for starfield effect
-    float z = position.z * uSpread * 10.0 + mod(uTime * uZSpeed + random.x * 100.0, 20.0) - 10.0;
-    vec3 pos = vec3(position.xy * uSpread, z);
+    
+    // Create strong z-axis movement - particles move from far to near
+    float z = mod(uTime * uZSpeed + random.x * 50.0, 30.0) - 15.0;
+    
+    // Position particles with clear z-axis movement
+    vec3 pos = vec3(
+      position.x * uSpread * 0.5, // Reduce spread for better tunnel effect
+      position.y * uSpread * 0.5,
+      z
+    );
+    
     vec4 mPos = modelMatrix * vec4(pos, 1.0);
+    
+    // Minimal movement to avoid circular patterns
     float t = uTime;
-    mPos.x += sin(t * random.z + 6.28 * random.w) * mix(0.1, 1.5, random.x);
-    mPos.y += sin(t * random.y + 6.28 * random.x) * mix(0.1, 1.5, random.w);
+    mPos.x += sin(t * random.z * 0.2) * 0.1;
+    mPos.y += cos(t * random.y * 0.2) * 0.1;
+    
     vec4 mvPos = viewMatrix * mPos;
     gl_PointSize = (uBaseSize * (1.0 + uSizeRandomness * (random.x - 0.5))) / length(mvPos.xyz);
     gl_Position = projectionMatrix * mvPos;
@@ -134,13 +145,16 @@ const Particles: React.FC<ParticlesProps> = ({
     for (let i = 0; i < count; i++) {
       let x: number, y: number, z: number, len: number;
       do {
-        x = Math.random() * 2 - 1;
-        y = Math.random() * 2 - 1;
-        z = Math.random() * 2 - 1;
+        // Create particles in a wider distribution for better tunnel effect
+        x = (Math.random() - 0.5) * 2;
+        y = (Math.random() - 0.5) * 2;
+        z = (Math.random() - 0.5) * 2;
         len = x * x + y * y + z * z;
       } while (len > 1 || len === 0);
+      
+      // Use spherical distribution but start particles further back
       const r = Math.cbrt(Math.random());
-      positions.set([x * r, y * r, z * r], i * 3);
+      positions.set([x * r, y * r, z * r - 5], i * 3); // Start particles further back
       randoms.set([Math.random(), Math.random(), Math.random(), Math.random()], i * 4);
       const col = hexToRgb(palette[Math.floor(Math.random() * palette.length)]);
       colors.set(col, i * 3);
@@ -159,7 +173,7 @@ const Particles: React.FC<ParticlesProps> = ({
         uBaseSize: { value: particleBaseSize },
         uSizeRandomness: { value: sizeRandomness },
         uAlphaParticles: { value: alphaParticles ? 1 : 0 },
-        uZSpeed: { value: 2.0 }, // control how fast particles move towards the screen
+        uZSpeed: { value: 5.0 }, // control how fast particles move towards the screen
       },
       transparent: true,
       depthTest: false,
@@ -182,9 +196,10 @@ const Particles: React.FC<ParticlesProps> = ({
         particles.position.y = 0;
       }
       if (!disableRotation) {
-        particles.rotation.x = Math.sin(elapsed * 0.0002) * 0.1;
-        particles.rotation.y = Math.cos(elapsed * 0.0005) * 0.15;
-        particles.rotation.z += 0.01 * speed;
+        // Disable rotation to prevent circular movement
+        particles.rotation.x = 0;
+        particles.rotation.y = 0;
+        particles.rotation.z = 0;
       }
       renderer.render({ scene: particles, camera });
     };

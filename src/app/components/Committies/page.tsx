@@ -46,15 +46,16 @@ const Committees = () => {
         }}
       >
         <Particles
-          particleCount={300}
-          particleSpread={10}
-          speed={0.05}
-          particleColors={["#ff6a1a", "#ffb347", "#fff3e0"]}
+          particleCount={150}
+          particleSpread={15}
+          speed={0.08}
+          particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
           moveParticlesOnHover={true}
           alphaParticles={true}
-          particleBaseSize={100}
+          particleBaseSize={150}
           sizeRandomness={1}
-          cameraDistance={20}
+          cameraDistance={30}
+          disableRotation={true}
         />
       </div>
 
