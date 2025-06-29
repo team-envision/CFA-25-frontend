@@ -39,10 +39,6 @@ const pages = [
     color: '#ed649e',
   },
   {
-    component: <FooterSection />,
-    color: '#fd521a',
-  },
-  {
     component: <Recruitment />,
     color: '#fd521a',
   },

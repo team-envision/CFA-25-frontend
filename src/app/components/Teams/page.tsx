@@ -2,6 +2,7 @@
 
 import React from "react";
 import Particles from "../Particles"; // Adjust path based on your project structure
+import FooterSection from '../Footer/page'
 
 const Teams = () => {
   return (
@@ -70,12 +71,14 @@ const Teams = () => {
           </div>
 
           <div className="flex justify-center mt-8 mb-6">
-            <button className="px-5 py-2 sm:px-6 sm:py-2.5 md:px-7 md:py-3 border border-[#ff5a28]/30 rounded-xl sm:rounded-2xl text-sm sm:text-base md:text-lg font-bold bg-gradient-to-br from-[#121212] to-[#1a1a1a] text-white shadow-[inset_0_0_6px_rgba(255,90,40,0.2),0_0_10px_rgba(255,90,40,0.1)] backdrop-blur transition hover:from-[#1e1e1e] hover:to-[#2a2a2a] active:scale-95 transition-transform">
+            <button className="px-5 py-2 sm:px-6 sm:py-2.5 md:px-7 md:py-3 border border-[#ff5a28]/30 rounded-xl sm:rounded-2xl text-sm sm:text-base md:text-lg font-bold bg-gradient-to-br from-[#121212] to-[#1a1a1a] text-white shadow-[inset_0_0_6px_rgba(255,90,40,0.2),0_0_10px_rgba(255,90,40,0.1)] backdrop-blur  hover:from-[#1e1e1e] hover:to-[#2a2a2a] active:scale-95 transition-transform">
               Join a Team
             </button>
           </div>
         </div>
+        <FooterSection/>
       </div>
+      
     </div>
   );
 };
