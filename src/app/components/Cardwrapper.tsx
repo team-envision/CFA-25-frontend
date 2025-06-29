@@ -1,42 +1,23 @@
-// src/app/components/CardWrapper.tsx
+// src/app/components/Cardwrapper.tsx
 'use client';
 
-import { useTransform, motion, MotionValue } from 'motion/react';
+import { motion } from 'motion/react';
 import { useRef, ReactNode } from 'react';
 
+// The props are now much simpler.
 interface CardWrapperProps {
-  i: number;
   children: ReactNode;
-  progress: MotionValue<number>;
-  range: [number, number];
-  targetScale: number;
 }
 
-const CardWrapper: React.FC<CardWrapperProps> = ({
-  i,
-  children,
-  progress,
-  range,
-  targetScale,
-}) => {
+const CardWrapper: React.FC<CardWrapperProps> = ({ children }) => {
   const container = useRef<HTMLDivElement>(null);
 
-  // This transform scales the card down as you scroll, creating the stack effect.
-  const scale = useTransform(progress, range, [1, targetScale]);  // scale was creating the issue making the domain to shrink too much
-
+  // The CardWrapper is now just a sticky container.
+  // The stacking effect happens naturally as you scroll.
+  // There are no transforms or scaling animations.
   return (
-    // This div is sticky and takes up the full screen height.
-    // Its height contributes to the parent's total scrollable height.
     <div ref={container} className='h-screen sticky top-0'>
-      <motion.div
-        style={{ scale: 1 }}
-        // Key Changes:
-        // - h-screen and w-full: Makes the animated container fill the entire viewport.
-        // - origin-top: Ensures the scaling animation originates from the top edge.
-        // - We've removed all padding, background colors, and border-radius from the wrapper.
-        className='relative h-screen w-full origin-top'
-      >
-        {/* Your full-page component is rendered here, and it can now fill the space correctly. */}
+      <motion.div className='relative h-full w-full'>
         {children}
       </motion.div>
     </div>

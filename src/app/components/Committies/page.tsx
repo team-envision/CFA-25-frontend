@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Particles from "../Particles"; // Adjust path if needed
+import FooterSection from '../Footer/page'
 
 const Committees = () => {
   const leftCommittees = [
@@ -112,6 +113,7 @@ const Committees = () => {
             </button>
           </div>
         </div>
+        <FooterSection/>
       </div>
     </div>
   );

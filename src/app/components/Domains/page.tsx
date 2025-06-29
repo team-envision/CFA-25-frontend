@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Particles from '../Particles'; // adjust if needed
+import FooterSection from '../Footer/page'
 
 const Domains = () => {
  const leftDomains = [
@@ -89,6 +90,7 @@ const Domains = () => {
             </button>
           </div>
         </div>
+        <FooterSection/>
       </div>
     </div>
   );

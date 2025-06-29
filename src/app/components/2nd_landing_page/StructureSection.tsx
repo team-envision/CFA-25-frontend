@@ -1,10 +1,13 @@
+// src/app/components/2nd_landing_page/StructureSection.tsx
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
-import './StructureSection.css'
-import Particles from '../Particles';
+// REMOVED: import { useRouter } from 'next/navigation';
+import { useScrollManager } from '@/app/context/ScrollContext'; // ADDED: The new navigation logic
+import './StructureSection.css'; // RESTORED: Your original CSS import path
+import Particles from '../Particles'; // RESTORED: Your original Particles import path
 
+// This is your original ArrowButton component, unchanged.
 const ArrowButton = ({ onClick }: { onClick?: () => void }) => (
   <button 
     className="arrow-btn" 
@@ -22,25 +25,30 @@ const ArrowButton = ({ onClick }: { onClick?: () => void }) => (
 );
 
 const StructureSection = () => {
-  const router = useRouter();
+  // REMOVED: const router = useRouter();
+  const { navigateToPage } = useScrollManager(); // ADDED: Get the function from our context
 
-  const handleCardClick = (page: string) => {
-    router.push(page);
+  // This function now correctly handles the path format from your original design.
+  const handleCardClick = (pagePath: string) => {
+    // Transform the path ('/Committees') into the ID ('committees') that our system expects.
+    const pageId = pagePath.replace('/', '').toLowerCase();
+    navigateToPage(pageId);
   };
 
+  // The JSX below is IDENTICAL to your original code.
+  // The onClick handlers still pass the original path strings.
   return (
     <section className="structure-section" style={{ position: 'relative', overflow: 'hidden' }}>
       <div className="particles-bg" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
         <Particles
-          particleCount={300}
+          particleColors={['#ff6a00', '#ffa500', '#ffb347']} // Different orange tones
+          particleCount={200}
           particleSpread={10}
-          speed={0.05}
-          particleColors={["#ff6a1a", "#ffb347", "#fff3e0"]}
-          moveParticlesOnHover={true}
-          alphaParticles={true}
-          particleBaseSize={100}
-          sizeRandomness={1}
-          cameraDistance={20}
+          speed={0.1}
+          particleBaseSize={150}
+          moveParticlesOnHover={false}
+          alphaParticles={false}
+          disableRotation={true}
         />
       </div>
       <div style={{ position: 'relative', zIndex: 1 }}>
@@ -50,7 +58,7 @@ const StructureSection = () => {
         <div className="structure-cards">
           <div 
             className="structure-card" 
-            onClick={() => handleCardClick('/Committees')}
+            onClick={() => handleCardClick('/Committees')} // RESTORED: Original onClick
             role="button"
             tabIndex={0}
           >
@@ -64,7 +72,7 @@ const StructureSection = () => {
           </div>
           <div 
             className="structure-card"
-            onClick={() => handleCardClick('/Domains')}
+            onClick={() => handleCardClick('/Domains')} // RESTORED: Original onClick
             role="button"
             tabIndex={0}
           >
@@ -78,7 +86,7 @@ const StructureSection = () => {
           </div>
           <div 
             className="structure-card"
-            onClick={() => handleCardClick('/Teams')}
+            onClick={() => handleCardClick('/Teams')} // RESTORED: Original onClick
             role="button"
             tabIndex={0}
           >

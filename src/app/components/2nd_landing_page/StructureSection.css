@@ -114,7 +114,7 @@
 .structure-card:hover .arrow-btn {
   opacity: 1;
   pointer-events: auto;
-  transform: rotate(-45deg) translate(-15px,-60px);
+  transform: rotate(-45deg) translate(-15px,-30px);
 }
 .arrow-btn svg path {
   stroke: #fff;
