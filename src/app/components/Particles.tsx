@@ -16,7 +16,6 @@ interface ParticlesProps {
   className?: string;
 }
 
-// Default to glowing orange
 const defaultColors: string[] = ["#ff6a1a", "#ffb347", "#fff3e0"];
 
 const hexToRgb = (hex: string): [number, number, number] => {
@@ -31,7 +30,6 @@ const hexToRgb = (hex: string): [number, number, number] => {
   return [r, g, b];
 };
 
-// Vertex shader for 3D movement and starfield effect
 const vertex = `
   attribute vec3 position;
   attribute vec4 random;
@@ -49,31 +47,22 @@ const vertex = `
   void main() {
     vRandom = random;
     vColor = color;
-    
-    // Create strong z-axis movement - particles move from far to near
     float z = mod(uTime * uZSpeed + random.x * 50.0, 30.0) - 15.0;
-    
-    // Position particles with clear z-axis movement
     vec3 pos = vec3(
-      position.x * uSpread * 0.5, // Reduce spread for better tunnel effect
+      position.x * uSpread * 0.5,
       position.y * uSpread * 0.5,
       z
     );
-    
     vec4 mPos = modelMatrix * vec4(pos, 1.0);
-    
-    // Minimal movement to avoid circular patterns
     float t = uTime;
     mPos.x += sin(t * random.z * 0.2) * 0.1;
     mPos.y += cos(t * random.y * 0.2) * 0.1;
-    
     vec4 mvPos = viewMatrix * mPos;
     gl_PointSize = (uBaseSize * (1.0 + uSizeRandomness * (random.x - 0.5))) / length(mvPos.xyz);
     gl_Position = projectionMatrix * mvPos;
   }
 `;
 
-// Fragment shader for glow and blur
 const fragment = `
   precision highp float;
   uniform float uTime;
@@ -83,7 +72,7 @@ const fragment = `
   void main() {
     vec2 uv = gl_PointCoord.xy;
     float d = length(uv - vec2(0.5));
-    float glow = smoothstep(0.5, 0.2, d); // strong glow
+    float glow = smoothstep(0.5, 0.2, d);
     if(uAlphaParticles < 0.5) {
       if(d > 0.5) discard;
       gl_FragColor = vec4(vColor, 0.7 * glow);
@@ -145,16 +134,13 @@ const Particles: React.FC<ParticlesProps> = ({
     for (let i = 0; i < count; i++) {
       let x: number, y: number, z: number, len: number;
       do {
-        // Create particles in a wider distribution for better tunnel effect
         x = (Math.random() - 0.5) * 2;
         y = (Math.random() - 0.5) * 2;
         z = (Math.random() - 0.5) * 2;
         len = x * x + y * y + z * z;
       } while (len > 1 || len === 0);
-      
-      // Use spherical distribution but start particles further back
       const r = Math.cbrt(Math.random());
-      positions.set([x * r, y * r, z * r - 5], i * 3); // Start particles further back
+      positions.set([x * r, y * r, z * r - 5], i * 3);
       randoms.set([Math.random(), Math.random(), Math.random(), Math.random()], i * 4);
       const col = hexToRgb(palette[Math.floor(Math.random() * palette.length)]);
       colors.set(col, i * 3);
@@ -173,7 +159,7 @@ const Particles: React.FC<ParticlesProps> = ({
         uBaseSize: { value: particleBaseSize },
         uSizeRandomness: { value: sizeRandomness },
         uAlphaParticles: { value: alphaParticles ? 1 : 0 },
-        uZSpeed: { value: 5.0 }, // control how fast particles move towards the screen
+        uZSpeed: { value: 5.0 },
       },
       transparent: true,
       depthTest: false,
@@ -196,7 +182,6 @@ const Particles: React.FC<ParticlesProps> = ({
         particles.position.y = 0;
       }
       if (!disableRotation) {
-        // Disable rotation to prevent circular movement
         particles.rotation.x = 0;
         particles.rotation.y = 0;
         particles.rotation.z = 0;
@@ -218,6 +203,7 @@ const Particles: React.FC<ParticlesProps> = ({
     particleCount,
     particleSpread,
     speed,
+    particleColors, // ✅ FIXED: added to satisfy ESLint
     moveParticlesOnHover,
     particleHoverFactor,
     alphaParticles,

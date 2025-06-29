@@ -35,8 +35,6 @@ const StructureSection = () => {
     navigateToPage(pageId);
   };
 
-  // The JSX below is IDENTICAL to your original code.
-  // The onClick handlers still pass the original path strings.
   return (
     <section className="structure-section" style={{ position: 'relative', overflow: 'hidden' }}>
       <div className="particles-bg" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
@@ -59,35 +57,35 @@ const StructureSection = () => {
         <div className="structure-cards">
           <div 
             className="structure-card" 
-            onClick={() => handleCardClick('/Committees')} // RESTORED: Original onClick
+            onClick={() => handleCardClick('/Committees')} 
             role="button"
             tabIndex={0}
           >
             <div className="card-content">
               <h3>Committees</h3>
               <p>
-                The backbone of Aaruush, ensuring seamless execution by managing logistics, hospitality, sponsorships, marketing, and more. They handle the fest's planning, outreach, and operations.
+                The backbone of Aaruush, ensuring seamless execution by managing logistics, hospitality, sponsorships, marketing, and more. They handle the fest&#39;s planning, outreach, and operations.
               </p>
             </div>
             <ArrowButton onClick={() => handleCardClick('/Committees')} />
           </div>
           <div 
             className="structure-card"
-            onClick={() => handleCardClick('/Domains')} // RESTORED: Original onClick
+            onClick={() => handleCardClick('/Domains')} 
             role="button"
             tabIndex={0}
           >
             <div className="card-content">
               <h3>Domains</h3>
               <p>
-                The core of Aaruush's technical and managerial events, covering diverse fields such as AI, robotics, cybersecurity, business strategy, and sustainability, fostering innovation and competition.
+                The core of Aaruush&#39;s technical and managerial events, covering diverse fields such as AI, robotics, cybersecurity, business strategy, and sustainability, fostering innovation and competition.
               </p>
             </div>
             <ArrowButton onClick={() => handleCardClick('/Domains')} />
           </div>
           <div 
             className="structure-card"
-            onClick={() => handleCardClick('/Teams')} // RESTORED: Original onClick
+            onClick={() => handleCardClick('/Teams')} 
             role="button"
             tabIndex={0}
           >

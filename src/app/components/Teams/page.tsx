@@ -19,7 +19,6 @@ const Teams = () => {
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden flex flex-col justify-between">
-      
       {/* Background with particles - No brown glow outside */}
       <div className="absolute top-0 left-0 w-full h-full -z-10 bg-[#0c0c0c]">
         <Particles
@@ -54,7 +53,6 @@ const Teams = () => {
 
           {/* Content */}
           <div className="flex flex-col gap-12 flex-grow text-lg md:text-xl leading-relaxed">
-            
             {/* Envision */}
             <div>
               <h2 className="text-3xl md:text-4xl font-semibold mb-4">• Envision</h2>
@@ -77,15 +75,13 @@ const Teams = () => {
             <div>
               <h2 className="text-3xl md:text-4xl font-semibold mb-4">• Outreach</h2>
               <p>
-                Team Outreach at Aaruush excels in executing events outside SRMIST in collaboration with partner universities and clubs to enhance the name of Aaruush. They organise impactful events that engage diverse audiences and provide valuable insights into trends and needs. Their efficient coordination ensures smooth management, and by mastering these areas, Team Outreach enhances Aaruush's reputation, builds strong connections, and drives growth and success within the community and beyond.
+                Team Outreach at Aaruush excels in executing events outside SRMIST in collaboration with partner universities and clubs to enhance the name of Aaruush. They organise impactful events that engage diverse audiences and provide valuable insights into trends and needs. Their efficient coordination ensures smooth management, and by mastering these areas, Team Outreach enhances Aaruush&rsquo;s reputation, builds strong connections, and drives growth and success within the community and beyond.
               </p>
             </div>
-
           </div>
 
           {/* Dual Join Buttons */}
           <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 flex gap-4 flex-wrap justify-center z-10">
-            
             {/* Envision Button */}
             <button
               className="px-6 py-2 sm:px-7 sm:py-2.5 md:px-8 md:py-3 border border-[#ff5a28]/20 rounded-full text-base sm:text-lg md:text-xl font-bold text-white backdrop-blur bg-[#1a1a1a]/80 shadow-[inset_0_0_10px_rgba(255,255,255,0.12),0_0_20px_rgba(255,90,40,0.15)] hover:bg-[#2a2a2a] transition-transform active:scale-95"
