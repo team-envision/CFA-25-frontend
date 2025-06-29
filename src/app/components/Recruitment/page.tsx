@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 
 interface FormData {
   name1: string;
@@ -37,8 +38,9 @@ const RecruitmentForm: React.FC = () => {
     <div className="min-h-screen relative bg-black flex flex-col items-center justify-center px-4 pt-32 pb-12 overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-orange-700/30 via-black to-black" />
 
+      {/* ✅ Optimized image using next/image */}
       <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
-        <img src="/images/a.png" alt="logo" className="lg:w-70 sm:w-52" />
+        <Image src="/images/a.png" alt="logo" width={160} height={80} />
       </div>
 
       <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10">
@@ -53,10 +55,12 @@ const RecruitmentForm: React.FC = () => {
         <div className="bg-[#1b0f07] border border-[#b8572d] text-white rounded-xl px-4 sm:px-6 py-4 text-sm shadow-inner shadow-[#ff7e3d]/20">
           <strong className="text-orange-400">Info:</strong>
           <span className="ml-2">
-            The registration form for Team Envision has to be filled separately. To fill {" "}
+            The registration form for Team Envision has to be filled separately. To fill{" "}
             <a
               href="https://envision.aaruush.org"
               className="text-orange-500 underline font-medium"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Click Here.
             </a>
@@ -70,16 +74,20 @@ const RecruitmentForm: React.FC = () => {
       >
         {Object.entries(formData).map(([key, value], idx) => (
           <div key={key}>
-            <label className="text-white block mb-1 text-sm">Name</label>
+            <label htmlFor={key} className="text-white block mb-1 text-sm">
+              Name {idx + 1}
+            </label>
             <input
+              id={key}
               type="text"
-              placeholder="Enter your name"
+              placeholder={`Enter name ${idx + 1}`}
               value={value}
               onChange={(e) => handleChange(key as keyof FormData, e.target.value)}
               className="w-full px-4 py-2 rounded-lg bg-zinc-900 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none"
             />
           </div>
         ))}
+
         <div className="col-span-1 sm:col-span-2 flex justify-center mt-6">
           <button
             type="submit"

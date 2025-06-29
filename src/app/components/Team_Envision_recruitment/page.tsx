@@ -1,5 +1,7 @@
 "use client";
+
 import React, { useState } from "react";
+import Image from "next/image";
 
 interface FormData {
   name1: string;
@@ -36,26 +38,38 @@ const RecruitmentForm: React.FC = () => {
   return (
     <div className="min-h-screen relative bg-black flex flex-col items-center justify-center px-4 py-12 overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-orange-700/30 via-black to-black" />
+
+      {/* ✅ Optimized image with next/image */}
       <div className="absolute top-6 left-6 z-10">
-        <img src="/images/aaruush25-white.png" alt="logo" className="w-70" />
+        <Image
+          src="/images/aaruush25-white.png"
+          alt="logo"
+          width={160}
+          height={60}
+          className="w-auto h-auto"
+        />
       </div>
+
       <div className="absolute top-6 right-6 z-10">
         <button className="bg-zinc-800 text-white px-6 py-2 rounded-full text-sm hover:bg-zinc-700">
           Visit our Website
         </button>
       </div>
+
       <h2 className="text-white text-4xl font-bold mb-2 text-center z-10">Recruitment Form</h2>
       <p className="text-2xl text-white text-center z-10">
         Team <span className="text-orange-500 font-semibold">Envision</span>
       </p>
+
       <form
         onSubmit={handleSubmit}
         className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10 w-full max-w-4xl z-10"
       >
-        {Object.entries(formData).map(([key, value], idx) => (
+        {Object.entries(formData).map(([key, value]) => (
           <div key={key}>
-            <label className="text-white block mb-1 text-sm">Name</label>
+            <label htmlFor={key} className="text-white block mb-1 text-sm">Name</label>
             <input
+              id={key}
               type="text"
               placeholder="Enter your name"
               value={value}
