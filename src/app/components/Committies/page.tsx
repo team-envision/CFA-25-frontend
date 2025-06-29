@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import Particles from "../Particles"; // Adjust path if needed
-import FooterSection from '../Footer/page'
+import Particles from "../Particles";
+import FooterSection from '../Footer/page';
 
 const Committees = () => {
   const leftCommittees = [
@@ -33,18 +33,10 @@ const Committees = () => {
   ];
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden">
-      {/* Background with particles and gradient */}
-      <div
-        className="absolute top-0 left-0 w-full h-full -z-10"
-        style={{
-          background: `
-            radial-gradient(circle at top left, rgba(121, 39, 0, 0.3), transparent 20%),
-            radial-gradient(circle at bottom right, rgba(121, 39, 0, 0.3), transparent 20%),
-            #0c0c0c
-          `,
-        }}
-      >
+    <div className="relative w-full min-h-screen overflow-hidden flex flex-col justify-between">
+      
+      {/* Background with particles */}
+      <div className="absolute top-0 left-0 w-full h-full -z-10 bg-[#0c0c0c]">
         <Particles
           particleCount={300}
           particleSpread={10}
@@ -58,63 +50,77 @@ const Committees = () => {
         />
       </div>
 
-      {/* Foreground content */}
-      <div className="min-h-screen w-full text-white px-4 pt-10 pb-16 md:pt-12 md:pb-24 md:px-8">
-        <div className="max-w-[1100px] mx-auto flex flex-col h-full justify-between">
-          <h1 className="text-center text-4xl md:text-4xl font-bold mb-8">Committees</h1>
+      {/* Main content area */}
+      <div className="flex-grow flex justify-center items-center px-4 py-10">
+        <div
+          className="relative w-[85%] min-h-[85vh] border border-white/20 backdrop-blur-xl rounded-3xl p-6 md:p-10 text-white flex flex-col justify-between shadow-xl"
+          style={{
+            background: `
+              radial-gradient(circle at top left, rgba(121, 39, 0, 0.2), transparent 40%),
+              radial-gradient(circle at bottom right, rgba(121, 39, 0, 0.2), transparent 40%),
+              rgba(15, 15, 15, 0.9)
+            `,
+          }}
+        >
+          {/* Title */}
+          <h1 className="text-center text-4xl md:text-5xl font-bold mb-8">Committees</h1>
 
-          <div className="flex flex-col md:flex-row gap-6 md:gap-12 relative">
-            {/* Left Section */}
-            <div className="flex-1 space-y-4 pr-4">
+          {/* Content */}
+          <div className="flex flex-col md:flex-row gap-8 md:gap-16 relative flex-grow">
+            
+            {/* Left Column */}
+            <div className="flex-1 space-y-6 pr-6">
               {leftCommittees.map((item, idx) => (
                 <div key={idx}>
-                  <h3 className="text-base md:text-lg font-semibold mb-1">{item.title}</h3>
-                  <p className="text-sm text-gray-300">{item.desc}</p>
+                  <h3 className="text-lg md:text-xl font-semibold mb-2">{item.title}</h3>
+                  <p className="text-base md:text-lg text-gray-300">{item.desc}</p>
                 </div>
               ))}
+
+              {/* Creatives Section */}
+              <div className="mt-8">
+                <h3 className="text-lg md:text-xl font-semibold mb-3">Creatives</h3>
+                <p className="text-base md:text-lg text-gray-300 mb-4">
+                  Bringing ideas to life through design, storytelling, and visual innovation. Divided into:
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {creativeTags.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="px-4 py-1.5 border border-gray-600 rounded-full text-sm text-gray-300 bg-white/5 hover:border-orange-400 hover:bg-white/10 transition"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Divider */}
-            <div className="hidden md:block w-[4px] bg-white rounded-full absolute top-0 bottom-0 left-1/2 transform -translate-x-1/2" />
+            <div className="hidden md:block w-[2px] bg-white/50 rounded-full absolute top-0 bottom-0 left-1/2 transform -translate-x-1/2" />
 
-            {/* Right Section */}
-            <div className="flex-1 space-y-4 md:text-right pl-4">
+            {/* Right Column */}
+            <div className="flex-1 space-y-6 md:text-right pl-6">
               {rightCommittees.map((item, idx) => (
                 <div key={idx}>
-                  <h3 className="text-base md:text-lg font-semibold mb-1">{item.title}</h3>
-                  <p className="text-sm text-gray-300">{item.desc}</p>
+                  <h3 className="text-lg md:text-xl font-semibold mb-2">{item.title}</h3>
+                  <p className="text-base md:text-lg text-gray-300">{item.desc}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Creatives Section */}
-          <div className="mt-12">
-            <h3 className="text-lg font-semibold mb-2">Creatives</h3>
-            <p className="text-sm text-gray-300 mb-3">
-              Bringing ideas to life through design, storytelling, and visual innovation. Divided into:
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {creativeTags.map((tag, idx) => (
-                <span
-                  key={idx}
-                  className="px-3 py-1 border border-gray-600 rounded-full text-xs text-gray-300 bg-white/5 hover:border-orange-400 hover:bg-white/10 transition"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Join Button */}
-          <div className="flex justify-center mt-8 mb-6">
-            <button className="px-5 py-2 sm:px-6 sm:py-2.5 md:px-7 md:py-3 border border-[#ff5a28]/30 rounded-xl sm:rounded-2xl text-sm sm:text-base md:text-lg font-bold bg-gradient-to-br from-[#121212] to-[#1a1a1a] text-white shadow-[inset_0_0_6px_rgba(255,90,40,0.2),0_0_10px_rgba(255,90,40,0.1)] backdrop-blur transition hover:from-[#1e1e1e] hover:to-[#2a2a2a] active:scale-95 transition-transform">
+          {/* Floating Join Button */}
+          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
+            <button className="px-6 py-2 sm:px-7 sm:py-2.5 md:px-8 md:py-3 border border-[#ff5a28]/20 rounded-full text-base sm:text-lg md:text-xl font-bold text-white backdrop-blur bg-gradient-to-br from-[#121212] to-[#1a1a1a] shadow-[inset_0_0_6px_rgba(255,255,255,0.08),0_0_10px_rgba(255,90,40,0.15)] hover:from-[#1e1e1e] hover:to-[#2a2a2a] active:scale-95 transition-transform">
               Join a Committee
             </button>
           </div>
         </div>
-        <FooterSection/>
       </div>
+
+      {/* Footer */}
+      <FooterSection />
     </div>
   );
 };
