@@ -1,8 +1,7 @@
-// src/app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ScrollProvider } from "./context/ScrollContext"; // Import the provider
+import { ScrollProvider } from "./context/ScrollContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,9 +16,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // --- ADD THE PROP TO THE <html> TAG ---
+    <html lang="en" suppressHydrationWarning={true}>
       <body className={inter.className}>
-        {/* Wrap your children with the provider */}
         <ScrollProvider>{children}</ScrollProvider>
       </body>
     </html>

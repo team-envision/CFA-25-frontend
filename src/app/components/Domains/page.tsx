@@ -1,10 +1,16 @@
 "use client";
 
 import React from 'react';
-import Particles from '../Particles';
+import dynamic from 'next/dynamic';
 import FooterSection from '../Footer/page';
+import { useScrollManager } from '@/app/context/ScrollContext';
+
+// Dynamically import Particles to avoid hydration issues
+const Particles = dynamic(() => import('../Particles'), { ssr: false });
 
 const Domains = () => {
+  const { navigateToPage } = useScrollManager();
+
   const leftDomains = [
     { title: "Highlights", desc: "Promote understanding and collaboration while supervising the provision of hospitality of guests." },
     { title: "Championships", desc: "Enable smooth event execution and inspire greatness through fair play and competition." },
@@ -26,7 +32,6 @@ const Domains = () => {
   return (
     <div className="relative w-full min-h-screen overflow-hidden flex flex-col justify-between">
       
-      {/* Background with particles */}
       <div className="absolute top-0 left-0 w-full h-full -z-10 bg-[#0c0c0c]">
         <Particles
           particleCount={300}
@@ -42,12 +47,9 @@ const Domains = () => {
         />
       </div>
 
-      {/* Main content area */}
-      <div className="flex-grow flex justify-center items-center px-4 py-10 relative">
-        
-        {/* Card Container with inside brown gradient */}
+      <div className="flex-grow flex justify-center items-center px-4 py-6 relative">
         <div
-          className="relative w-[85%] min-h-[80vh] border border-white/20 backdrop-blur-xl rounded-3xl p-6 md:p-10 text-white flex flex-col justify-between shadow-xl"
+          className="relative w-[85%] h-[75vh] border border-white/20 backdrop-blur-xl rounded-3xl p-6 md:p-10 text-white flex flex-col justify-between shadow-xl"
           style={{
             background: `
               radial-gradient(circle at top left, rgba(121, 39, 0, 0.2), transparent 40%),
@@ -56,18 +58,18 @@ const Domains = () => {
             `,
           }}
         >
-          {/* Title */}
-          <h1 className="text-center text-4xl md:text-5xl font-bold mb-10">Domains</h1>
+          {/* UPDATED: Main title size */}
+          <h1 className="text-center text-3xl md:text-4xl font-bold mb-8">Domains</h1>
 
-          {/* Content */}
           <div className="flex flex-col md:flex-row gap-8 md:gap-16 relative flex-grow">
-            
             {/* Left Column */}
-            <div className="flex-1 space-y-5 pr-4">
+            <div className="flex-1 space-y-4 pr-4">
               {leftDomains.map((item, idx) => (
                 <div key={idx}>
-                  <h3 className="text-lg md:text-xl font-semibold mb-1">{item.title}</h3>
-                  <p className="text-base md:text-lg text-gray-300">{item.desc}</p>
+                  {/* UPDATED: Title font size */}
+                  <h3 className="text-sm md:text-base font-semibold mb-1">{item.title}</h3>
+                  {/* UPDATED: Description font size */}
+                  <p className="text-xs md:text-sm text-gray-300">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -76,26 +78,27 @@ const Domains = () => {
             <div className="hidden md:block w-[2px] bg-white/50 rounded-full absolute top-0 bottom-0 left-1/2 transform -translate-x-1/2" />
 
             {/* Right Column */}
-            <div className="flex-1 space-y-5 md:text-right pl-4">
+            <div className="flex-1 space-y-4 md:text-right pl-4">
               {rightDomains.map((item, idx) => (
                 <div key={idx}>
-                  <h3 className="text-lg md:text-xl font-semibold mb-1">{item.title}</h3>
-                  <p className="text-base md:text-lg text-gray-300">{item.desc}</p>
+                  {/* UPDATED: Title font size */}
+                  <h3 className="text-sm md:text-base font-semibold mb-1">{item.title}</h3>
+                  {/* UPDATED: Description font size */}
+                  <p className="text-xs md:text-sm text-gray-300">{item.desc}</p>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* Floating Join Button */}
           <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
-            <button className="px-6 py-2 sm:px-7 sm:py-2.5 md:px-8 md:py-3 border border-[#ff5a28]/20 rounded-full text-base sm:text-lg md:text-xl font-bold text-white backdrop-blur bg-gradient-to-br from-[#121212] to-[#1a1a1a] shadow-[inset_0_0_6px_rgba(255,255,255,0.08),0_0_10px_rgba(255,90,40,0.15)] hover:from-[#1e1e1e] hover:to-[#2a2a2a] active:scale-95 transition-transform">
+            <button
+              onClick={() => navigateToPage('recruitment')}
+              className="px-6 py-2 sm:px-7 sm:py-2.5 md:px-8 md:py-3 border border-[#ff5a28]/20 rounded-full text-base sm:text-lg md:text-xl font-bold text-white backdrop-blur bg-gradient-to-br from-[#121212] to-[#1a1a1a] shadow-[inset_0_0_6px_rgba(255,255,255,0.08),0_0_10px_rgba(255,90,40,0.15)] hover:from-[#1e1e1e] hover:to-[#2a2a2a] active:scale-95 transition-transform"
+            >
               Join a Domain
             </button>
           </div>
         </div>
       </div>
-
-      {/* Footer outside the card */}
       <FooterSection />
     </div>
   );
