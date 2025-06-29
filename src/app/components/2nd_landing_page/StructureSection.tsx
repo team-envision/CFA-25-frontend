@@ -40,9 +40,9 @@ const StructureSection = () => {
       <div className="particles-bg" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
         <Particles
           particleColors={['#ff6a00', '#ffa500', '#ffb347']} // Only orange tones
-          particleCount={100}
-          particleSpread={15}
-          speed={0.08}
+          particleCount={90}
+          particleSpread={35}
+          speed={0.15}
           particleBaseSize={150}
           moveParticlesOnHover={false}
           alphaParticles={true}
