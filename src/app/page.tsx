@@ -28,7 +28,6 @@ const pageComponentMap: Record<string, ReactNode> = {
 const defaultPageSequence = ['main', 'structure', 'teams'];
 const recruitmentPageIds = ['recruitment', 'envision_recruitment'];
 
-// --- FIX #2: EXPLICITLY TYPE THE EASING CURVE ---
 const cubicBezierEasing: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export default function HomePage() {
@@ -44,7 +43,7 @@ export default function HomePage() {
 
   const animationTransition = {
     duration: isAnimating ? 0.7 : 0,
-    ease: cubicBezierEasing, // Use the correctly typed easing
+    ease: cubicBezierEasing,
   };
 
   const slideVariants = {
@@ -53,29 +52,36 @@ export default function HomePage() {
     exit: { x: animationDirection === "forward" ? "-100%" : "100%", opacity: 0 },
   };
 
-  // --- FIX #1: DEFINE A STABLE NAVIGATION FUNCTION WITH useCallback ---
+  // --- THE FINAL FIX: A More Intelligent Navigation Function ---
   const navigate = useCallback((targetId: string) => {
-    if (targetId === activePageId) return;
+    // If the page is already the active one, just scroll to it and do nothing else.
+    if (targetId === activePageId) {
+      if (lenis) {
+        // We know it's not a recruitment page, so the scroll is instant (duration 0).
+        lenis.scrollTo(2 * window.innerHeight, { duration: 0 });
+      }
+      return; // Stop the function here.
+    }
 
+    // If it's a new page, proceed with the navigation logic.
     const isNavToRecruitment = recruitmentPageIds.includes(targetId);
-    const isNavFromRecruitment = recruitmentPageIds.includes(activePageId);
 
-    if (isNavToRecruitment || isNavFromRecruitment) {
+    if (isNavToRecruitment) {
       setIsAnimating(true);
-      setAnimationDirection(isNavToRecruitment ? "forward" : "backward");
+      setAnimationDirection("forward");
     } else {
       setIsAnimating(false);
     }
     
     setPageSequenceIds(['main', 'structure', targetId]);
-  }, [activePageId, setAnimationDirection]);
+  }, [activePageId, lenis, setAnimationDirection]);
 
-  // Provide the stable navigate function to the context
+  // Provide the stable navigate function to the context.
   useEffect(() => {
     setNavigateToPage(() => navigate);
   }, [navigate, setNavigateToPage]);
 
-  // Synchronized scrolling after DOM updates
+  // Synchronized scrolling after DOM updates.
   useLayoutEffect(() => {
     if (pageSequenceIds[2] !== activePageId && lenis) {
       lenis.scrollTo(2 * window.innerHeight, { duration: isAnimating ? 1.5 : 0 });
@@ -83,21 +89,23 @@ export default function HomePage() {
     }
   }, [pageSequenceIds, activePageId, lenis, isAnimating]);
 
-  // Scroll-up logic now safely calls the navigate function
+  // Scroll-up logic remains the same.
   useEffect(() => {
     const isRecruitmentPageActive = recruitmentPageIds.includes(activePageId);
     if (!isRecruitmentPageActive) return;
 
     const unsubscribe = scrollYProgress.on("change", (latest) => {
-      if (latest < (1 / 3)) { // Scrolled up to the top half of the screen
-        // Navigate back to the default teams page, triggering the backward animation
-        navigate('teams');
+      if (latest < (1 / 3)) {
+        setIsAnimating(true);
+        setAnimationDirection("backward");
+        setPageSequenceIds(defaultPageSequence);
       }
     });
 
     return () => unsubscribe();
-  }, [scrollYProgress, activePageId, navigate]);
+  }, [scrollYProgress, activePageId, setAnimationDirection]);
 
+  // Reset the animation state after it completes.
   const onAnimationComplete = () => {
     setIsAnimating(false);
   };
@@ -105,7 +113,7 @@ export default function HomePage() {
   return (
     <ReactLenis root>
       <main ref={container} className='relative bg-black' suppressHydrationWarning={true}>
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           {pageSequenceIds.map((id) => (
             <CardWrapper 
               key={id}
