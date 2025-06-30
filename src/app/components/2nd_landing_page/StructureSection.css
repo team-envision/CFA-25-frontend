@@ -41,8 +41,7 @@
 }
 
 .structure-card {
-  background: rgba(30, 25, 23, 0.85);
-  border-radius: 24px;
+ border-radius: 24px;
   box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -54,11 +53,10 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  transition: box-shadow 0.3s cubic-bezier(0.4,0,0.2,1), background 0.3s cubic-bezier(0.4,0,0.2,1);
+  transition: all 0.3s ease;
   cursor: pointer;
   overflow: hidden;
 }
-
 .structure-card::before {
   content: '';
   position: absolute;
@@ -66,28 +64,38 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,0.05) 0%,
-    rgba(255,255,255,0.02) 25%,
-    rgba(255,255,255,0.01) 50%,
-    rgba(255,255,255,0.02) 75%,
-    rgba(255,255,255,0.05) 100%
-  );
+  background: radial-gradient(circle at top left, rgba(255, 68, 0, 0.119) 0%, transparent 10%),
+              radial-gradient(circle at bottom right, rgba(255, 68, 0, 0.119) 0%, transparent 10%);
+  opacity: 1;
+  transition: opacity 0.3s ease, background 0.3s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.structure-card:hover::before {
   opacity: 0;
+  background: transparent;
+  transition: opacity 0.3s ease, background 0.3s ease;
+}
+
+.structure-card:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top right, rgba(255, 68, 0, 0.119) 0%, transparent 10%),
+              radial-gradient(circle at bottom left, rgba(255, 68, 0, 0.119) 0%, transparent 10%);
+  opacity: 1;
   transition: opacity 0.3s ease;
   pointer-events: none;
   z-index: 0;
 }
 
 .structure-card:hover {
-  background: transparent;
   box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
   border-color: rgba(255,255,255,0.08);
-}
-
-.structure-card:hover::before {
-  opacity: 1;
 }
 
 .card-content {
