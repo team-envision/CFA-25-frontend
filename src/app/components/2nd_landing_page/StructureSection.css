@@ -179,12 +179,35 @@
     font-size: 2.5rem;
     margin-bottom: 32px;
   }
+
+  .structure-cards {
+    gap: 20px;
+    padding-bottom: 24px;
+  }
+
   .structure-card {
-    padding: 24px 16px;
+    padding: 20px 16px;
     border-radius: 20px;
+    width: 90vw;
+    max-width: 360px;
+    margin: 0 auto;
   }
+
+  .structure-card h3 {
+    font-size: 1.5rem;
+  }
+
+  .structure-card p {
+    font-size: 1rem;
+  }
+
   .arrow-btn {
-    bottom: 16px;
-    right: 16px;
+    bottom: 12px;
+    right: 12px;
+    transform: rotate(-45deg) translate(0, 0);
   }
-} 
+
+  .structure-card:hover .arrow-btn {
+    transform: rotate(-45deg) translate(-12px, -24px);
+  }
+}
