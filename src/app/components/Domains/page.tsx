@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic';
 import FooterSection from '../Footer/page';
 import { useScrollManager } from '@/app/context/ScrollContext';
 
-// Dynamically import Particles to avoid hydration issues
 const Particles = dynamic(() => import('../Particles'), { ssr: false });
 
 const Domains = () => {
@@ -30,76 +29,92 @@ const Domains = () => {
   ];
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden flex flex-col justify-between">
-      
+    <div className="relative w-full min-h-screen overflow-hidden flex flex-col">
+      {/* Background Particles */}
       <div className="absolute top-0 left-0 w-full h-full -z-10 bg-[#0c0c0c]">
         <Particles
-          particleCount={300}
-          particleSpread={15}
-          speed={0.08}
-          particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
-          moveParticlesOnHover={true}
-          alphaParticles={true}
+          particleColors={['#ff6a00', '#ffa500', '#ffb347']}
+          particleCount={90}
+          particleSpread={35}
+          speed={0.15}
           particleBaseSize={150}
-          sizeRandomness={1}
-          cameraDistance={30}
+          moveParticlesOnHover={false}
+          alphaParticles={true}
           disableRotation={true}
+          cameraDistance={30}
         />
       </div>
 
-      <div className="flex-grow flex justify-center items-center px-4 py-6 relative">
-        <div
-          className="relative w-[85%] h-[75vh] border border-white/20 backdrop-blur-xl rounded-3xl p-6 md:p-10 text-white flex flex-col justify-between shadow-xl"
-          style={{
-            background: `
-              radial-gradient(circle at top left, rgba(121, 39, 0, 0.2), transparent 40%),
-              radial-gradient(circle at bottom right, rgba(121, 39, 0, 0.2), transparent 40%),
-              rgba(15, 15, 15, 0.9)
-            `,
-          }}
-        >
-          {/* UPDATED: Main title size */}
-          <h1 className="text-center text-3xl md:text-4xl font-bold mb-8">Domains</h1>
+      {/* Main Content */}
+      <div className="flex-grow flex justify-center items-center px-4 py-6">
+        <div className="relative w-full max-w-7xl lg:max-w-[90vw]">
+          <div
+            className="w-full border border-white/20 backdrop-blur-xl rounded-3xl p-6 sm:p-10 md:p-12 text-white flex flex-col shadow-xl"
+            style={{
+              background: `
+                radial-gradient(circle at top left, rgba(121, 39, 0, 0.2), transparent 40%),
+                radial-gradient(circle at bottom right, rgba(121, 39, 0, 0.2), transparent 40%),
+                rgba(15, 15, 15, 0.9)
+              `,
+            }}
+          >
+            {/* Title */}
+            <h1 className="text-center text-4xl sm:text-5xl md:text-6xl font-bold mb-8">Domains</h1>
 
-          <div className="flex flex-col md:flex-row gap-8 md:gap-16 relative flex-grow">
-            {/* Left Column */}
-            <div className="flex-1 space-y-4 pr-4">
-              {leftDomains.map((item, idx) => (
-                <div key={idx}>
-                  {/* UPDATED: Title font size */}
-                  <h3 className="text-sm md:text-base font-semibold mb-1">{item.title}</h3>
-                  {/* UPDATED: Description font size */}
-                  <p className="text-xs md:text-sm text-gray-300">{item.desc}</p>
-                </div>
-              ))}
+            {/* Domains */}
+            <div className="flex flex-col md:flex-row gap-10 text-base sm:text-lg md:text-xl leading-relaxed">
+              {/* Left */}
+              <div className="flex-1 space-y-6">
+                {leftDomains.map((item, idx) => (
+                  <div key={idx}>
+                    <h3 className="text-lg sm:text-xl font-semibold mb-1">{item.title}</h3>
+                    <p className="text-sm sm:text-base text-gray-300">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Divider */}
+              <div className="hidden md:block w-[2px] bg-white/30 rounded-full" />
+
+              {/* Right */}
+              <div className="flex-1 space-y-6 md:text-right">
+                {rightDomains.map((item, idx) => (
+                  <div key={idx}>
+                    <h3 className="text-lg sm:text-xl font-semibold mb-1">{item.title}</h3>
+                    <p className="text-sm sm:text-base text-gray-300">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Divider */}
-            <div className="hidden md:block w-[2px] bg-white/50 rounded-full absolute top-0 bottom-0 left-1/2 transform -translate-x-1/2" />
+            {/* Button: Inside container for mobile */}
+           <div className="absolute left-1/2 translate-x-[-50%] translate-y-[65%] bottom-0 z-10">
+  <button
+    onClick={() => navigateToPage('recruitment')}
+    className="px-8 py-3 sm:px-10 sm:py-4 md:px-12 md:py-4 border border-[#ff5a28]/20 rounded-full text-base sm:text-lg md:text-xl font-bold text-white backdrop-blur bg-[#1a1a1a]/80 shadow-[inset_0_0_10px_rgba(255,255,255,0.12),0_0_20px_rgba(255,90,40,0.15)] hover:bg-[#2a2a2a] transition-transform active:scale-95"
+  >
+    Join a Domain
+  </button>
+</div>
+         </div> 
 
-            {/* Right Column */}
-            <div className="flex-1 space-y-4 md:text-right pl-4">
-              {rightDomains.map((item, idx) => (
-                <div key={idx}>
-                  {/* UPDATED: Title font size */}
-                  <h3 className="text-sm md:text-base font-semibold mb-1">{item.title}</h3>
-                  {/* UPDATED: Description font size */}
-                  <p className="text-xs md:text-sm text-gray-300">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
+          {/* Button: Outside container for larger screens */}
+          {/* <div className="hidden sm:flex absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 z-10">
             <button
               onClick={() => navigateToPage('recruitment')}
-              className="px-6 py-2 sm:px-7 sm:py-2.5 md:px-8 md:py-3 border border-[#ff5a28]/20 rounded-full text-base sm:text-lg md:text-xl font-bold text-white backdrop-blur bg-gradient-to-br from-[#121212] to-[#1a1a1a] shadow-[inset_0_0_6px_rgba(255,255,255,0.08),0_0_10px_rgba(255,90,40,0.15)] hover:from-[#1e1e1e] hover:to-[#2a2a2a] active:scale-95 transition-transform"
+              className="px-8 py-3 sm:px-10 sm:py-4 md:px-12 md:py-4 border border-[#ff5a28]/20 rounded-full text-base sm:text-lg md:text-xl font-bold text-white backdrop-blur bg-gradient-to-br from-[#121212] to-[#1a1a1a] shadow-[inset_0_0_6px_rgba(255,255,255,0.08),0_0_10px_rgba(255,90,40,0.15)] hover:from-[#1e1e1e] hover:to-[#2a2a2a] active:scale-95 transition-transform"
             >
               Join a Domain
             </button>
+          </div> */}
           </div>
-        </div>
+        
       </div>
-      <FooterSection />
+
+      {/* Footer */}
+      <div className="mt-16">
+        <FooterSection />
+      </div>
     </div>
   );
 };

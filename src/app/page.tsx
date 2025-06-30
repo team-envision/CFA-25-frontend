@@ -23,6 +23,7 @@ const pageComponentMap: Record<string, ReactNode> = {
   domains: <Domains />,
   recruitment: <RecruitmentForm />,
   envision_recruitment: <Team_Envision_recruitment />,
+  
 };
 
 const defaultPageSequence = ['main', 'structure', 'teams'];

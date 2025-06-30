@@ -42,7 +42,7 @@ const RecruitmentForm: React.FC = () => {
       {/* ✅ Optimized image with next/image */}
       <div className="absolute top-6 left-6 z-10">
         <Image
-          src="/images/aaruush25-white.png"
+          src="/images/a.png"
           alt="logo"
           width={160}
           height={60}

@@ -52,7 +52,7 @@ const StructureSection = () => {
       </div>
       <div style={{ position: 'relative', zIndex: 1 }}>
         <h2 className="structure-title">
-          Our&nbsp;&nbsp;<span className="highlight">Structure</span>
+          Our&nbsp;<span className="highlight">Structure</span>
         </h2>
         <div className="structure-cards">
           <div 

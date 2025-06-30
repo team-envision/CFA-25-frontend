@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import { useScrollManager } from "@/app/context/ScrollContext";
 
 interface FormData {
   name1: string;
@@ -14,6 +15,7 @@ interface FormData {
 }
 
 const RecruitmentForm: React.FC = () => {
+  const { navigateToPage } = useScrollManager();
   const [formData, setFormData] = useState<FormData>({
     name1: "",
     name2: "",
@@ -57,7 +59,7 @@ const RecruitmentForm: React.FC = () => {
           <span className="ml-2">
             The registration form for Team Envision has to be filled separately. To fill{" "}
             <a
-              href="https://envision.aaruush.org"
+              onClick={() => navigateToPage("envision_recruitment")}
               className="text-orange-500 underline font-medium"
               target="_blank"
               rel="noopener noreferrer"

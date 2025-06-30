@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useScrollManager } from "@/app/context/ScrollContext";
 
 
 const Footer = () => {
