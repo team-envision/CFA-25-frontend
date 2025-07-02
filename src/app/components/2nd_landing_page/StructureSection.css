@@ -17,10 +17,6 @@
   text-align: center;
   margin-bottom: 48px;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
   z-index: 2;
 }
 
@@ -31,11 +27,13 @@
 
 .structure-cards {
   display: flex;
-  gap: 40px;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: stretch;
-  flex-wrap: wrap;
+  gap: 40px;
   width: 100%;
+  max-width: 1200px;
+  padding: 0 16px;
   position: relative;
   z-index: 2;
 }
@@ -43,36 +41,32 @@
 .structure-card {
   background: rgba(30, 25, 23, 0.85);
   border-radius: 24px;
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 36px 32px;
-  width: 340px;
-  max-width: 90vw;
+  width: 100%;
+  max-width: 340px;
   color: #fff;
   display: flex;
   flex-direction: column;
   position: relative;
-  transition: box-shadow 0.3s cubic-bezier(0.4,0,0.2,1), background 0.3s cubic-bezier(0.4,0,0.2,1);
   cursor: pointer;
+  transition: all 0.3s ease;
   overflow: hidden;
 }
 
 .structure-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(255,255,255,0.05) 0%,
-    rgba(255,255,255,0.02) 25%,
-    rgba(255,255,255,0.01) 50%,
-    rgba(255,255,255,0.02) 75%,
-    rgba(255,255,255,0.05) 100%
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 25%,
+    rgba(255, 255, 255, 0.01) 50%,
+    rgba(255, 255, 255, 0.02) 75%,
+    rgba(255, 255, 255, 0.05) 100%
   );
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -82,8 +76,7 @@
 
 .structure-card:hover {
   background: transparent;
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
-  border-color: rgba(255,255,255,0.08);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .structure-card:hover::before {
@@ -92,8 +85,7 @@
 
 .card-content {
   flex: 1;
-  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-  position: relative;
+  transition: transform 0.3s ease;
   z-index: 1;
 }
 
@@ -105,31 +97,25 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 18px;
-  color: #fff;
 }
 
 .structure-card p {
   font-size: 1.08rem;
   font-weight: 400;
-  color: #fff;
   line-height: 1.7;
   letter-spacing: 0.01em;
-  margin-bottom: 0;
 }
 
 .arrow-btn {
   position: absolute;
-  bottom: 0px;
-  right: 0px;
-  /* transform: rotate(-45deg) translate(20px,20px); */
+  bottom: 0;
+  right: 0;
   background: none;
   border: none;
-  outline: none;
   cursor: pointer;
-  transform: translate(0,0) rotate(-45deg);
-  transition: transform 1s ease,opacity 1s ease;
+  transform: rotate(-45deg) translate(0, 0);
+  transition: transform 1s ease, opacity 1s ease;
   z-index: 2;
-  padding: 0;
   opacity: 0;
   pointer-events: none;
 }
@@ -142,49 +128,85 @@
 .structure-card:hover .arrow-btn {
   opacity: 1;
   pointer-events: auto;
-  transform: rotate(-45deg) translate(-15px,-30px);
+  transform: rotate(-45deg) translate(-15px, -30px);
 }
+
 .arrow-btn svg path {
   stroke: #fff;
 }
 
-.structure-card:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 4px;
-}
+/* ------------------- RESPONSIVENESS ------------------- */
 
 @media (max-width: 1100px) {
   .structure-cards {
-    gap: 24px;
+    gap: 32px;
   }
+
   .structure-card {
-    padding: 28px 18px;
-    width: 300px;
+    max-width: 300px;
+    padding: 30px 24px;
+  }
+
+  .structure-card h3 {
+    font-size: 1.8rem;
   }
 }
 
 @media (max-width: 900px) {
-  .structure-cards {
-    flex-direction: column;
-    align-items: center;
+  .structure-title {
+    font-size: 2.8rem;
+    margin-bottom: 36px;
   }
+
+  .structure-cards {
+    flex-direction: row;
+    gap: 24px;
+    justify-content: center;
+  }
+
   .structure-card {
-    width: 90vw;
-    max-width: 420px;
+    max-width: 280px;
+    padding: 28px 22px;
+  }
+
+  .structure-card p {
+    font-size: 1rem;
   }
 }
 
 @media (max-width: 600px) {
-  .structure-title {
-    font-size: 2.5rem;
-    margin-bottom: 32px;
+  .structure-cards {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
   }
+
   .structure-card {
-    padding: 24px 16px;
+    width: 100%;
+    max-width: 90vw;
+    padding: 24px 18px;
     border-radius: 20px;
   }
-  .arrow-btn {
-    bottom: 16px;
-    right: 16px;
+
+  .structure-card h3 {
+    font-size: 1.5rem;
   }
-} 
+
+  .structure-card p {
+    font-size: 0.95rem;
+  }
+
+  .arrow-btn {
+    bottom: 12px;
+    right: 12px;
+  }
+
+  .arrow-btn svg {
+    width: 42px;
+    height: 42px;
+  }
+
+  .structure-card:hover .arrow-btn {
+    transform: rotate(-45deg) translate(-12px, -24px);
+  }
+}

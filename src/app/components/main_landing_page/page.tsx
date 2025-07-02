@@ -2,109 +2,86 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { BackgroundGradientAnimation } from '@/app/components/ui/background-gradient-animation';
 import { Raleway } from "next/font/google";
+
 const raleway = Raleway({ subsets: ["latin"], weight: ["400", "600", "800"] });
 
 export default function MainLandingPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen w-full overflow-hidden bg-[radial-gradient(120%_100%_at_85%_85%,_#fff0d9_0%,_#fa8c57_20%,_#ef6522_40%,_#e97318_60%,_#831f00_85%,_#6A1B09_100%)]">
-      <BackgroundGradientAnimation
-        gradientBackgroundStart="rgba(106,27,9,0.3)"
-        gradientBackgroundEnd="rgba(255,106,0,0.4)"
-        firstColor="233,115,24"
-        secondColor="250,140,87"
-        thirdColor="239,101,34"
-        fourthColor="255,240,217"
-        fifthColor="131,31,0"
-        pointerColor="250,140,87"
-        size="200%"
-        blendingValue="screen"
-        containerClassName="overflow-hidden"
-        className="relative flex flex-col min-h-screen justify-between px-2 sm:px-4"
+    // The main container with rounded corners and overflow hidden
+    <div className="relative ml-[3.5vw] mt-[1.5vw] w-[93vw] h-[97vh] overflow-hidden rounded-[45px]">
+
+      {/* --- VIDEO BACKGROUND LAYER --- */}
+      <video
+        // FIX #2: autoPlay is camelCased and 'muted' is added. This is essential for autoplay.
+        autoPlay
+        loop
+        muted
+        playsInline // Important for preventing fullscreen on mobile (iOS)
+        // FIX #3: z-index is still -10, but the parent's bg-black will be transparent.
+        className="absolute top-0 left-0 w-full h-full object-cover -z-10"
       >
-        <div className={`relative z-10 flex flex-col min-h-screen ${raleway.className}`}>
-          {/* Header - Responsive Layout */}
-          {/* Header (logo + desktop button) */}
-{/* Header - Logo + Desktop Website Button */}
-<header className="flex justify-between items-center w-full px-4 sm:px-6 md:px-8 pt-6 sm:pt-8">
-  {/* Logo */}
-  <div className="flex justify-center sm:justify-start w-full sm:w-auto">
+        {/* FIX #1: The src path correctly starts from the root, not /public. */}
+        <source src="/HeroBG.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      {/* --- FOREGROUND CONTENT LAYER (Unchanged) --- */}
+      {/* The background color has been removed from the parent, so the video is visible. */}
+      <div className={`relative z-10 flex flex-col min-h-full ${raleway.className}`}>
+        {/* Header */}
+        <header className="flex justify-between items-center w-full px-4 sm:px-6 md:px-8 pt-6 sm:pt-8">
+          <div className="flex justify-center sm:justify-start w-full sm:w-auto">
+            <Image src="/images/a.png" alt="AARUUSH Logo" width={200} height={50} className="h-8 sm:h-10 lg:h-12 w-auto" priority />
+          </div>
+          <button onClick={() => router.push('https://www.aaruush.org')} className="hidden sm:inline-flex px-5 mr-[4vw] md:px-7 py-2 md:py-3 rounded-full bg-white/10 border border-white/20 text-white font-semibold backdrop-blur-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/15 hover:border-white/25 transition duration-300 ease-in-out text-sm md:text-base">
+            Visit our Website
+          </button>
+        </header>
+
+        {/* Mobile Button */}
+        <div className="sm:hidden mt-6 mb-4 w-full max-w-xs mx-auto">
+          <button onClick={() => router.push('https://www.aaruush.org')} className="w-full px-5 py-2.5 text-sm font-semibold text-white rounded-full bg-white/10 border border-white/20 backdrop-blur-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/15 hover:border-white/25 transition duration-300 ease-in-out">
+            Visit our Website
+          </button>
+        </div>
+
+        {/* Main Content */}
+      <main className={`flex-grow flex items-center justify-center text-center px-4 ${raleway.className}`}>
+  <div className="flex flex-col  items-center gap-2 w-full max-w-[577px] mb-20">
+    {/* Centered Image */}
     <Image
-      src="/images/a.png"
+      src="/images/cfa.png"
       alt="AARUUSH Logo"
-      width={200}
-      height={50}
-      className="h-8 sm:h-10 lg:h-12 w-auto"
+      width={577}
+      height={200}
+      className="w-full h-auto ml-[4.5vw]"
       priority
     />
+
+    {/* Buttons below image */}
+    <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-2 mr-[4.5vw]">
+      <button
+        onClick={() => router.push('/know-us')}
+        className="px-6 sm:px-8 md:px-12 py-2 text-sm md:text-base font-medium text-white rounded-full bg-white/10 border border-white/20 backdrop-blur-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/15 hover:border-white/25 transition duration-300 ease-in-out"
+      >
+        Know Us
+      </button>
+      <button
+        onClick={() => router.push('/apply')}
+        className="px-6 sm:px-8 md:px-10.5 py-2 text-sm md:text-base font-medium text-white rounded-full bg-white/10 border border-white/20 backdrop-blur-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/15 hover:border-white/25 transition duration-300 ease-in-out"
+      >
+        Apply Now
+      </button>
+    </div>
   </div>
-
-  {/* Desktop Website Button (hidden on mobile) */}
-<button
-  onClick={() => router.push('https://www.aaruush.org')}
-  className="hidden sm:inline-flex px-5 md:px-7 py-2 md:py-3 rounded-full bg-white/20 text-white font-semibold backdrop-blur-md shadow-lg hover:bg-white/30 transition text-sm md:text-base"
->
-  Visit our Website
-</button>
-</header>
-
-{/* Visit Website Button - Mobile only, immediately below AARUUSH text */}
-<div className="sm:hidden mt-6 mb-4 w-full max-w-xs mx-auto">
-  <button
-    onClick={() => router.push('https://www.aaruush.org')}
-    className="w-full px-5 py-2.5 text-sm font-semibold text-white rounded-full bg-white/15 border border-white/15 backdrop-blur-md shadow-md hover:bg-white/25 transition"
-  >
-    Visit our Website
-  </button>
-</div>
+</main>
 
 
-          {/* Main Content - Centered and Responsive */}
-                 {/* Main Content */}
-         <main className={`flex flex-1 flex-col justify-center items-center text-center px-4 ${raleway.className}`}>
-         
-         <div className="flex flex-col items-start justify-center mb-6 md:mb-10">
-         
-                     <h2 className="text-3xl md:text-5xl  mb-2   font-semibold tracking-tight text-white">Call For</h2>
-                     <div className="relative flex items-center right-2 justify-center mb-8">
-                       <h1 className="text-7xl md:text-7xl  font-extrabold tracking-wider text-white tracking-wide">
-                         AARUUSH
-                     </h1>
-                     {/* Megaphone SVG or Image */}
-                     <div className="absolute w-[55px] h-auto bottom-[35%] left-[75%] md:w-[80px] md:bottom-[38%] md:left-[80%] lg:w-[175px] lg:h-[175px] lg:bottom-[42%] lg:left-[86%]">
-                       <Image
-                         src="/images/image.png"
-                         alt="AARUUSH Graphic Icon"
-                         width={230}
-                         height={139}
-                         className="w-full h-auto"
-                       />
-                     </div>
-                   </div>
-                   </div>
-                   {/* CTA Buttons */}
-                   <div className="flex gap-6 -mt-10 ">
-                     <button
-                       onClick={() => router.push('/know-us')}
-                       className="px-8 md:px-12 py-2 md:py-2 text-sm text-center md:text-base font-medium text-white rounded-[3rem] bg-white/10 border border-white/20 backdrop-blur-sm hover:bg-white/20 transition"
-         
-                     >
-                       Know Us
-                     </button>
-                     <button
-                       onClick={() => router.push('/apply')}
-                       className="px-8 md:px-10.5 py-2 md:py-2 text-sm md:text-base text-center font-medium text-white rounded-[3rem] bg-white/10 border border-white/20 backdrop-blur-sm hover:bg-white/20 transition"
-         
-                     >
-                       Apply Now
-                     </button>
-                   </div>
-                 </main>
-        </div>
-      </BackgroundGradientAnimation>
+
+      </div>
     </div>
   );
 }
