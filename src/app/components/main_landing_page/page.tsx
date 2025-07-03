@@ -62,7 +62,7 @@ export default function MainLandingPage({ scrollDown100vh }: MainLandingPageProp
                 Know Us
               </button>
               <button
-                onClick={() => router.push('/apply')}
+                onClick={() => router.push('/Recruitment')}
                 className="px-6 sm:px-8 md:px-10.5 py-2 text-sm md:text-base font-medium text-white rounded-full bg-white/10 border border-white/20 backdrop-blur-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/15 hover:border-white/25 transition duration-300 ease-in-out"
               >
                 Apply Now

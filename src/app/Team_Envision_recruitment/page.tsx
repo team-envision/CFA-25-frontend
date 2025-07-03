@@ -2,8 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import {
   Form,
   FormField,
@@ -11,7 +11,7 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "../ui/form";
+} from "../components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

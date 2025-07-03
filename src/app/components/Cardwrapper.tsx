@@ -8,7 +8,6 @@ interface CardWrapperProps {
   children: ReactNode;
   customKey: string;
   animationVariants: Variants;
-  // --- ADD THESE NEW PROPS ---
   transition: Transition;
   onAnimationComplete?: () => void;
 }
@@ -17,13 +16,12 @@ const CardWrapper: React.FC<CardWrapperProps> = ({
   children, 
   customKey, 
   animationVariants, 
-  transition, // <-- New prop
-  onAnimationComplete // <-- New prop
+  transition,
+  onAnimationComplete
 }) => {
   const container = useRef<HTMLDivElement>(null);
 
   return (
-    // The outer div remains a simple sticky container
     <div ref={container} className='h-screen sticky top-0'>
       <motion.div 
         key={customKey}
@@ -31,10 +29,11 @@ const CardWrapper: React.FC<CardWrapperProps> = ({
         initial="initial"
         animate="animate"
         exit="exit"
-        // --- USE THE DYNAMIC PROPS HERE ---
         transition={transition}
         onAnimationComplete={onAnimationComplete}
         className='relative h-full w-full'
+        style={{ touchAction: 'auto' }} // ← ADDED sync-touch equivalent
+        drag={false} // ← ENSURES NO DRAG INTERFERENCE
       >
         {children}
       </motion.div>
