@@ -1,102 +1,176 @@
 "use client";
-import React, { useState } from "react";
-import Image from "next/image";
 
-interface FormData {
-  name1: string;
-  name2: string;
-  name3: string;
-  name4: string;
-  name5: string;
-  name6: string;
-  name7: string;
-  name8: string;
-}
+import React from "react";
+import Image from "next/image";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "../ui/form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// Zod schema
+const formSchema = z.object({
+  name1: z.string().min(1, "Required"),
+  name2: z.string().min(1, "Required"),
+  name3: z.string().min(1, "Required"),
+  name4: z.string().min(1, "Required"),
+  name5: z.string().min(1, "Required"),
+  name6: z.string().min(1, "Required"),
+  name7: z.string().min(1, "Required"),
+  name8: z.string().min(1, "Required"),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 const RecruitmentForm: React.FC = () => {
-  const [formData, setFormData] = useState<FormData>({
-    name1: "",
-    name2: "",
-    name3: "",
-    name4: "",
-    name5: "",
-    name6: "",
-    name7: "",
-    name8: "",
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name1: "",
+      name2: "",
+      name3: "",
+      name4: "",
+      name5: "",
+      name6: "",
+      name7: "",
+      name8: "",
+    },
   });
 
-  const handleChange = (field: keyof FormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (data: FormData) => {
+    console.log(data);
     alert("Form submitted successfully!");
   };
 
   return (
-    <div className="min-h-screen relative bg-black flex flex-col items-center justify-center px-4 pt-32 pb-12 overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-orange-700/30 via-black to-black" />
+    <div className="min-h-screen relative bg-black flex flex-col items-center justify-center px-4 py-12 overflow-hidden">
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-700/30 via-black to-black" />
 
-      {/* ✅ Optimized image using next/image */}
+      {/* Bottom glow */}
+      <div className="absolute -bottom-60 right-50 w-80 h-72 bg-gradient-to-tl from-orange-500/50 to-transparent rounded-full blur-3xl z-0" />
+
+      {/* Logo */}
       <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
-        <Image src="/images/a.png" alt="logo" width={160} height={80} />
+        <Image
+          src="/images/a.png"
+          alt="logo"
+          width={160}
+          height={64}
+          className="w-[180px] sm:w-[250px] h-auto"
+        />
       </div>
 
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10">
-        <button className="bg-zinc-800 text-white px-4 sm:px-6 py-2 rounded-full text-sm hover:bg-zinc-700">
-          Visit our Website
-        </button>
-      </div>
-
-      <h2 className="text-white text-3xl sm:text-4xl font-bold mb-2 text-center z-10">Recruitment Form</h2>
-
-      <div className="w-full max-w-4xl mt-4 z-10 px-2 sm:px-0">
-        <div className="bg-[#1b0f07] border border-[#b8572d] text-white rounded-xl px-4 sm:px-6 py-4 text-sm shadow-inner shadow-[#ff7e3d]/20">
-          <strong className="text-orange-400">Info:</strong>
-          <span className="ml-2">
-            The registration form for Team Envision has to be filled separately. To fill{" "}
-            <a
-              href="https://envision.aaruush.org"
-              className="text-orange-500 underline font-medium"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Click Here.
-            </a>
-          </span>
-        </div>
-      </div>
-
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10 w-full max-w-4xl z-10 px-2 sm:px-0"
-      >
-        {Object.entries(formData).map(([key, value], idx) => (
-          <div key={key}>
-            <label htmlFor={key} className="text-white block mb-1 text-sm">
-              Name {idx + 1}
-            </label>
-            <input
-              id={key}
-              type="text"
-              placeholder={`Enter name ${idx + 1}`}
-              value={value}
-              onChange={(e) => handleChange(key as keyof FormData, e.target.value)}
-              className="w-full px-4 py-2 rounded-lg bg-zinc-900 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none"
-            />
-          </div>
-        ))}
-
-        <div className="col-span-1 sm:col-span-2 flex justify-center mt-6">
-          <button
-            type="submit"
-            className="bg-orange-500 hover:bg-orange-600 text-white font-medium px-10 sm:px-12 py-3 rounded-full transition-all"
+      {/* Visit Website Button */}
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-20 z-10">
+        <div className="px-0 py-[2px] rounded-full bg-gradient-to-b from-neutral-500 to-neutral-800">
+          <Button
+            variant="secondary"
+            className="
+              rounded-full px-6 sm:px-10 py-3 sm:py-6
+              bg-neutral-900 text-white border border-neutral-800
+              hover:bg-neutral-800 transition text-sm sm:text-base
+            "
+            onClick={() => window.open("https://yourwebsite.com", "_blank")}
           >
-            Submit
-          </button>
+            Visit our Website
+          </Button>
         </div>
-      </form>
+      </div>
+
+      {/* Heading */}
+      <h2 className="text-white text-3xl sm:text-5xl font-bold mb-2 text-center z-10 mt-10">
+        Recruitment Form
+      </h2>
+
+      {/* Info banner */}
+      <div className="w-full max-w-[780px] mt-4 z-10 px-2 sm:px-0">
+        <div className="py-px rounded-2xl bg-gradient-to-b from-[#796856] to-[#574030a1]">
+          <div className="bg-[#2a170b] rounded-2xl px-3 sm:px-6 py-2.5 sm:py-3.5 text-sm sm:text-md text-neutral-200 font-medium tracking-normal hover:bg-[#201108]">
+            <strong className="text-neutral-100 font-semibold">Info:</strong>
+            <span className="ml-1.5">
+              The registration form for Team Envision has to be filled separately. To fill{" "}
+              <a
+                href="https://envision.aaruush.org"
+                className="text-orange-500 underline font-semibold"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Click Here.
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Form */}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 sm:gap-y-6 gap-x-6 sm:gap-x-12 mt-8 w-full max-w-3xl z-10 px-2 sm:px-0"
+        >
+          {Object.keys(formSchema.shape).map((field) => (
+            <FormField
+              key={field}
+              control={form.control}
+              name={field as keyof FormData}
+              render={({ field: formField }) => (
+                <FormItem>
+                  <FormLabel className="text-white text-sm sm:text-md -mb-1">
+                    Name
+                  </FormLabel>
+                  <div className="py-px rounded-xl bg-gradient-to-b from-neutral-500 to-neutral-700 hover:from-orange-500 hover:to-orange-800 transition">
+                    <FormControl>
+                      <Input
+                        placeholder="Enter your name"
+                        {...formField}
+                        className="
+                          w-full px-3 py-3 sm:px-4 sm:py-5 rounded-xl
+                          bg-neutral-900 backdrop-blur-sm
+                          border border-neutral-950
+                          text-white placeholder-neutral-500 text-sm
+                          shadow-[inset_0_1px_3px_rgba(255,255,255,0.05),0_8px_20px_rgba(0,0,0,0.3)]
+                          focus:outline-none focus:ring-[0.5px] focus:ring-orange-500
+                          transition duration-200 ease-in-out
+                        "
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage className="text-red-400 text-xs mt-1" />
+                </FormItem>
+              )}
+            />
+          ))}
+
+          {/* Submit Button */}
+          <div className="col-span-1 sm:col-span-2 flex justify-center mt-4 sm:mt-6">
+            <div className="px-0 py-px rounded-full bg-gradient-to-b from-neutral-700 to-neutral-900">
+              <Button
+                type="submit"
+                className="
+                  px-10 sm:px-16 py-3 sm:py-5 rounded-full
+                  bg-gradient-to-b from-orange-500 to-orange-700
+                  hover:from-orange-700 hover:to-orange-800
+                  text-white font-semibold text-sm sm:text-md
+                  border border-white/30
+                  shadow-inner
+                  transition
+                "
+              >
+                Submit
+              </Button>
+            </div>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 };
