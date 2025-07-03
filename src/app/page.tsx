@@ -15,16 +15,6 @@ import CardWrapper from './components/Cardwrapper';
 import RecruitmentForm from './components/Recruitment/page';
 import Team_Envision_recruitment from './components/Team_Envision_recruitment/page';
 
-const pageComponentMap: Record<string, ReactNode> = {
-  main: <MainLandingPage />,
-  structure: <StructureSection />,
-  teams: <TeamsSection />,
-  committees: <Committees />,
-  domains: <Domains />,
-  recruitment: <RecruitmentForm />,
-  envision_recruitment: <Team_Envision_recruitment />,
-};
-
 const defaultPageSequence = ['main', 'structure', 'teams'];
 const recruitmentPageIds = ['recruitment', 'envision_recruitment'];
 
@@ -47,23 +37,31 @@ export default function HomePage() {
   };
 
   const slideVariants = {
-    initial: { x: animationDirection === "forward" ? "100%" : "-100%", opacity: 0 },
-    animate: { x: 0, opacity: 1 },
-    exit: { x: animationDirection === "forward" ? "-100%" : "100%", opacity: 0 },
+    initial: { 
+      x: animationDirection === "forward" ? "100%" : "-100%", 
+      opacity: 0,
+      scale: 0.8 // ← ADDED SCALE TO INITIAL STATE
+    },
+    animate: { 
+      x: 0, 
+      opacity: 1,
+      scale: 1 // ← ADDED SCALE TO ANIMATE STATE
+    },
+    exit: { 
+      x: animationDirection === "forward" ? "-100%" : "100%", 
+      opacity: 0,
+      scale: 0.8 // ← ADDED SCALE TO EXIT STATE
+    },
   };
 
-  // --- THE FINAL FIX: A More Intelligent Navigation Function ---
   const navigate = useCallback((targetId: string) => {
-    // If the page is already the active one, just scroll to it and do nothing else.
     if (targetId === activePageId) {
       if (lenis) {
-        // We know it's not a recruitment page, so the scroll is instant (duration 0).
         lenis.scrollTo(2 * window.innerHeight, { duration: 0 });
       }
-      return; // Stop the function here.
+      return;
     }
 
-    // If it's a new page, proceed with the navigation logic.
     const isNavToRecruitment = recruitmentPageIds.includes(targetId);
 
     if (isNavToRecruitment) {
@@ -76,12 +74,27 @@ export default function HomePage() {
     setPageSequenceIds(['main', 'structure', targetId]);
   }, [activePageId, lenis, setAnimationDirection]);
 
-  // Provide the stable navigate function to the context.
+  const scrollDown100vh = useCallback(() => {
+    if (lenis) {
+      const targetScroll = window.innerHeight * 1.05;
+      lenis.scrollTo(targetScroll, { duration: 1.5 });
+    }
+  }, [lenis]);
+
+  const pageComponentMap: Record<string, ReactNode> = {
+    main: <MainLandingPage scrollDown100vh={scrollDown100vh} />,
+    structure: <StructureSection />,
+    teams: <TeamsSection />,
+    committees: <Committees />,
+    domains: <Domains />,
+    recruitment: <RecruitmentForm />,
+    envision_recruitment: <Team_Envision_recruitment />,
+  };
+
   useEffect(() => {
     setNavigateToPage(() => navigate);
   }, [navigate, setNavigateToPage]);
 
-  // Synchronized scrolling after DOM updates.
   useLayoutEffect(() => {
     if (pageSequenceIds[2] !== activePageId && lenis) {
       lenis.scrollTo(2 * window.innerHeight, { duration: isAnimating ? 1.5 : 0 });
@@ -89,7 +102,6 @@ export default function HomePage() {
     }
   }, [pageSequenceIds, activePageId, lenis, isAnimating]);
 
-  // Scroll-up logic remains the same.
   useEffect(() => {
     const isRecruitmentPageActive = recruitmentPageIds.includes(activePageId);
     if (!isRecruitmentPageActive) return;
@@ -105,7 +117,6 @@ export default function HomePage() {
     return () => unsubscribe();
   }, [scrollYProgress, activePageId, setAnimationDirection]);
 
-  // Reset the animation state after it completes.
   const onAnimationComplete = () => {
     setIsAnimating(false);
   };
