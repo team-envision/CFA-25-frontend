@@ -7,7 +7,7 @@ import Image from "next/image";
 
 const Footer = () => {
   return (
-    <div className="footer bottom-0 w-full min-h-[25vh] bg-[#00000000] z-10 flex flex-col lg:flex-row px-4 sm:px-6 lg:px-[5vw] pt-4 lg:pt-[2vw] pb-4 box-border overflow-hidden">
+<div className="footer bottom-0 w-full min-h-[25vh] bg-[#00000000] z-10 flex flex-col lg:flex-row px-4 sm:px-6 lg:px-[5vw] pt-4 lg:pt-[2vw] pb-4 box-border overflow-hidden">
       {/* Left Section */}
       <div className="left flex flex-col w-full lg:max-w-[33.3%] mb-6 lg:mb-0 items-center lg:-ml-16 lg:mr-10">
 

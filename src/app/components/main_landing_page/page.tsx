@@ -14,7 +14,7 @@ export default function MainLandingPage({ scrollDown100vh }: MainLandingPageProp
   const router = useRouter();
 
   return (
-    <div className="relative ml-[3.5vw] mt-[1.5vw] w-[93vw] h-[97vh] overflow-hidden rounded-[45px]">
+    <div className="relative ml-[3.5vw] mt-[3.5vw] w-[93vw] h-[97vh] overflow-hidden rounded-[45px]">
 
       <video
         autoPlay

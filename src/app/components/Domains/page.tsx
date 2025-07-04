@@ -31,7 +31,7 @@ const Domains = () => {
   return (
     <div className="relative w-full min-h-screen overflow-hidden flex flex-col">
       {/* Background Particles */}
-      <div className="absolute top-0 left-0 w-full h-full -z-10 bg-[#0c0c0c]">
+      <div className="absolute top-0 left-0 w-full h-full -z-10 bg-black">
         <Particles
           particleColors={['#ff6a00', '#ffa500', '#ffb347']}
           particleCount={90}
