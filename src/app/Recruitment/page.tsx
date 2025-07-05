@@ -2,7 +2,11 @@
 
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
 import { Button } from "../components/ui/button";
+import { useScrollManager } from "@/app/context/ScrollContext";
+
 import { Input } from "../components/ui/input";
 import {
   Form,
@@ -44,6 +48,11 @@ const RecruitmentForm: React.FC = () => {
       name8: "",
     },
   });
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("Team_Envision_recruitment"); // or any route you have
+  };
 
   const onSubmit = (data: FormData) => {
     console.log(data);
@@ -79,7 +88,7 @@ const RecruitmentForm: React.FC = () => {
               bg-neutral-900 text-white border border-neutral-800
               hover:bg-neutral-800 transition text-sm sm:text-base
             "
-            onClick={() => window.open("https://yourwebsite.com", "_blank")}
+            onClick={() => window.open("https://aaruush.org", "_blank")}
           >
             Visit our Website
           </Button>
@@ -98,14 +107,14 @@ const RecruitmentForm: React.FC = () => {
             <strong className="text-neutral-100 font-semibold">Info:</strong>
             <span className="ml-1.5">
               The registration form for Team Envision has to be filled separately. To fill{" "}
-              <a
-                href="https://envision.aaruush.org"
+              <button
+                onClick={handleClick}
                 className="text-orange-500 underline font-semibold"
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 Click Here.
-              </a>
+              </button>
+
+
             </span>
           </div>
         </div>
