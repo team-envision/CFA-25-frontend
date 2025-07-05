@@ -35,6 +35,50 @@ export default function HomePage() {
   const [pageSequenceIds, setPageSequenceIds] = useState(defaultPageSequence);
   const [isAnimating, setIsAnimating] = useState(false);
   const [activePageId, setActivePageId] = useState('teams');
+  const [isMobile, setIsMobile] = useState(false);
+  const [isUserScrolling, setIsUserScrolling] = useState(false); // ← PREVENT AUTO-SCROLL CONFLICTS
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const getScrollPosition = useCallback((targetId: string) => {
+    const vh = window.innerHeight;
+    
+    if (!isMobile) {
+      switch (targetId) {
+        case 'main':
+          return 0;
+        case 'structure':
+          return vh * 1.05;
+        case 'teams':
+        case 'committees':
+        case 'domains':
+          return vh * 2.0;
+        default:
+          return 0;
+      }
+    }
+    
+    switch (targetId) {
+      case 'main':
+        return 0;
+      case 'structure':
+        return vh * 1.15;
+      case 'teams':
+      case 'committees':
+      case 'domains':
+        return vh * 2.2;
+      default:
+        return 0;
+    }
+  }, [isMobile]);
 
   const animationTransition = {
     duration: isAnimating ? 0.7 : 0,
@@ -61,13 +105,8 @@ export default function HomePage() {
     
     if (targetId === activePageId) {
       if (lenis) {
-        if (targetId === 'main') {
-          lenis.scrollTo(0, { duration: 0 });
-        } else if (targetId === 'structure') {
-          lenis.scrollTo(window.innerHeight * 1.05, { duration: 0 });
-        } else {
-          lenis.scrollTo(2 * window.innerHeight, { duration: 0 });
-        }
+        const scrollPosition = getScrollPosition(targetId);
+        lenis.scrollTo(scrollPosition, { duration: 0 });
       }
       return;
     }
@@ -88,28 +127,27 @@ export default function HomePage() {
       setPageSequenceIds(['main', 'structure', targetId]);
     } else if (defaultPageSequence.includes(targetId)) {
       setIsAnimating(false);
+      
+      if (targetId === 'teams') {
+        setPageSequenceIds(defaultPageSequence);
+      }
+      
       if (lenis) {
-        if (targetId === 'main') {
-          lenis.scrollTo(0, { duration: 1.5 });
-        } else if (targetId === 'structure') {
-          lenis.scrollTo(window.innerHeight * 1.05, { duration: 1.5 });
-        } else if (targetId === 'teams') {
-          setPageSequenceIds(['main', 'structure', 'teams']);
-          lenis.scrollTo(2 * window.innerHeight, { duration: 1.5 });
-        }
+        const scrollPosition = getScrollPosition(targetId);
+        lenis.scrollTo(scrollPosition, { duration: 1.5 });
       }
       setActivePageId(targetId);
       return;
     }
-  }, [activePageId, lenis, setAnimationDirection, pageSequenceIds, router]);
+  }, [activePageId, lenis, setAnimationDirection, pageSequenceIds, router, getScrollPosition]);
 
   const scrollDown100vh = useCallback(() => {
     if (lenis) {
-      const targetScroll = window.innerHeight * 1.05;
+      const targetScroll = getScrollPosition('structure');
       lenis.scrollTo(targetScroll, { duration: 1.5 });
       setActivePageId('structure');
     }
-  }, [lenis]);
+  }, [lenis, getScrollPosition]);
 
   const pageComponentMap: Record<string, ReactNode> = {
     main: <MainLandingPage scrollDown100vh={scrollDown100vh} />,
@@ -127,27 +165,33 @@ export default function HomePage() {
 
   useLayoutEffect(() => {
     if (pageSequenceIds[2] !== activePageId && lenis && isAnimating) {
-      lenis.scrollTo(2 * window.innerHeight, { duration: 1.5 });
+      const scrollPosition = getScrollPosition(pageSequenceIds[2]);
+      lenis.scrollTo(scrollPosition, { duration: 1.5 });
       setActivePageId(pageSequenceIds[2]);
     }
-  }, [pageSequenceIds, activePageId, lenis, isAnimating]);
+  }, [pageSequenceIds, activePageId, lenis, isAnimating, getScrollPosition]);
 
+  // ← SIMPLIFIED: Only handle committees/domains scroll-back
   useEffect(() => {
     const isCommitteesOrDomainsActive = activePageId === 'committees' || activePageId === 'domains';
     
     if (!isCommitteesOrDomainsActive) return;
 
     const unsubscribe = scrollYProgress.on("change", (latest) => {
-      if (latest < (1 / 3)) {
+      if (latest < (1 / 3) && !isUserScrolling) {
+        setIsUserScrolling(true); // ← PREVENT MULTIPLE TRIGGERS
         setIsAnimating(true);
         setAnimationDirection("backward");
         setPageSequenceIds(defaultPageSequence);
         setActivePageId('teams');
+        
+        // ← RESET FLAG AFTER ANIMATION
+        setTimeout(() => setIsUserScrolling(false), 1000);
       }
     });
 
     return () => unsubscribe();
-  }, [scrollYProgress, activePageId, setAnimationDirection]);
+  }, [scrollYProgress, activePageId, setAnimationDirection, isUserScrolling]);
 
   const onAnimationComplete = () => {
     setIsAnimating(false);
@@ -159,16 +203,14 @@ export default function HomePage() {
     <ReactLenis 
       root 
       options={{
-        // ← MOBILE TOUCH SUPPORT CONFIGURATION
-        syncTouch: true, // Enable touch synchronization
-        syncTouchLerp: 0.075, // Smooth touch lerp
-        touchInertiaMultiplier: 35, // Touch inertia strength
-        touchMultiplier: 0.75, // Touch scroll speed // Keep false for better performance
-        gestureOrientation: 'vertical', // Allow vertical gestures
+        syncTouch: isMobile,
+        syncTouchLerp: isMobile ? 0.075 : undefined,
+        touchInertiaMultiplier: isMobile ? 35 : undefined,
+        touchMultiplier: isMobile ? 0.75 : undefined,
+        gestureOrientation: isMobile ? 'vertical' : undefined,
       }}
     >
       <main ref={container} className='relative bg-black' suppressHydrationWarning={true}>
-        {/* Current sequence pages with scaling */}
         {currentSequence.map((id, i) => {
           const targetScale = 1 - (currentSequence.length - i) * 0.05;
           const range: [number, number] = [i * 0.33, 1];
@@ -204,7 +246,7 @@ export default function HomePage() {
   );
 }
 
-// Scaling card wrapper component
+// Scaling card wrapper component (unchanged)
 interface ScalingCardWrapperProps {
   children: ReactNode;
   customKey: string;
