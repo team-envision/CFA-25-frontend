@@ -14,8 +14,8 @@ export default function MainLandingPage({ scrollDown100vh }: MainLandingPageProp
   const router = useRouter();
 
   return (
-    <div className="relative w-full sm:w-[93vw] h-screen sm:h-[97vh] overflow-hidden rounded-none sm:rounded-[45px] mx-auto mt-4 sm:mt-[3.5vw] sm:ml-[3.5vw]">
-
+<div className="relative ml-[3.5vw] mt-[6vh] sm:mt-[3.5vw] w-[93vw] h-[92vh] overflow-hidden rounded-[45px]">
+      {/* Background Video */}
       <video
         autoPlay
         loop
@@ -27,22 +27,31 @@ export default function MainLandingPage({ scrollDown100vh }: MainLandingPageProp
         Your browser does not support the video tag.
       </video>
 
-      <div className={`relative z-10 flex flex-col min-h-full ${raleway.className}`}>
+      <div className={`relative z-10 flex flex-col h-full ${raleway.className}`}>
+        {/* Header */}
         <header className="flex justify-between items-center w-full px-4 sm:px-6 md:px-8 pt-6 sm:pt-8">
           <div className="flex justify-center sm:justify-start w-full sm:w-auto">
             <Image src="/images/a.png" alt="AARUUSH Logo" width={200} height={50} className="h-8 sm:h-10 lg:h-12 w-auto" priority />
           </div>
-          <button onClick={() => router.push('https://www.aaruush.org')} className="hidden sm:inline-flex px-5 mr-[4vw] md:px-7 py-2 md:py-3 rounded-full bg-white/10 border border-white/20 text-white font-semibold backdrop-blur-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/15 hover:border-white/25 transition duration-300 ease-in-out text-sm md:text-base">
+          <button
+            onClick={() => router.push('https://www.aaruush.org')}
+            className="hidden sm:inline-flex px-5 mr-[4vw] md:px-7 py-2 md:py-3 rounded-full bg-white/10 border border-white/20 text-white font-semibold backdrop-blur-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/15 hover:border-white/25 transition duration-300 ease-in-out text-sm md:text-base"
+          >
             Visit our Website
           </button>
         </header>
 
+        {/* Mobile Header Button */}
         <div className="sm:hidden mt-6 mb-4 w-full max-w-xs mx-auto">
-          <button onClick={() => router.push('https://www.aaruush.org')} className="w-full px-5 py-2.5 text-sm font-semibold text-white rounded-full bg-white/10 border border-white/20 backdrop-blur-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/15 hover:border-white/25 transition duration-300 ease-in-out">
+          <button
+            onClick={() => router.push('https://www.aaruush.org')}
+            className="w-full px-5 py-2.5 text-sm font-semibold text-white rounded-full bg-white/10 border border-white/20 backdrop-blur-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/15 hover:border-white/25 transition duration-300 ease-in-out"
+          >
             Visit our Website
           </button>
         </div>
 
+        {/* Main */}
         <main className={`flex-grow flex items-center justify-center text-center px-4 ${raleway.className}`}>
           <div className="flex flex-col items-center gap-2 w-full max-w-[577px] mb-20">
             <Image
@@ -70,7 +79,6 @@ export default function MainLandingPage({ scrollDown100vh }: MainLandingPageProp
             </div>
           </div>
         </main>
-
       </div>
     </div>
   );
