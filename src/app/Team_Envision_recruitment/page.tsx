@@ -79,7 +79,7 @@ const RecruitmentForm: React.FC = () => {
               bg-neutral-900 text-white border border-neutral-800
               hover:bg-neutral-800 transition text-sm sm:text-base
             "
-            onClick={() => window.open("https://yourwebsite.com", "_blank")}
+            onClick={() => window.open("https://aaruush.org", "_blank")}
           >
             Visit our Website
           </Button>
