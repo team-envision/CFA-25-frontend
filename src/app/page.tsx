@@ -1,7 +1,11 @@
 'use client';
-import { useRef, useEffect, useState, ReactNode, useLayoutEffect, useCallback } from 'react';
+
+import { useRef, useEffect, useState, ReactNode, useCallback } from 'react';
+
 import { ReactLenis, useLenis } from 'lenis/react';
+
 import { useScroll, AnimatePresence, useTransform, motion } from 'motion/react';
+
 import { useRouter } from 'next/navigation';
 
 import { useScrollManager } from './context/ScrollContext';
@@ -32,11 +36,13 @@ export default function HomePage() {
 
   const { setNavigateToPage, animationDirection, setAnimationDirection } = useScrollManager();
   
-  const [pageSequenceIds, setPageSequenceIds] = useState(defaultPageSequence);
-  const [isAnimating, setIsAnimating] = useState(false);
+  // Simplified state management
+  const [currentPageSequence, setCurrentPageSequence] = useState(defaultPageSequence);
   const [activePageId, setActivePageId] = useState('teams');
+  const [isAnimating, setIsAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isUserScrolling, setIsUserScrolling] = useState(false); // ← PREVENT AUTO-SCROLL CONFLICTS
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
+  const [navigationSource, setNavigationSource] = useState<'scroll' | 'button' | null>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -100,10 +106,14 @@ export default function HomePage() {
     },
   };
 
-  const navigate = useCallback((targetId: string) => {
-    console.log('Navigating to:', targetId, 'Current active:', activePageId);
+  // Centralized navigation function
+  const navigate = useCallback((targetId: string, source: 'scroll' | 'button' = 'button') => {
+    console.log('Navigating to:', targetId, 'Current active:', activePageId, 'Source:', source);
     
-    if (targetId === activePageId) {
+    setNavigationSource(source);
+    
+    if (targetId === activePageId && source === 'button') {
+      // If same page, just scroll to position
       if (lenis) {
         const scrollPosition = getScrollPosition(targetId);
         lenis.scrollTo(scrollPosition, { duration: 0 });
@@ -112,7 +122,6 @@ export default function HomePage() {
     }
 
     const isNavToRecruitment = recruitmentPageIds.includes(targetId);
-    const isNavToCommitteesOrDomains = targetId === 'committees' || targetId === 'domains';
 
     if (isNavToRecruitment) {
       if (targetId === 'envision_recruitment') {
@@ -121,33 +130,47 @@ export default function HomePage() {
         router.push('/Recruitment');
       }
       return;
-    } else if (isNavToCommitteesOrDomains) {
+    }
+
+    // Handle committees and domains
+    if (targetId === 'committees' || targetId === 'domains') {
       setIsAnimating(true);
       setAnimationDirection("forward");
-      setPageSequenceIds(['main', 'structure', targetId]);
-    } else if (defaultPageSequence.includes(targetId)) {
-      setIsAnimating(false);
+      const newSequence = ['main', 'structure', targetId];
+      setCurrentPageSequence(newSequence);
+      setActivePageId(targetId);
       
-      if (targetId === 'teams') {
-        setPageSequenceIds(defaultPageSequence);
+      // Scroll to the position after state update
+      setTimeout(() => {
+        if (lenis) {
+          const scrollPosition = getScrollPosition(targetId);
+          lenis.scrollTo(scrollPosition, { duration: 1.5 });
+        }
+      }, 0);
+      return;
+    }
+
+    // Handle default pages (main, structure, teams)
+    if (defaultPageSequence.includes(targetId)) {
+      // If we're coming from committees/domains, reset to default sequence
+      if (!defaultPageSequence.includes(activePageId)) {
+        setCurrentPageSequence(defaultPageSequence);
+        setIsAnimating(false);
       }
+      
+      setActivePageId(targetId);
       
       if (lenis) {
         const scrollPosition = getScrollPosition(targetId);
-        lenis.scrollTo(scrollPosition, { duration: 1.5 });
+        lenis.scrollTo(scrollPosition, { duration: source === 'button' ? 1.5 : 0 });
       }
-      setActivePageId(targetId);
-      return;
     }
-  }, [activePageId, lenis, setAnimationDirection, pageSequenceIds, router, getScrollPosition]);
+  }, [activePageId, lenis, setAnimationDirection, router, getScrollPosition]);
 
+  // Simplified scrollDown100vh function
   const scrollDown100vh = useCallback(() => {
-    if (lenis) {
-      const targetScroll = getScrollPosition('structure');
-      lenis.scrollTo(targetScroll, { duration: 1.5 });
-      setActivePageId('structure');
-    }
-  }, [lenis, getScrollPosition]);
+    navigate('structure', 'button');
+  }, [navigate]);
 
   const pageComponentMap: Record<string, ReactNode> = {
     main: <MainLandingPage scrollDown100vh={scrollDown100vh} />,
@@ -163,41 +186,34 @@ export default function HomePage() {
     setNavigateToPage(() => navigate);
   }, [navigate, setNavigateToPage]);
 
-  useLayoutEffect(() => {
-    if (pageSequenceIds[2] !== activePageId && lenis && isAnimating) {
-      const scrollPosition = getScrollPosition(pageSequenceIds[2]);
-      lenis.scrollTo(scrollPosition, { duration: 1.5 });
-      setActivePageId(pageSequenceIds[2]);
-    }
-  }, [pageSequenceIds, activePageId, lenis, isAnimating, getScrollPosition]);
-
-  // ← SIMPLIFIED: Only handle committees/domains scroll-back
+  // Handle scroll-based navigation back to teams from committees/domains
   useEffect(() => {
     const isCommitteesOrDomainsActive = activePageId === 'committees' || activePageId === 'domains';
     
     if (!isCommitteesOrDomainsActive) return;
 
     const unsubscribe = scrollYProgress.on("change", (latest) => {
-      if (latest < (1 / 3) && !isUserScrolling) {
-        setIsUserScrolling(true); // ← PREVENT MULTIPLE TRIGGERS
+      if (latest < (1 / 3) && !isUserScrolling && navigationSource !== 'button') {
+        setIsUserScrolling(true);
         setIsAnimating(true);
         setAnimationDirection("backward");
-        setPageSequenceIds(defaultPageSequence);
+        setCurrentPageSequence(defaultPageSequence);
         setActivePageId('teams');
         
-        // ← RESET FLAG AFTER ANIMATION
         setTimeout(() => setIsUserScrolling(false), 1000);
       }
     });
 
     return () => unsubscribe();
-  }, [scrollYProgress, activePageId, setAnimationDirection, isUserScrolling]);
+  }, [scrollYProgress, activePageId, setAnimationDirection, isUserScrolling, navigationSource]);
 
   const onAnimationComplete = () => {
     setIsAnimating(false);
+    setNavigationSource(null);
   };
 
-  const currentSequence = pageSequenceIds.slice(0, 3);
+  // Get current sequence for rendering
+  const currentSequence = currentPageSequence.slice(0, 3);
 
   return (
     <ReactLenis 
@@ -229,7 +245,7 @@ export default function HomePage() {
         })}
 
         <AnimatePresence mode="popLayout">
-          {pageSequenceIds.slice(3).filter(id => !recruitmentPageIds.includes(id)).map((id) => (
+          {currentPageSequence.slice(3).filter(id => !recruitmentPageIds.includes(id)).map((id) => (
             <CardWrapper 
               key={id}
               customKey={id}
