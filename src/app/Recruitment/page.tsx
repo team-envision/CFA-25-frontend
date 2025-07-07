@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { Button } from "../components/ui/button";
-import { useScrollManager } from "@/app/context/ScrollContext";
+// import { useScrollManager } from "@/app/context/ScrollContext";
 
 import { Input } from "../components/ui/input";
 import {
