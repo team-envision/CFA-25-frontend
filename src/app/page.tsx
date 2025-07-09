@@ -5,7 +5,8 @@ import { ReactLenis, useLenis } from 'lenis/react';
 import { useScroll, AnimatePresence, useTransform, motion, MotionValue } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { useScrollManager } from './context/ScrollContext';
-// import { useMemo } from 'react';
+import RecruitmentPageTransition from './components/RecruitmentPageTransition';
+import { useRecruitmentNavigation } from './components/Hooks/useRecruitmentNavigation';
 
 // Import All Page Components
 import MainLandingPage from './components/main_landing_page/MainLandingPage';
@@ -37,6 +38,14 @@ export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [navigationSource, setNavigationSource] = useState<'scroll' | 'button' | null>(null);
+
+  // Add recruitment navigation hook
+  const { 
+    isTransitioning, 
+    targetUrl, 
+    navigateToRecruitment, 
+    onAnimationStart 
+  } = useRecruitmentNavigation();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -92,8 +101,9 @@ export default function HomePage() {
       return;
     }
 
+    // Updated: Use the new recruitment navigation
     if (recruitmentPageIds.includes(targetId)) {
-      router.push(targetId === 'envision_recruitment' ? '/Team_Envision_recruitment' : '/Recruitment');
+      navigateToRecruitment(targetId as 'recruitment' | 'envision_recruitment');
       return;
     }
 
@@ -116,21 +126,24 @@ export default function HomePage() {
       setActivePageId(targetId);
       if (lenis) lenis.scrollTo(getScrollPosition(targetId), { duration: source === 'button' ? 1.5 : 0 });
     }
-  }, [activePageId, lenis, setAnimationDirection, router, getScrollPosition]);
+  }, [activePageId, lenis, setAnimationDirection, router, getScrollPosition, navigateToRecruitment]);
 
   const scrollDown100vh = useCallback(() => {
     navigate('structure', 'button');
   }, [navigate]);
 
   const pageComponentMap: Record<string, ReactNode> = {
-    main: <MainLandingPage scrollDown100vh={scrollDown100vh} />,
-    structure: <StructureSection />,
-    teams: <TeamsSection />,
-    committees: <Committees />,
-    domains: <Domains />,
-    recruitment: <RecruitmentForm />,
-    envision_recruitment: <Team_Envision_recruitment />,
-  };
+  main: <MainLandingPage 
+    scrollDown100vh={scrollDown100vh} 
+    navigateToRecruitment={navigateToRecruitment} // ← Added this prop
+  />,
+  structure: <StructureSection />,
+  teams: <TeamsSection />,
+  committees: <Committees />,
+  domains: <Domains />,
+  recruitment: <RecruitmentForm />,
+  envision_recruitment: <Team_Envision_recruitment />,
+};
 
   useEffect(() => {
     setNavigateToPage(() => navigate);
@@ -160,12 +173,11 @@ export default function HomePage() {
   };
 
   const currentSequence = currentPageSequence.slice(0, 3);
-const scale1 = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
-const scale2 = useTransform(scrollYProgress, [0.33, 1], [1, 0.90]);
-const scale3 = useTransform(scrollYProgress, [0.66, 1], [1, 0.95]);
+  const scale1 = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
+  const scale2 = useTransform(scrollYProgress, [0.33, 1], [1, 0.90]);
+  const scale3 = useTransform(scrollYProgress, [0.66, 1], [1, 0.95]);
 
-const scaleArray = [scale1, scale2, scale3];
-
+  const scaleArray = [scale1, scale2, scale3];
 
   return (
     <ReactLenis
@@ -180,30 +192,37 @@ const scaleArray = [scale1, scale2, scale3];
     >
       <main ref={container} className='relative bg-black' suppressHydrationWarning={true}>
         {currentSequence.map((id, i) => (
-         <ScalingCardWrapper
-  key={id}
-  scale={scaleArray[i]}
-  index={i}
->
-  {pageComponentMap[id]}
-</ScalingCardWrapper>
-
+          <ScalingCardWrapper
+            key={id}
+            scale={scaleArray[i]}
+            index={i}
+          >
+            {pageComponentMap[id]}
+          </ScalingCardWrapper>
         ))}
 
-       <AnimatePresence mode="popLayout">
-  {currentPageSequence.slice(3).filter(id => !recruitmentPageIds.includes(id)).map((id) => (
-    <CardWrapper 
-      key={id}
-      customKey={id} // ✅ Added this line
-      animationVariants={slideVariants}
-      transition={animationTransition}
-      onAnimationComplete={onAnimationComplete}
-    >
-      {pageComponentMap[id]}
-    </CardWrapper>
-  ))}
-</AnimatePresence>
+        <AnimatePresence mode="popLayout">
+          {currentPageSequence.slice(3).filter(id => !recruitmentPageIds.includes(id)).map((id) => (
+            <CardWrapper 
+              key={id}
+              customKey={id}
+              animationVariants={slideVariants}
+              transition={animationTransition}
+              onAnimationComplete={onAnimationComplete}
+            >
+              {pageComponentMap[id]}
+            </CardWrapper>
+          ))}
+        </AnimatePresence>
 
+        {/* New Recruitment Page Transition */}
+        {isTransitioning && (
+          <RecruitmentPageTransition
+            targetUrl={targetUrl}
+            onAnimationStart={onAnimationStart}
+            isActive={isTransitioning}
+          />
+        )}
       </main>
     </ReactLenis>
   );
