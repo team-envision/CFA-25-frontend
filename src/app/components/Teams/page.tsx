@@ -106,7 +106,7 @@ const Teams = () => {
       </div>
 
       {/* Footer Section - Responsive positioning */}
-      <div className="mt-16 w-full">
+      <div className="mt-16 w-[100vw]">
         <FooterSection />
       </div>
     </div>

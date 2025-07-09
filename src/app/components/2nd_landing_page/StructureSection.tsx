@@ -39,16 +39,16 @@
       <section className="structure-section" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="particles-bg" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
           <Particles
-            particleColors={['#ff6a00', '#ffa500', '#ffb347']} // Only orange tones
-            particleCount={90}
-            particleSpread={35}
-            speed={0.15}
-            particleBaseSize={150}
-            moveParticlesOnHover={false}
-            alphaParticles={true}
-            disableRotation={true}
-            cameraDistance={30}
-          />
+          particleColors={['#ff6a00', '#ffa500', '#ffb347']} // Only orange tones
+          particleCount={90}
+          particleSpread={35}
+          speed={0.15}
+          particleBaseSize={150}
+          moveParticlesOnHover={false}
+          alphaParticles={true}
+          disableRotation={true}
+          cameraDistance={30}
+        />
         </div>
         <div style={{ position: 'relative', zIndex: 1 }}>
           <h2 className="structure-title">
