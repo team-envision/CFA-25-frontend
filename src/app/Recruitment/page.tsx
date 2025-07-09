@@ -5,8 +5,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { Button } from "../components/ui/button";
-// import { useScrollManager } from "@/app/context/ScrollContext";
-
 import { Input } from "../components/ui/input";
 import {
   Form,
@@ -19,6 +17,8 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRecruitmentNavigation } from "../components/Hooks/useRecruitmentNavigation"
+import RecruitmentPageTransition from "../components/RecruitmentPageTransition"; // ← Added import
 
 // Zod schema
 const formSchema = z.object({
@@ -50,8 +50,17 @@ const RecruitmentForm: React.FC = () => {
   });
   const router = useRouter();
 
+  // ← Added recruitment navigation hook
+  const { 
+    isTransitioning, 
+    targetUrl, 
+    navigateToRecruitment, 
+    onAnimationStart 
+  } = useRecruitmentNavigation();
+
+  // ← Updated handleClick to use recruitment animation
   const handleClick = () => {
-    router.push("Team_Envision_recruitment"); // or any route you have
+    navigateToRecruitment('envision_recruitment');
   };
 
   const onSubmit = (data: FormData) => {
@@ -109,12 +118,10 @@ const RecruitmentForm: React.FC = () => {
               The registration form for Team Envision has to be filled separately. To fill{" "}
               <button
                 onClick={handleClick}
-                className="text-orange-500 underline font-semibold"
+                className="text-orange-500 underline font-semibold cursor-pointer hover:text-orange-400 transition-colors"
               >
                 Click Here.
               </button>
-
-
             </span>
           </div>
         </div>
@@ -180,6 +187,15 @@ const RecruitmentForm: React.FC = () => {
           </div>
         </form>
       </Form>
+
+      {/* ← Added Recruitment Page Transition */}
+      {isTransitioning && (
+        <RecruitmentPageTransition
+          targetUrl={targetUrl}
+          onAnimationStart={onAnimationStart}
+          isActive={isTransitioning}
+        />
+      )}
     </div>
   );
 };

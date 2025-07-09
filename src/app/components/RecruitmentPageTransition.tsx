@@ -8,13 +8,13 @@ import { useRouter } from 'next/navigation';
 interface RecruitmentPageTransitionProps {
   targetUrl: string;
   onAnimationStart: () => void;
-  isActive: boolean; // ← Added this prop
+  isActive: boolean;
 }
 
 const RecruitmentPageTransition: React.FC<RecruitmentPageTransitionProps> = ({ 
   targetUrl, 
   onAnimationStart,
-  isActive // ← Added this prop
+  isActive
 }) => {
   const router = useRouter();
 
@@ -22,7 +22,6 @@ const RecruitmentPageTransition: React.FC<RecruitmentPageTransitionProps> = ({
     if (isActive) {
       onAnimationStart();
       
-      // Navigate after animation completes
       const timer = setTimeout(() => {
         router.push(targetUrl);
       }, 800);
@@ -35,7 +34,7 @@ const RecruitmentPageTransition: React.FC<RecruitmentPageTransitionProps> = ({
     <AnimatePresence>
       {isActive && (
         <>
-          {/* Overlay Animation */}
+          {/* Overlay Animation - Updated with recruitment form gradient */}
           <motion.div
             initial={{ scaleY: 0 }}
             animate={{ scaleY: 1 }}
@@ -47,7 +46,7 @@ const RecruitmentPageTransition: React.FC<RecruitmentPageTransitionProps> = ({
             style={{
               transformOrigin: "bottom"
             }}
-            className="fixed inset-0 bg-gradient-to-br from-orange-600 via-orange-700 to-orange-800 z-[9999]"
+            className="fixed inset-0 bg-gradient-to-br from-orange-700 via-black to-black z-[9999]"
           />
           
           {/* Loading Animation */}

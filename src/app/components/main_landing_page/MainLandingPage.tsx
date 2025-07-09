@@ -54,9 +54,9 @@ export default function MainLandingPage({ scrollDown100vh, navigateToRecruitment
 
         {/* Main */}
         <main className={`flex-grow flex items-center justify-center text-center px-4 ${raleway.className}`}>
-          <div className="flex flex-col items-center gap-2 w-full max-w-[577px] mb-20">
+          <div className="flex flex-col items-center gap-2 w-full max-w-[530px] mb-20">
             <Image
-              src="/images/cfa.png"
+              src="/images/cfa.svg"
               alt="AARUUSH Logo"
               width={577}
               height={200}
