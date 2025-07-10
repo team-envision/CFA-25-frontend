@@ -46,7 +46,24 @@ export default function MainLandingPage({ scrollDown100vh, navigateToRecruitment
   {/* Button (Always visible, but size adapts) */}
   <button
     onClick={() => router.push('https://www.aaruush.org')}
-    className="px-4 sm:px-5 md:px-6 py-1.5 sm:py-2 md:py-2.5 text-xs sm:text-sm md:text-base font-semibold text-white rounded-full bg-white/10 border border-white/20 backdrop-blur-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/15 hover:border-white/25 transition duration-300 ease-in-out whitespace-nowrap"
+    className="
+    px-4 sm:px-5 md:px-6
+    py-1.5 sm:py-2 md:py-2.5
+    text-xs sm:text-sm md:text-base
+    font-semibold text-white
+    rounded-full
+    
+    // --- The definitive styles for the Figma glass effect ---
+    bg-gradient-to-b from-[#F4F4F40D]/50 to-[#F4F4F40D]/10
+    ring-2 ring-inset ring-white/10
+    shadow-xl shadow-white/5
+
+    // --- Hover and transition effects ---
+    hover:bg-white/10
+    transition-all duration-300 ease-in-out
+    whitespace-nowrap
+  "
+
   >
     Visit our Website
   </button>
@@ -65,20 +82,45 @@ export default function MainLandingPage({ scrollDown100vh, navigateToRecruitment
               priority
             />
 
-            <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-2 mr-[4.5vw]">
-              <button
-                onClick={scrollDown100vh}
-                className="px-6 sm:px-8 md:px-12 py-2 text-sm md:text-base font-medium text-white rounded-full bg-white/10 border border-white/20 backdrop-blur-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/15 hover:border-white/25 transition duration-300 ease-in-out"
-              >
-                Know Us
-              </button>
-              <button
-                onClick={() => navigateToRecruitment('recruitment')} // ← Updated to use recruitment animation
-                className="px-6 sm:px-8 md:px-10.5 py-2 text-sm md:text-base font-medium text-white rounded-full bg-white/10 border border-white/20 backdrop-blur-lg shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-white/15 hover:border-white/25 transition duration-300 ease-in-out"
-              >
-                Apply Now
-              </button>
-            </div>
+<div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-2 mr-[4.5vw]">
+  <button
+    onClick={scrollDown100vh}
+    className="
+      px-6 sm:px-8 md:px-12 py-2 text-sm md:text-base font-medium text-white rounded-full
+      
+      // --- The definitive styles for the Figma glass effect ---
+      bg-white/10
+      backdrop-blur-md
+      ring-1 ring-inset ring-white/20
+      shadow-lg shadow-black/10
+
+      // --- Hover and transition effects ---
+      hover:bg-white/20
+      transition-all duration-300 ease-in-out
+    "
+  >
+    Know Us
+  </button>
+  <button
+    onClick={() => navigateToRecruitment('recruitment')}
+    className="
+      px-6 sm:px-8 md:px-10.5 py-2 text-sm md:text-base font-medium text-white rounded-full
+      
+      // --- The definitive styles for the Figma glass effect ---
+      bg-white/10
+      backdrop-blur-md
+      ring-1 ring-inset ring-white/20
+      shadow-lg shadow-black/10
+
+      // --- Hover and transition effects ---
+      hover:bg-white/20
+      transition-all duration-300 ease-in-out
+    "
+  >
+    Apply Now
+  </button>
+</div>
+
           </div>
         </main>
       </div>
