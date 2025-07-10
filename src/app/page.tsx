@@ -55,7 +55,6 @@ export default function HomePage() {
       setIsMobile(isMobileDevice);
       
       if (isMobileDevice) {
-        // Use the smaller of visual viewport or inner height for more accurate mobile positioning
         const mobileHeight = Math.min(
           window.visualViewport?.height || window.innerHeight,
           window.innerHeight
@@ -94,7 +93,6 @@ export default function HomePage() {
       setTimeout(() => {
         if (lenis) {
           const vh = actualVH || window.innerHeight;
-          // More aggressive mobile positioning for full screen coverage
           const targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
           lenis.scrollTo(targetPosition, { duration: 1.0 });
         }
@@ -126,7 +124,7 @@ export default function HomePage() {
   }, [activePageId, lenis, setAnimationDirection, isMobile, actualVH]);
 
   const animationTransition = {
-    duration: isAnimating ? 1.2 : 0, // Slower animation speed
+    duration: isAnimating ? 1.2 : 0,
     ease: cubicBezierEasing,
   };
 
@@ -150,7 +148,6 @@ export default function HomePage() {
       return;
     }
 
-    // Use direct page loading for all navigation
     loadPageDirectly(targetId);
     
   }, [activePageId, navigateToRecruitment, loadPageDirectly]);
@@ -159,10 +156,25 @@ export default function HomePage() {
     navigate('structure', 'button');
   }, [navigate]);
 
+  // ← NEW: Scroll to top function for logo click
+  const scrollToTop = useCallback(() => {
+    if (lenis) {
+      // Reset to default sequence if not already
+      if (currentPageSequence !== defaultPageSequence) {
+        setCurrentPageSequence(defaultPageSequence);
+        setIsAnimating(false);
+      }
+      // Scroll to top and set active page to main
+      setActivePageId('main');
+      lenis.scrollTo(0, { duration: 1.5 });
+    }
+  }, [lenis, currentPageSequence]);
+
   const pageComponentMap: Record<string, ReactNode> = {
     main: <MainLandingPage 
       scrollDown100vh={scrollDown100vh} 
       navigateToRecruitment={navigateToRecruitment}
+      scrollToTop={scrollToTop} // ← Added this prop
     />,
     structure: <StructureSection />,
     teams: <TeamsSection />,

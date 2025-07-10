@@ -11,11 +11,13 @@ interface MainLandingPageProps {
   navigateToRecruitment: (
     recruitmentType: "recruitment" | "envision_recruitment"
   ) => void;
+  scrollToTop: () => void; // ← Added this prop
 }
 
 export default function MainLandingPage({
   scrollDown100vh,
   navigateToRecruitment,
+  scrollToTop, // ← Added this prop
 }: MainLandingPageProps) {
   const router = useRouter();
 
@@ -38,22 +40,24 @@ export default function MainLandingPage({
       >
         {/* Combined Responsive Header */}
         <header className="flex items-center justify-between w-full px-4 sm:px-6 md:px-8 pt-6 sm:pt-8">
-          {/* Logo */}
+          {/* Logo - Now clickable */}
           <div className="flex-shrink-0">
-            <Image
-              src="/images/a.png"
-              alt="AARUUSH Logo"
-              width={180}
-              height={40}
-              className="h-6 sm:h-8 md:h-10 lg:h-12 w-auto"
-              priority
-            />
+            <button onClick={scrollToTop} className="hover:opacity-80 transition-opacity">
+              <Image
+                src="/images/a.png"
+                alt="AARUUSH Logo"
+                width={180}
+                height={40}
+                className="h-6 sm:h-8 md:h-10 lg:h-12 w-auto cursor-pointer"
+                priority
+              />
+            </button>
           </div>
 
           {/* Button with proper glass effect matching target design */}
           <div className="px-0 py-[2px] rounded-full bg-transparent">
             <button
-              onClick={() => router.push("https://www.aaruush.org")}
+              onClick={() => window.open("https://aaruush.org", "_blank")}
               className="
                 rounded-full px-4 sm:px-6 md:px-10 py-1.5 sm:py-2 md:py-4
                 bg-transparent backdrop-blur-md text-white
