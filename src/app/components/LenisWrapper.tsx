@@ -25,10 +25,12 @@ const LenisWrapper: React.FC<LenisWrapperProps> = ({ children }) => {
       root
       options={{
         syncTouch: isMobile,
-        syncTouchLerp: isMobile ? 0.075 : undefined,
-        touchInertiaMultiplier: isMobile ? 35 : undefined,
-        touchMultiplier: isMobile ? 0.75 : undefined,
+        syncTouchLerp: isMobile ? 0.08 : undefined,  // ← MATCHED to HomePage
+        touchInertiaMultiplier: isMobile ? 20 : undefined,  // ← MATCHED to HomePage
+        touchMultiplier: isMobile ? 0.9 : undefined,  // ← MATCHED to HomePage
         gestureOrientation: isMobile ? 'vertical' : undefined,
+        infinite: false,
+        smoothWheel: !isMobile,
       }}
     >
       {children}

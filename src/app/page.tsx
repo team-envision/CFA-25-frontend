@@ -38,6 +38,7 @@ export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [navigationSource, setNavigationSource] = useState<'scroll' | 'button' | null>(null);
+  const [actualVH, setActualVH] = useState(0);
 
   // Add recruitment navigation hook
   const { 
@@ -47,39 +48,85 @@ export default function HomePage() {
     onAnimationStart 
   } = useRecruitmentNavigation();
 
+  // Enhanced mobile viewport detection
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    const updateViewport = () => {
+      const isMobileDevice = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(isMobileDevice);
+      
+      if (isMobileDevice) {
+        // Use the smaller of visual viewport or inner height for more accurate mobile positioning
+        const mobileHeight = Math.min(
+          window.visualViewport?.height || window.innerHeight,
+          window.innerHeight
+        );
+        setActualVH(mobileHeight);
+      } else {
+        setActualVH(window.innerHeight);
+      }
     };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+
+    updateViewport();
+    window.addEventListener('resize', updateViewport);
+    window.addEventListener('orientationchange', updateViewport);
+    
+    if ('visualViewport' in window) {
+      window.visualViewport?.addEventListener('resize', updateViewport);
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateViewport);
+      window.removeEventListener('orientationchange', updateViewport);
+      if ('visualViewport' in window) {
+        window.visualViewport?.removeEventListener('resize', updateViewport);
+      }
+    };
   }, []);
 
-  const getScrollPosition = useCallback((targetId: string) => {
-    const vh = window.innerHeight;
-    if (!isMobile) {
-      switch (targetId) {
-        case 'main': return 0;
-        case 'structure': return vh * 1.05;
-        case 'teams':
-        case 'committees':
-        case 'domains': return vh * 2.0;
-        default: return 0;
+  // Direct page loading function with enhanced mobile positioning
+  const loadPageDirectly = useCallback((targetId: string) => {
+    if (targetId === 'committees' || targetId === 'domains') {
+      setIsAnimating(true);
+      setAnimationDirection("forward");
+      setCurrentPageSequence(['main', 'structure', targetId]);
+      setActivePageId(targetId);
+      
+      setTimeout(() => {
+        if (lenis) {
+          const vh = actualVH || window.innerHeight;
+          // More aggressive mobile positioning for full screen coverage
+          const targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
+          lenis.scrollTo(targetPosition, { duration: 1.0 });
+        }
+      }, 150);
+      
+    } else if (defaultPageSequence.includes(targetId)) {
+      if (!defaultPageSequence.includes(activePageId)) {
+        setCurrentPageSequence(defaultPageSequence);
+        setIsAnimating(false);
       }
+      setActivePageId(targetId);
+      
+      setTimeout(() => {
+        if (lenis) {
+          const vh = actualVH || window.innerHeight;
+          let targetPosition;
+          
+          switch (targetId) {
+            case 'main': targetPosition = 0; break;
+            case 'structure': targetPosition = isMobile ? vh * 1.15 : vh * 1.05; break;
+            case 'teams': targetPosition = isMobile ? vh * 2.22 : vh * 2.0; break;
+            default: targetPosition = 0;
+          }
+          
+          lenis.scrollTo(targetPosition, { duration: 1.0 });
+        }
+      }, 150);
     }
-    switch (targetId) {
-      case 'main': return 0;
-      case 'structure': return vh * 1.15;
-      case 'teams':
-      case 'committees':
-      case 'domains': return vh * 2.2;
-      default: return 0;
-    }
-  }, [isMobile]);
+  }, [activePageId, lenis, setAnimationDirection, isMobile, actualVH]);
 
   const animationTransition = {
-    duration: isAnimating ? 0.7 : 0,
+    duration: isAnimating ? 1.2 : 0, // Slower animation speed
     ease: cubicBezierEasing,
   };
 
@@ -94,56 +141,36 @@ export default function HomePage() {
     setNavigationSource(source);
 
     if (targetId === activePageId && source === 'button') {
-      if (lenis) {
-        const scrollPosition = getScrollPosition(targetId);
-        lenis.scrollTo(scrollPosition, { duration: 0 });
-      }
+      loadPageDirectly(targetId);
       return;
     }
 
-    // Updated: Use the new recruitment navigation
     if (recruitmentPageIds.includes(targetId)) {
       navigateToRecruitment(targetId as 'recruitment' | 'envision_recruitment');
       return;
     }
 
-    if (targetId === 'committees' || targetId === 'domains') {
-      setIsAnimating(true);
-      setAnimationDirection("forward");
-      setCurrentPageSequence(['main', 'structure', targetId]);
-      setActivePageId(targetId);
-      setTimeout(() => {
-        if (lenis) lenis.scrollTo(getScrollPosition(targetId), { duration: 1.5 });
-      }, 0);
-      return;
-    }
-
-    if (defaultPageSequence.includes(targetId)) {
-      if (!defaultPageSequence.includes(activePageId)) {
-        setCurrentPageSequence(defaultPageSequence);
-        setIsAnimating(false);
-      }
-      setActivePageId(targetId);
-      if (lenis) lenis.scrollTo(getScrollPosition(targetId), { duration: source === 'button' ? 1.5 : 0 });
-    }
-  }, [activePageId, lenis, setAnimationDirection, router, getScrollPosition, navigateToRecruitment]);
+    // Use direct page loading for all navigation
+    loadPageDirectly(targetId);
+    
+  }, [activePageId, navigateToRecruitment, loadPageDirectly]);
 
   const scrollDown100vh = useCallback(() => {
     navigate('structure', 'button');
   }, [navigate]);
 
   const pageComponentMap: Record<string, ReactNode> = {
-  main: <MainLandingPage 
-    scrollDown100vh={scrollDown100vh} 
-    navigateToRecruitment={navigateToRecruitment} // ← Added this prop
-  />,
-  structure: <StructureSection />,
-  teams: <TeamsSection />,
-  committees: <Committees />,
-  domains: <Domains />,
-  recruitment: <RecruitmentForm />,
-  envision_recruitment: <Team_Envision_recruitment />,
-};
+    main: <MainLandingPage 
+      scrollDown100vh={scrollDown100vh} 
+      navigateToRecruitment={navigateToRecruitment}
+    />,
+    structure: <StructureSection />,
+    teams: <TeamsSection />,
+    committees: <Committees />,
+    domains: <Domains />,
+    recruitment: <RecruitmentForm />,
+    envision_recruitment: <Team_Envision_recruitment />,
+  };
 
   useEffect(() => {
     setNavigateToPage(() => navigate);
@@ -184,10 +211,12 @@ export default function HomePage() {
       root
       options={{
         syncTouch: isMobile,
-        syncTouchLerp: isMobile ? 0.075 : undefined,
-        touchInertiaMultiplier: isMobile ? 35 : undefined,
-        touchMultiplier: isMobile ? 0.75 : undefined,
+        syncTouchLerp: isMobile ? 0.08 : undefined,
+        touchInertiaMultiplier: isMobile ? 20 : undefined,
+        touchMultiplier: isMobile ? 0.9 : undefined,
         gestureOrientation: isMobile ? 'vertical' : undefined,
+        infinite: false,
+        smoothWheel: !isMobile,
       }}
     >
       <main ref={container} className='relative bg-black' suppressHydrationWarning={true}>
@@ -215,7 +244,6 @@ export default function HomePage() {
           ))}
         </AnimatePresence>
 
-        {/* New Recruitment Page Transition */}
         {isTransitioning && (
           <RecruitmentPageTransition
             targetUrl={targetUrl}
