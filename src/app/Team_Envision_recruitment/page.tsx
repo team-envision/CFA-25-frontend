@@ -16,8 +16,10 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import LenisWrapper from "../components/LenisWrapper"; 
-import Link from "next/link";
+import LenisWrapper from "../components/LenisWrapper";
+import LogoTransition from "../components/LogoTransition"; // ← Added import
+import { useLogoNavigation } from "../components/Hooks/useLogoNavigation" // ← Added import
+
 // Validation Schema
 const formSchema = z.object({
   name1: z.string().min(1, "Required"),
@@ -47,6 +49,18 @@ const TeamEnvisionRecruitmentPage: React.FC = () => {
     },
   });
 
+  // Logo navigation hook
+  const {
+    isTransitioning: isLogoTransitioning,
+    targetUrl: logoTargetUrl,
+    navigateToMain,
+    onAnimationStart: onLogoAnimationStart
+  } = useLogoNavigation();
+
+  const handleLogoClick = () => {
+    navigateToMain();
+  };
+
   const onSubmit = (data: FormData) => {
     console.log(data);
     alert("Form submitted successfully!");
@@ -61,19 +75,19 @@ const TeamEnvisionRecruitmentPage: React.FC = () => {
         {/* Bottom glow */}
         <div className="absolute -bottom-60 right-50 w-80 h-72 bg-gradient-to-tl from-orange-500/60 to-transparent rounded-full blur-3xl z-0" />
 
-        {/* Logo */}
-        
-<div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
-  <Link href="/">
-    <Image
-      src="/images/a.png"
-      alt="logo"
-      width={200}
-      height={64}
-      className="w-[180px] sm:w-[250px] h-auto cursor-pointer"
-    />
-  </Link>
-</div>
+        {/* Logo with transition */}
+        <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
+          <button onClick={handleLogoClick}>
+            <Image
+              src="/images/a.png"
+              alt="logo"
+              width={200}
+              height={64}
+              className="w-[180px] sm:w-[250px] h-auto cursor-pointer hover:opacity-80 transition-opacity"
+            />
+          </button>
+        </div>
+
         {/* Visit Website Button */}
         <div className="absolute top-4 right-4 sm:top-6 sm:right-20 z-10">
           <div className="px-0 py-px rounded-full bg-gradient-to-b from-neutral-500 to-neutral-800">
@@ -160,6 +174,15 @@ const TeamEnvisionRecruitmentPage: React.FC = () => {
             </div>
           </form>
         </Form>
+
+        {/* Logo Transition */}
+        {isLogoTransitioning && (
+          <LogoTransition
+            targetUrl={logoTargetUrl}
+            onAnimationStart={onLogoAnimationStart}
+            isActive={isLogoTransitioning}
+          />
+        )}
       </div>
     </LenisWrapper>
   );

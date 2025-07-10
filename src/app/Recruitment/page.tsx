@@ -20,8 +20,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRecruitmentNavigation } from "../components/Hooks/useRecruitmentNavigation";
 import RecruitmentPageTransition from "../components/RecruitmentPageTransition";
-import LenisWrapper from "../components/LenisWrapper"; // ← Added import
-import Link from "next/link";
+import LogoTransition from "../components/LogoTransition"; // ← Added import
+import { useLogoNavigation } from "../components/Hooks/useLogoNavigation"
+import LenisWrapper from "../components/LenisWrapper";
 
 // Zod schema
 const formSchema = z.object({
@@ -53,17 +54,28 @@ const RecruitmentForm: React.FC = () => {
   });
   const router = useRouter();
 
-  // Added recruitment navigation hook
+  // Recruitment navigation hook
   const { 
-    isTransitioning, 
-    targetUrl, 
+    isTransitioning: isRecruitmentTransitioning, 
+    targetUrl: recruitmentTargetUrl, 
     navigateToRecruitment, 
-    onAnimationStart 
+    onAnimationStart: onRecruitmentAnimationStart 
   } = useRecruitmentNavigation();
 
-  // Updated handleClick to use recruitment animation
+  // Logo navigation hook
+  const {
+    isTransitioning: isLogoTransitioning,
+    targetUrl: logoTargetUrl,
+    navigateToMain,
+    onAnimationStart: onLogoAnimationStart
+  } = useLogoNavigation();
+
   const handleClick = () => {
     navigateToRecruitment('envision_recruitment');
+  };
+
+  const handleLogoClick = () => {
+    navigateToMain();
   };
 
   const onSubmit = (data: FormData) => {
@@ -80,18 +92,18 @@ const RecruitmentForm: React.FC = () => {
         {/* Bottom glow */}
         <div className="absolute -bottom-60 right-50 w-80 h-72 bg-gradient-to-tl from-orange-500/50 to-transparent rounded-full blur-3xl z-0" />
 
-        {/* Logo */}
-<div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
-  <Link href="/">
-    <Image
-      src="/images/a.png"
-      alt="logo"
-      width={200}
-      height={64}
-      className="w-[180px] sm:w-[250px] h-auto cursor-pointer"
-    />
-  </Link>
-</div>
+        {/* Logo with transition */}
+        <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
+          <button onClick={handleLogoClick}>
+            <Image
+              src="/images/a.png"
+              alt="logo"
+              width={200}
+              height={64}
+              className="w-[180px] sm:w-[250px] h-auto cursor-pointer hover:opacity-80 transition-opacity"
+            />
+          </button>
+        </div>
 
         {/* Visit Website Button */}
         <div className="absolute top-4 right-4 sm:top-6 sm:right-20 z-10">
@@ -195,12 +207,21 @@ const RecruitmentForm: React.FC = () => {
           </form>
         </Form>
 
-        {/* Added Recruitment Page Transition */}
-        {isTransitioning && (
+        {/* Recruitment Page Transition */}
+        {isRecruitmentTransitioning && (
           <RecruitmentPageTransition
-            targetUrl={targetUrl}
-            onAnimationStart={onAnimationStart}
-            isActive={isTransitioning}
+            targetUrl={recruitmentTargetUrl}
+            onAnimationStart={onRecruitmentAnimationStart}
+            isActive={isRecruitmentTransitioning}
+          />
+        )}
+
+        {/* Logo Transition */}
+        {isLogoTransitioning && (
+          <LogoTransition
+            targetUrl={logoTargetUrl}
+            onAnimationStart={onLogoAnimationStart}
+            isActive={isLogoTransitioning}
           />
         )}
       </div>
