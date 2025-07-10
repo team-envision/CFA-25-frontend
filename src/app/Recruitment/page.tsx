@@ -21,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRecruitmentNavigation } from "../components/Hooks/useRecruitmentNavigation";
 import RecruitmentPageTransition from "../components/RecruitmentPageTransition";
 import LenisWrapper from "../components/LenisWrapper"; // ← Added import
+import Link from "next/link";
 
 // Zod schema
 const formSchema = z.object({
@@ -80,15 +81,17 @@ const RecruitmentForm: React.FC = () => {
         <div className="absolute -bottom-60 right-50 w-80 h-72 bg-gradient-to-tl from-orange-500/50 to-transparent rounded-full blur-3xl z-0" />
 
         {/* Logo */}
-        <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
-          <Image
-            src="/images/a.png"
-            alt="logo"
-            width={160}
-            height={64}
-            className="w-[180px] sm:w-[250px] h-auto"
-          />
-        </div>
+<div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
+  <Link href="/">
+    <Image
+      src="/images/a.png"
+      alt="logo"
+      width={200}
+      height={64}
+      className="w-[180px] sm:w-[250px] h-auto cursor-pointer"
+    />
+  </Link>
+</div>
 
         {/* Visit Website Button */}
         <div className="absolute top-4 right-4 sm:top-6 sm:right-20 z-10">
@@ -99,10 +102,11 @@ const RecruitmentForm: React.FC = () => {
                 rounded-full px-6 sm:px-10 py-3 sm:py-6
                 bg-neutral-900 text-white border border-neutral-800
                 hover:bg-neutral-800 transition text-sm sm:text-base
+                whitespace-nowrap
               "
               onClick={() => window.open("https://aaruush.org", "_blank")}
             >
-              Our Website
+              Visit Our Website
             </Button>
           </div>
         </div>
