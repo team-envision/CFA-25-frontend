@@ -16,8 +16,8 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import LenisWrapper from "../components/LenisWrapper"; // ← Added import
-
+import LenisWrapper from "../components/LenisWrapper"; 
+import Link from "next/link";
 // Validation Schema
 const formSchema = z.object({
   name1: z.string().min(1, "Required"),
@@ -62,16 +62,18 @@ const TeamEnvisionRecruitmentPage: React.FC = () => {
         <div className="absolute -bottom-60 right-50 w-80 h-72 bg-gradient-to-tl from-orange-500/60 to-transparent rounded-full blur-3xl z-0" />
 
         {/* Logo */}
-        <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
-          <Image
-            src="/images/a.png"
-            alt="logo"
-            width={200}
-            height={64}
-            className="w-[180px] sm:w-[250px] h-auto"
-          />
-        </div>
-
+        
+<div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
+  <Link href="/">
+    <Image
+      src="/images/a.png"
+      alt="logo"
+      width={200}
+      height={64}
+      className="w-[180px] sm:w-[250px] h-auto cursor-pointer"
+    />
+  </Link>
+</div>
         {/* Visit Website Button */}
         <div className="absolute top-4 right-4 sm:top-6 sm:right-20 z-10">
           <div className="px-0 py-px rounded-full bg-gradient-to-b from-neutral-500 to-neutral-800">
@@ -81,6 +83,7 @@ const TeamEnvisionRecruitmentPage: React.FC = () => {
                 rounded-full px-6 sm:px-10 py-3 sm:py-6
                 bg-neutral-900 text-white border border-neutral-800
                 hover:bg-neutral-800 transition text-sm sm:text-base
+                whitespace-nowrap
               "
               onClick={() => window.open("https://aaruush.org", "_blank")}
             >
