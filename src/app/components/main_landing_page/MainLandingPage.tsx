@@ -1,17 +1,22 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Raleway } from "next/font/google";
 
 const raleway = Raleway({ subsets: ["latin"], weight: ["400", "600", "800"] });
 
 interface MainLandingPageProps {
   scrollDown100vh: () => void;
-  navigateToRecruitment: (recruitmentType: 'recruitment' | 'envision_recruitment') => void; // ← Added this prop
+  navigateToRecruitment: (
+    recruitmentType: "recruitment" | "envision_recruitment"
+  ) => void;
 }
 
-export default function MainLandingPage({ scrollDown100vh, navigateToRecruitment }: MainLandingPageProps) {
+export default function MainLandingPage({
+  scrollDown100vh,
+  navigateToRecruitment,
+}: MainLandingPageProps) {
   const router = useRouter();
 
   return (
@@ -28,50 +33,46 @@ export default function MainLandingPage({ scrollDown100vh, navigateToRecruitment
         Your browser does not support the video tag.
       </video>
 
-      <div className={`relative z-10 flex flex-col h-full ${raleway.className}`}>
-       {/* Combined Responsive Header */}
-<header className="flex items-center justify-between w-full px-4 sm:px-6 md:px-8 pt-6 sm:pt-8">
-  {/* Logo */}
-  <div className="flex-shrink-0">
-    <Image
-      src="/images/a.png"
-      alt="AARUUSH Logo"
-      width={180}
-      height={40}
-      className="h-6 sm:h-8 md:h-10 lg:h-12 w-auto"
-      priority
-    />
-  </div>
+      <div
+        className={`relative z-10 flex flex-col h-full ${raleway.className}`}
+      >
+        {/* Combined Responsive Header */}
+        <header className="flex items-center justify-between w-full px-4 sm:px-6 md:px-8 pt-6 sm:pt-8">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Image
+              src="/images/a.png"
+              alt="AARUUSH Logo"
+              width={180}
+              height={40}
+              className="h-6 sm:h-8 md:h-10 lg:h-12 w-auto"
+              priority
+            />
+          </div>
 
-  {/* Button (Always visible, but size adapts) */}
-  <button
-    onClick={() => router.push('https://www.aaruush.org')}
-    className="
-    px-4 sm:px-5 md:px-6
-    py-1.5 sm:py-2 md:py-2.5
-    text-xs sm:text-sm md:text-base
-    font-semibold text-white
-    rounded-full
-    
-    // --- The definitive styles for the Figma glass effect ---
-    bg-gradient-to-b from-[#F4F4F40D]/50 to-[#F4F4F40D]/10
-    ring-2 ring-inset ring-white/10
-    shadow-xl shadow-white/5
-
-    // --- Hover and transition effects ---
-    hover:bg-white/10
-    transition-all duration-300 ease-in-out
-    whitespace-nowrap
-  "
-
-  >
-    Visit our Website
-  </button>
-</header>
-
+          {/* Button with proper glass effect matching target design */}
+          <div className="px-0 py-[2px] rounded-full bg-transparent">
+            <button
+              onClick={() => router.push("https://www.aaruush.org")}
+              className="
+                rounded-full px-4 sm:px-6 md:px-10 py-1.5 sm:py-2 md:py-4
+                bg-transparent backdrop-blur-md text-white
+                border border-white/20
+                hover:bg-black/20 hover:border-white/30
+                transition-all duration-300 ease-in-out
+                text-xs sm:text-sm md:text-base font-semibold whitespace-nowrap
+                shadow-lg shadow-black/20
+              "
+            >
+              Visit our Website
+            </button>
+          </div>
+        </header>
 
         {/* Main */}
-        <main className={`flex-grow flex items-center justify-center text-center px-4 ${raleway.className}`}>
+        <main
+          className={`flex-grow flex items-center justify-center text-center px-4 ${raleway.className}`}
+        >
           <div className="flex flex-col items-center gap-2 w-full max-w-[530px] mb-20">
             <Image
               src="/images/cfa.svg"
@@ -82,45 +83,34 @@ export default function MainLandingPage({ scrollDown100vh, navigateToRecruitment
               priority
             />
 
-<div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-2 mr-[4.5vw]">
-  <button
-    onClick={scrollDown100vh}
-    className="
-      px-6 sm:px-8 md:px-12 py-2 text-sm md:text-base font-medium text-white rounded-full
-      
-      // --- The definitive styles for the Figma glass effect ---
-      bg-white/10
-      backdrop-blur-md
-      ring-1 ring-inset ring-white/20
-      shadow-lg shadow-black/10
-
-      // --- Hover and transition effects ---
-      hover:bg-white/20
-      transition-all duration-300 ease-in-out
-    "
-  >
-    Know Us
-  </button>
-  <button
-    onClick={() => navigateToRecruitment('recruitment')}
-    className="
-      px-6 sm:px-8 md:px-10.5 py-2 text-sm md:text-base font-medium text-white rounded-full
-      
-      // --- The definitive styles for the Figma glass effect ---
-      bg-white/10
-      backdrop-blur-md
-      ring-1 ring-inset ring-white/20
-      shadow-lg shadow-black/10
-
-      // --- Hover and transition effects ---
-      hover:bg-white/20
-      transition-all duration-300 ease-in-out
-    "
-  >
-    Apply Now
-  </button>
-</div>
-
+            <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-2 mr-[4.5vw]">
+              <button
+                onClick={scrollDown100vh}
+                className="
+                  px-6 sm:px-8 md:px-12 py-2 text-sm md:text-base font-medium text-white rounded-full
+                  bg-transparent backdrop-blur-md
+                  border border-white/20
+                  hover:bg-black/20 hover:border-white/30
+                  transition-all duration-300 ease-in-out
+                  shadow-lg shadow-black/20
+                "
+              >
+                Know Us
+              </button>
+              <button
+                onClick={() => navigateToRecruitment("recruitment")}
+                className="
+                  px-6 sm:px-8 md:px-10.5 py-2 text-sm md:text-base font-medium text-white rounded-full
+                  bg-transparent backdrop-blur-md
+                  border border-white/20
+                  hover:bg-black/20 hover:border-white/30
+                  transition-all duration-300 ease-in-out
+                  shadow-lg shadow-black/20
+                "
+              >
+                Apply Now
+              </button>
+            </div>
           </div>
         </main>
       </div>
