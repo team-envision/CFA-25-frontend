@@ -62,8 +62,8 @@ const Domains = () => {
             <h1 className="text-center text-4xl sm:text-5xl md:text-6xl font-bold mb-8">Domains</h1>
 
             {/* Domains */}
-            <div className="flex flex-col md:flex-row gap-10 text-base sm:text-lg md:text-xl leading-relaxed">
-              {/* Left */}
+<div className="flex flex-col md:flex-row gap-6 relative mb-6 sm:mb-8 md:mb-10">
+                {/* Left */}
               <div className="flex-1 space-y-6">
                 {leftDomains.map((item, idx) => (
                   <div key={idx}>

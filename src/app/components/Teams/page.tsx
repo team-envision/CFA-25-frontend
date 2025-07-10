@@ -64,11 +64,11 @@ const Teams = () => {
                 <p className="mb-4">
                   Envision is a multi-disciplinary technical team of Aaruush, focused on creating unique, end-to-end solutions and ideas. It has the following 9 divisions:
                 </p>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2 sm:gap-3">
                   {envisionTags.map((tag, index) => (
                     <span
                       key={index}
-                      className="px-4 py-2 border border-gray-600 rounded-full text-sm sm:text-base text-gray-300 bg-white/5 hover:border-orange-400 hover:bg-white/10 transition"
+                      className="px-4 py-2 border border-white/28 rounded-full text-sm sm:text-base text-gray-300 bg-white/5 hover:border-orange-400 hover:bg-white/10 transition"
                     >
                       {tag}
                     </span>
