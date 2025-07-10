@@ -55,11 +55,11 @@ const RecruitmentForm: React.FC = () => {
   const router = useRouter();
 
   // Recruitment navigation hook
-  const { 
-    isTransitioning: isRecruitmentTransitioning, 
-    targetUrl: recruitmentTargetUrl, 
-    navigateToRecruitment, 
-    onAnimationStart: onRecruitmentAnimationStart 
+  const {
+    isTransitioning: isRecruitmentTransitioning,
+    targetUrl: recruitmentTargetUrl,
+    navigateToRecruitment,
+    onAnimationStart: onRecruitmentAnimationStart
   } = useRecruitmentNavigation();
 
   // Logo navigation hook
@@ -106,22 +106,24 @@ const RecruitmentForm: React.FC = () => {
         </div>
 
         {/* Visit Website Button */}
-        <div className="absolute top-4 right-4 sm:top-6 sm:right-20 z-10">
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 max-w-[60vw] sm:max-w-none">
           <div className="px-0 py-[2px] rounded-full bg-gradient-to-b from-neutral-500 to-neutral-800">
             <Button
               variant="secondary"
               className="
-                rounded-full px-6 sm:px-10 py-3 sm:py-6
-                bg-neutral-900 text-white border border-neutral-800
-                hover:bg-neutral-800 transition text-sm sm:text-base
-                whitespace-nowrap
-              "
+        rounded-full px-5 sm:px-5 lg:px-5 py-2 sm:py-3 lg:py-4
+        bg-neutral-900 text-white border border-neutral-800
+        hover:bg-neutral-800 transition
+        text-[10px] sm:text-sm md:text-base
+        whitespace-nowrap max-w-full truncate
+      "
               onClick={() => window.open("https://aaruush.org", "_blank")}
             >
               Visit Our Website
             </Button>
           </div>
         </div>
+
 
         {/* Heading */}
         <h2 className="text-white text-3xl sm:text-5xl font-bold mb-2 text-center z-10 mt-10">
