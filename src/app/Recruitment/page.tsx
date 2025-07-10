@@ -102,7 +102,7 @@ const RecruitmentForm: React.FC = () => {
               "
               onClick={() => window.open("https://aaruush.org", "_blank")}
             >
-              Visit our Website
+              Our Website
             </Button>
           </div>
         </div>

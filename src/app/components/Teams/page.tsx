@@ -27,7 +27,7 @@ const Teams = () => {
       {/* Background particles */}
       <div className="absolute top-0 left-0 w-full h-full -z-10 bg-black">
         <Particles
-          particleColors={['#ff6a00', '#ffa500', '#ffb347']} // Only orange tones
+          particleColors={['#ff6a00', '#ffa500', '#ffb347']}
           particleCount={90}
           particleSpread={35}
           speed={0.15}
@@ -41,7 +41,6 @@ const Teams = () => {
 
       {/* Teams Section - Full Width */}
       <div className="flex-grow flex justify-center items-center px-4 py-6 ">
-        {/* Main content container - Increased size as per Figma */}
         <div className="relative w-full max-w-7xl lg:max-w-[90vw] opacity-90 ">
           <div
             className="relative w-full border border-white/20 backdrop-blur-xl rounded-3xl p-6 sm:p-10 md:p-12 text-white flex flex-col shadow-xl opacity-100"
@@ -85,27 +84,65 @@ const Teams = () => {
             </div>
           </div>
 
-          {/* Buttons positioned outside/extending from container - AS PER FIGMA */}
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 flex gap-4 flex-wrap justify-center">
+          {/* Enhanced Size Buttons - Larger for all breakpoints */}
+          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 flex gap-2 sm:gap-3 md:gap-4 justify-center">
             <button
               onClick={() => navigateToPage("envision_recruitment")}
-              className="px-6 sm:px-8 md:px-10 py-2.5 md:py-3 rounded-full border border-white/20 bg-[#EF65220F] text-white font-semibold backdrop-blur-[5px] shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.3)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all duration-300 ease-out text-base sm:text-lg md:text-xl active:scale-95  hover:border-white/30  text-sm sm:text-base md:text-lg"
+              className="
+                px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
+                py-2.5 sm:py-3 md:py-3.5 lg:py-4 xl:py-4 
+                rounded-full border border-white/20 bg-[#EF65220F] text-white font-semibold 
+                backdrop-blur-[5px] 
+                shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.3)] 
+                hover:shadow-[0_12px_40px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)] 
+                transition-all duration-300 ease-out 
+                active:scale-95 hover:border-white/30
+                text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
+                leading-tight
+                text-center
+                flex-shrink-0
+                whitespace-normal
+                min-w-[120px] sm:min-w-[140px] md:min-w-[160px] lg:min-w-[180px]
+              "
             >
-              Join Team Envision
+              <span className="block">
+                Join Team
+                <br className="sm:hidden" />
+                <span className="sm:ml-1">Envision</span>
+              </span>
             </button>
 
             <button
               onClick={() => navigateToPage("recruitment")}
-              className="px-6 sm:px-8 md:px-10 py-2.5 md:py-3 rounded-full border border-white/20 bg-[#EF65220F] text-white font-semibold backdrop-blur-[5px] shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.3)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all duration-300 ease-out text-base sm:text-lg md:text-xl active:scale-95  hover:border-white/30  text-sm sm:text-base md:text-lg"
+              className="
+                px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
+                py-2.5 sm:py-3 md:py-3.5 lg:py-4 xl:py-4 
+                rounded-full border border-white/20 bg-[#EF65220F] text-white font-semibold 
+                backdrop-blur-[5px] 
+                shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.3)] 
+                hover:shadow-[0_12px_40px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)] 
+                transition-all duration-300 ease-out 
+                active:scale-95 hover:border-white/30
+                text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
+                leading-tight
+                text-center
+                flex-shrink-0
+                whitespace-normal
+                min-w-[120px] sm:min-w-[140px] md:min-w-[160px] lg:min-w-[180px]
+              "
             >
-              Join Team Outreach
+              <span className="block">
+                Join Team
+                <br className="sm:hidden" />
+                <span className="sm:ml-1">Outreach</span>
+              </span>
             </button>
           </div>
 
         </div>
       </div>
 
-      {/* Footer Section - Responsive positioning */}
+      {/* Footer Section */}
       <div className="mt-16 w-[100vw]">
         <FooterSection />
       </div>
