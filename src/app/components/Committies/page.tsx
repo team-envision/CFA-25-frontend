@@ -72,7 +72,7 @@ const Committees = () => {
             </h1>
 
             {/* Grid Columns - Compact spacing */}
-            <div className="flex flex-col md:flex-row gap-6 md:gap-8 relative mb-16">
+<div className="flex flex-col md:flex-row gap-3 md:gap-8 relative mb-4 sm:mb-6 md:mb-12">
               {/* Left Column */}
               <div className="flex-1 space-y-3 sm:space-y-4">
                 {leftCommittees.map((item, idx) => (
@@ -98,7 +98,7 @@ const Committees = () => {
             </div>
 
             {/* Creatives Section - Compact layout */}
-            <div className="-mt-6 sm:-mt-12">
+<div className="-mt-1 sm:-mt-4">
               {/* Title */}
               <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 text-left sm:text-left">
                 Creatives
@@ -110,11 +110,11 @@ const Committees = () => {
               </p>
 
               {/* Tags */}
-              <div className="flex flex-wrap gap-2 sm:gap-3 justify sm:justify-start">
+              <div className="flex flex-wrap gap-1 sm:gap-3 justify sm:justify-start">
                 {creativeTags.map((tag, idx) => (
                   <span
                     key={idx}
-                    className="px-2 sm:px-3 py-1 border border-gray-600 rounded-full text-[10px] sm:text-xs md:text-sm text-gray-300 bg-white/5 hover:border-orange-400 hover:bg-white/10 transition"
+                    className="px-2 sm:px-3 py-1 border border-white/28 rounded-full text-[10px] sm:text-xs md:text-sm text-gray-300 bg-white/5 hover:border-orange-400 hover:bg-white/10 transition"
                   >
                     {tag}
                   </span>
