@@ -97,18 +97,18 @@ const Footer = () => {
 
         <div className="bubbles flex flex-col gap-2 font-Raleway">
           <div className="row1 flex flex-col sm:flex-row lg:flex-col xl:flex-row flex-wrap gap-2 justify-center lg:justify-start">
-            <p className="border border-gray-600 rounded-full px-3 py-1 w-[90%] sm:w-fit text-sm sm:text-base mx-auto sm:mx-0 text-center sm:text-left">
+            <p className="border  border-white/28 rounded-full px-3 py-1 w-[90%] sm:w-fit text-sm sm:text-base mx-auto sm:mx-0 text-center sm:text-left">
               Email: csi@aaruush.org
             </p>
-            <p className="border border-gray-600 rounded-full px-3 py-1 w-[90%] sm:w-fit text-sm sm:text-base mx-auto sm:mx-0 text-center sm:text-left">
+            <p className="border border-white/28 rounded-full px-3 py-1 w-[90%] sm:w-fit text-sm sm:text-base mx-auto sm:mx-0 text-center sm:text-left">
               Avni Rajawat: +91 7389342169
             </p>
           </div>
           <div className="row2 flex flex-col sm:flex-row flex-wrap gap-2 justify-center lg:justify-start">
-            <p className="border border-gray-600 rounded-full px-3 py-1 w-[90%] sm:w-fit text-sm sm:text-base mx-auto sm:mx-0 text-center sm:text-left">
+            <p className="border border-white/28 rounded-full px-3 py-1 w-[90%] sm:w-fit text-sm sm:text-base mx-auto sm:mx-0 text-center sm:text-left">
               Balkar Singh Sekhon: +91 9908284055
             </p>
-            <p className="border border-gray-600 rounded-full px-3 py-1 w-[90%] sm:w-fit text-sm sm:text-base mx-auto sm:mx-0 text-center sm:text-left">
+            <p className="border border-white/28 rounded-full px-3 py-1 w-[90%] sm:w-fit text-sm sm:text-base mx-auto sm:mx-0 text-center sm:text-left">
               Ishan Chadha: +91 8580826594
             </p>
           </div>
