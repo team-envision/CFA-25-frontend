@@ -56,10 +56,9 @@ const defaultValues: FormData = {
   preference1: "", preference2: "",
 };
 
-// 1. Define the classes for the inner input/select for consistency
-const innerFieldStyle = "w-full px-3 py-3 sm:px-4 sm:py-5 rounded-xl bg-neutral-900 backdrop-blur-sm border border-neutral-950 text-white placeholder:text-neutral-500 text-sm shadow-[inset_0_1px_3px_rgba(255,255,255,0.05),0_8px_20px_rgba(0,0,0,0.3)] focus:outline-none focus:ring-1 focus:ring-orange-500 transition";
+// --- THIS IS THE ONLY LINE THAT HAS CHANGED ---
+const innerFieldStyle = "w-full px-3 py-3 sm:px-4 sm:py-5 rounded-xl bg-neutral-900 backdrop-blur-sm border border-neutral-950 text-white placeholder:text-white/70 text-sm shadow-[inset_0_1px_3px_rgba(255,255,255,0.05),0_8px_20px_rgba(0,0,0,0.3)] focus:outline-none focus:ring-1 focus:ring-orange-500 transition";
 
-// 2. Define the classes for the gradient border wrapper
 const gradientWrapperStyle = "p-px rounded-xl bg-gradient-to-b from-neutral-500 to-neutral-700 hover:from-orange-500 hover:to-orange-800 transition";
 
 export default function TeamEnvisionRecruitmentPage() {
@@ -91,149 +90,61 @@ export default function TeamEnvisionRecruitmentPage() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-6 sm:gap-x-12 mt-8 w-full max-w-5xl z-10 px-2 sm:px-0 overflow-y-auto max-h-screen">
             
-            {/* --- All fields now use the same gradient wrapper structure --- */}
-
+            {/* All fields will now use the new style automatically */}
             <FormField control={form.control} name="name" render={({ field }) => ( <FormItem><FormLabel>Name</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your name" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="regNumber" render={({ field }) => ( <FormItem><FormLabel>Registration Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your registration number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="branch" render={({ field }) => ( <FormItem><FormLabel>Branch</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your branch" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             
-<FormField 
-  control={form.control} 
-  name="year" 
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Year</FormLabel>
-      <div className={gradientWrapperStyle}>
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
-          <FormControl>
-            <SelectTrigger className={innerFieldStyle}>
-              <SelectValue placeholder="Select Year" />
-            </SelectTrigger>
-          </FormControl>
-          
-          {/* ✅ --- STYLING APPLIED HERE --- ✅ */}
-          <SelectContent 
-            className="
-              min-w-[var(--radix-select-trigger-width)]  // Ensures menu is at least as wide as the button
-              bg-neutral-900/80 backdrop-blur-md       // The glassy background effect
-              border border-neutral-700                  // A subtle border to match
-              text-white rounded-xl shadow-lg            // Text color, shape, and shadow
-            "
-          >
-            <SelectItem 
-              value="1" 
-              className="focus:bg-orange-500/20 focus:text-white" // Orange highlight on hover/focus
-            >
-              1st Year
-            </SelectItem>
-            <SelectItem 
-              value="2" 
-              className="focus:bg-orange-500/20 focus:text-white"
-            >
-              2nd Year
-            </SelectItem>
-            <SelectItem 
-              value="3" 
-              className="focus:bg-orange-500/20 focus:text-white"
-            >
-              3rd Year
-            </SelectItem>
-          </SelectContent>
-
-        </Select>
-      </div>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
-
+            <FormField control={form.control} name="year" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Year</FormLabel>
+                  <div className={gradientWrapperStyle}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Year" /></SelectTrigger></FormControl>
+                      <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
+                        <SelectItem value="1" className="focus:bg-orange-500/20 focus:text-white">1st Year</SelectItem>
+                        <SelectItem value="2" className="focus:bg-orange-500/20 focus:text-white">2nd Year</SelectItem>
+                        <SelectItem value="3" className="focus:bg-orange-500/20 focus:text-white">3rd Year</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+            )}/>
             
             <FormField control={form.control} name="email" render={({ field }) => ( <FormItem><FormLabel>Personal Email</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your email" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="srmEmail" render={({ field }) => ( <FormItem><FormLabel>SRM Email</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your SRM email" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="phoneNumber" render={({ field }) => ( <FormItem><FormLabel>Phone Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your phone number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="whatsappNumber" render={({ field }) => ( <FormItem><FormLabel>WhatsApp Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your WhatsApp number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             
-<FormField 
-  control={form.control} 
-  name="preference1" 
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Preference 1</FormLabel>
-      <div className={gradientWrapperStyle}>
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
-          <FormControl>
-            <SelectTrigger className={innerFieldStyle}>
-              <SelectValue placeholder="Select Preference 1" />
-            </SelectTrigger>
-          </FormControl>
-          
-          {/* ✅ Glass styles applied to the dropdown menu */}
-          <SelectContent 
-            className="
-              min-w-[var(--radix-select-trigger-width)] 
-              bg-neutral-900/80 backdrop-blur-md 
-              border border-neutral-700 
-              text-white rounded-xl shadow-lg
-            "
-          >
-            {envisionOptions.map(opt => (
-              <SelectItem 
-                key={opt.value} 
-                value={opt.value} 
-                // ✅ Highlight style applied to each option
-                className="focus:bg-orange-500/20 focus:text-white"
-              >
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
-
-<FormField 
-  control={form.control} 
-  name="preference2" 
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Preference 2</FormLabel>
-      <div className={gradientWrapperStyle}>
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
-          <FormControl>
-            <SelectTrigger className={innerFieldStyle}>
-              <SelectValue placeholder="Select Preference 2" />
-            </SelectTrigger>
-          </FormControl>
-          
-          {/* ✅ Glass styles applied to the dropdown menu */}
-          <SelectContent 
-            className="
-              min-w-[var(--radix-select-trigger-width)] 
-              bg-neutral-900/80 backdrop-blur-md 
-              border border-neutral-700 
-              text-white rounded-xl shadow-lg
-            "
-          >
-            {envisionOptions.map(opt => (
-              <SelectItem 
-                key={opt.value} 
-                value={opt.value} 
-                // ✅ Highlight style applied to each option
-                className="focus:bg-orange-500/20 focus:text-white"
-              >
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+            <FormField control={form.control} name="preference1" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Preference 1</FormLabel>
+                  <div className={gradientWrapperStyle}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Preference 1" /></SelectTrigger></FormControl>
+                      <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
+                        {envisionOptions.map(opt => (<SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">{opt.label}</SelectItem>))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+            )}/>
+            <FormField control={form.control} name="preference2" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Preference 2</FormLabel>
+                  <div className={gradientWrapperStyle}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Preference 2" /></SelectTrigger></FormControl>
+                      <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
+                        {envisionOptions.map(opt => (<SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">{opt.label}</SelectItem>))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+            )}/>
 
             <FormField control={form.control} name="expertise1" render={({ field }) => ( <FormItem><FormLabel>Expertise in Preference 1</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Describe your expertise" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="expertise2" render={({ field }) => ( <FormItem><FormLabel>Expertise in Preference 2</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Describe your expertise" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
