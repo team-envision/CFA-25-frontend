@@ -57,7 +57,7 @@ const Committees = () => {
         <div className="relative w-full max-w-7xl lg:max-w-[90vw] opacity-90 ">
           {/* Card Container - Appropriately sized */}
           <div
-            className="relative w-full border border-white/20 backdrop-blur-xl rounded-3xl p-6 sm:p-10 md:p-12 text-white flex flex-col shadow-xl opacity-100"
+            className="relative w-full border border-white/20 backdrop-blur-xl rounded-3xl p-7 sm:p-10 md:p-12 text-white flex flex-col shadow-xl opacity-100"
             style={{
               background: `
                 radial-gradient(circle at top left, rgba(121, 39, 0, 0.2), transparent 40%),

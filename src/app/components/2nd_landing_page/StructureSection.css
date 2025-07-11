@@ -276,7 +276,7 @@
 
   .structure-cards {
     gap: 20px;
-    padding: 0px 24px 24px; /* Ensures equal side margins */
+    padding: 0px 22px 22px; /* Ensures equal side margins */
   }
 
  .structure-card {
@@ -289,7 +289,7 @@
 
   .structure-card h3 {
     font-size: 1.35rem;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
   }
 
   .structure-card p {
@@ -298,13 +298,13 @@
   }
 
   .arrow-btn {
-    bottom: 8px;
-    right: 8px;
+    bottom: 6px;
+    right: 6px;
   }
 
   .arrow-btn svg {
-    width: 38px;
-    height: 38px;
+    width: 35px;
+    height: 35px;
   }
 
   .structure-card:hover .arrow-btn {

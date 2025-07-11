@@ -18,8 +18,9 @@ const Teams = () => {
     "Design",
     "Editorial",
     "Game Development",
-    "Embedded Systems & Mechatronics",
     "Web Development",
+    "Embedded Systems & Mechatronics",
+    
   ];
 
   return (
@@ -43,7 +44,7 @@ const Teams = () => {
       <div className="flex-grow flex justify-center items-center px-4 py-6 ">
         <div className="relative w-full max-w-7xl lg:max-w-[90vw] opacity-90 ">
           <div
-            className="relative w-full border border-white/20 backdrop-blur-xl rounded-3xl p-6 sm:p-10 md:p-12 text-white flex flex-col shadow-xl opacity-100"
+            className="relative w-full border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-10 md:p-12 text-white flex flex-col shadow-xl opacity-100"
             style={{
               background: `
                 radial-gradient(circle at top left, rgba(121, 39, 0, 0.2), transparent 30%),
@@ -85,14 +86,14 @@ const Teams = () => {
           </div>
 
           {/* Enhanced Size Buttons - Larger for all breakpoints */}
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 flex gap-2 sm:gap-3 md:gap-4 justify-center">
+          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 flex gap-5 sm:gap-4 md:gap-4 justify-center">
             <button
               onClick={() => navigateToPage("envision_recruitment")}
               className="
                 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
                 py-2.5 sm:py-3 md:py-3.5 lg:py-4 xl:py-4 
                 rounded-full border border-white/20 bg-[#EF65220F] text-white font-semibold 
-                backdrop-blur-[5px] 
+                backdrop-blur-[2px] 
                 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.3)] 
                 hover:shadow-[0_12px_40px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)] 
                 transition-all duration-300 ease-out 
