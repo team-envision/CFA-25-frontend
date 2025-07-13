@@ -22,7 +22,7 @@ export default function MainLandingPage({
   const router = useRouter();
 
   return (
-    <div className="relative ml-[3.5vw] mt-[6vh] sm:mt-[3.5vw] w-[93vw] h-[95vh] overflow-hidden rounded-[45px]">
+    <div className="relative mt-[5vh] w-full h-[100vh] overflow-hidden ">
       {/* Background Video */}
       <video
         autoPlay
@@ -36,28 +36,28 @@ export default function MainLandingPage({
       </video>
 
       <div
-        className={`relative z-10 flex flex-col h-full ${raleway.className}`}
+        className={`relative z-10 flex flex-col   h-full ${raleway.className}`}
       >
         {/* Combined Responsive Header */}
-          {/* Logo - Now clickable */}
-          <div className="absolute top-5 left-3 sm:top-6 sm:left-4 z-10">
-  <button onClick={scrollToTop} className="hover:opacity-80 transition-opacity">
-    <Image
-      src="/images/a.png"
-      alt="AARUUSH Logo"
-      width={200}
-      height={64}
-      className="w-[170px] sm:w-[220px] h-auto cursor-pointer hover:opacity-80 transition-opacity"
-      
-    />
-  </button>
-</div>
-          {/* Button with proper glass effect matching target design */}
-<div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 w-auto max-w-[60vw] sm:max-w-none">
-  <div className="px-0 sm:px-4 py-[2px] rounded-full bg-transparent backdrop-blur-md">
-    <button
-     
-      className={`
+        {/* Logo - Now clickable */}
+        <div className="absolute top-5 left-3 sm:top-6 sm:left-4 z-10">
+          <button onClick={scrollToTop} className="hover:opacity-80 transition-opacity">
+            <Image
+              src="/images/a.png"
+              alt="AARUUSH Logo"
+              width={200}
+              height={64}
+              className="w-[170px] sm:w-[220px] h-auto cursor-pointer hover:opacity-80 transition-opacity"
+
+            />
+          </button>
+        </div>
+        {/* Button with proper glass effect matching target design */}
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 w-auto max-w-[60vw] sm:max-w-none">
+          <div className="px-0 sm:px-4 py-[2px] rounded-full bg-transparent backdrop-blur-md">
+            <button
+
+              className={`
         rounded-full px-4 sm:px-5 lg:px-6 py-2.5 sm:py-3.5 lg:py-3
         bg-transparent backdrop-blur-md text-white
         border border-white/20
@@ -66,12 +66,12 @@ export default function MainLandingPage({
         text-[10px] sm:text-sm md:text-base font-semibold whitespace-nowrap
         shadow-lg shadow-black/20
       `}
-      onClick={() => window.open("https://aaruush.org", "_blank")}
-    >
-      Visit our Website
-    </button>
-  </div>
-</div>
+              onClick={() => window.open("https://aaruush.org", "_blank")}
+            >
+              Visit our Website
+            </button>
+          </div>
+        </div>
 
 
 

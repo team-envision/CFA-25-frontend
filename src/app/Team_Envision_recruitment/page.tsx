@@ -1,12 +1,11 @@
-// src/app/Team_Envision_recruitment/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import toast from 'react-hot-toast'; // ✅ FIX 1: Import react-hot-toast
+import { Toaster, toast } from "sonner";
 
 import API from "../../services/axios"; 
 import { Button } from "../components/ui/button";
@@ -18,7 +17,7 @@ import LogoTransition from "../components/LogoTransition";
 import { useLogoNavigation } from "../components/Hooks/useLogoNavigation";
 import envisionOptions from "../../data/envision.json";
 
-// Schema remains the same
+// 🟢 Enhanced schema with custom validation for preferences
 const formSchema = z.object({
   name: z.string().min(1, "Name is required!"),
   regNumber: z.string().min(1, "Registration number is required"),
@@ -36,11 +35,13 @@ const formSchema = z.object({
   other: z.string().optional(),
   preference1: z.string().min(1, "Preference 1 required"),
   preference2: z.string().min(1, "Preference 2 required"),
+}).refine((data) => data.preference1 !== data.preference2, {
+  message: "Preference 1 and Preference 2 cannot be the same",
+  path: ["preference2"], // Show error on preference2 field
 });
 
 type FormData = z.infer<typeof formSchema>;
 
-// ✅ FIX 2: Initialize with empty strings to prevent validation bugs
 const defaultValues: FormData = {
   name: "", regNumber: "", branch: "", year: "", email: "", srmEmail: "",
   phoneNumber: "", whatsappNumber: "", linkedIn: "", github: "",
@@ -53,17 +54,33 @@ const gradientWrapperStyle = "p-px rounded-xl bg-gradient-to-b from-neutral-500 
 
 export default function TeamEnvisionRecruitmentPage() {
   const [isLoading, setIsLoading] = useState(false);
-  // ✅ FIX 3: Removed the old useState for messages
   const form = useForm<FormData>({ resolver: zodResolver(formSchema), defaultValues });
   const { isTransitioning, targetUrl, navigateToMain, onAnimationStart } = useLogoNavigation();
 
+  // 🟢 Watch both preferences to filter options
+  const pref1 = form.watch("preference1");
+  const pref2 = form.watch("preference2");
+
+  // 🟢 Clear preference2 if it matches preference1
+  useEffect(() => {
+    if (pref1 && pref2 && pref1 === pref2) {
+      form.setValue("preference2", "");
+      toast.warning("Preference 2 cleared - cannot be the same as Preference 1");
+    }
+  }, [pref1, pref2, form]);
+
   const onSubmit = async (data: FormData) => {
+    // 🟢 Additional client-side check before submission
+    if (data.preference1 === data.preference2) {
+      toast.error("Preference 1 and Preference 2 cannot be the same");
+      return;
+    }
+
     setIsLoading(true);
-    // ✅ FIX 4: Use react-hot-toast for submission feedback
     const toastId = toast.loading('Submitting your application...');
     try {
       const response = await API.post("/cfa/users/envision", { data });
-      toast.success(response.data.message || "Application submitted successfully!", { id: toastId });
+      toast.success("User added successfully!", { id: toastId });
       form.reset(); 
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || "An error occurred. Please try again.";
@@ -75,17 +92,30 @@ export default function TeamEnvisionRecruitmentPage() {
 
   const onInvalid = (errors: any) => {
     console.error("Form validation failed:", errors);
-    toast.error("Please fill all required fields correctly.");
+    
+    // 🟢 Check for preference conflict in validation errors
+    if (errors.preference2?.message?.includes("cannot be the same")) {
+      toast.error("Please select different preferences for Preference 1 and Preference 2");
+    } else {
+      toast.error("Please fill all required fields correctly.");
+    }
+  };
+
+  // 🟢 Filter options to prevent duplicate selection
+  const getAvailableOptions = (excludeValue: string) => {
+    return envisionOptions.filter(opt => opt.value !== excludeValue);
   };
 
   return (
     <LenisWrapper>
+      <Toaster richColors position="top-center" />
       <div className="min-h-screen relative bg-black flex flex-col items-center justify-center px-4 py-12 overflow-hidden">
-        {/* background, logo, and other elements are unchanged */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-700/30 via-black to-black" />
         <div className="absolute -bottom-60 right-1/2 translate-x-1/2 w-80 h-72 bg-gradient-to-tl from-orange-500/60 to-transparent rounded-full blur-3xl z-0" />
         <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
-          <button onClick={navigateToMain} className="hover:opacity-80"><Image src="/images/a.png" alt="logo" width={200} height={64} className="w-[180px] sm:w-[250px] h-auto"/></button>
+          <button onClick={navigateToMain} className="hover:opacity-80">
+            <Image src="/images/a.png" alt="logo" width={200} height={64} className="w-[180px] sm:w-[250px] h-auto"/>
+          </button>
         </div>
         <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 max-w-[60vw] sm:max-w-none">
           <div className="px-0 py-[2px] rounded-full bg-gradient-to-b from-neutral-500 to-neutral-800">
@@ -95,10 +125,8 @@ export default function TeamEnvisionRecruitmentPage() {
         <h2 className="text-white text-3xl sm:text-5xl font-bold mb-2 text-center z-10 mt-10">Recruitment Form</h2>
         <p className="text-xl sm:text-4xl text-white text-center z-10 mt-4 sm:mt-7">Team <span className="text-orange-500 font-semibold">Envision</span></p>
         
-        {/* ✅ FIX 5: Removed the old message display div */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-6 sm:gap-x-12 mt-8 w-full max-w-5xl z-10 px-2 sm:px-0">
-            {/* All form fields are unchanged and correct */}
             <FormField control={form.control} name="name" render={({ field }) => ( <FormItem><FormLabel>Name</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your name" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="regNumber" render={({ field }) => ( <FormItem><FormLabel>Registration Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your registration number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="branch" render={({ field }) => ( <FormItem><FormLabel>Branch</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your branch" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
@@ -107,8 +135,55 @@ export default function TeamEnvisionRecruitmentPage() {
             <FormField control={form.control} name="srmEmail" render={({ field }) => ( <FormItem><FormLabel>SRM Email</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your SRM email" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="phoneNumber" render={({ field }) => ( <FormItem><FormLabel>Phone Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your phone number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="whatsappNumber" render={({ field }) => ( <FormItem><FormLabel>WhatsApp Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your WhatsApp number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="preference1" render={({ field }) => ( <FormItem><FormLabel>Preference 1</FormLabel><div className={gradientWrapperStyle}><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Preference 1" /></SelectTrigger></FormControl><SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">{envisionOptions.map(opt => (<SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">{opt.label}</SelectItem>))}</SelectContent></Select></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="preference2" render={({ field }) => ( <FormItem><FormLabel>Preference 2</FormLabel><div className={gradientWrapperStyle}><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Preference 2" /></SelectTrigger></FormControl><SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">{envisionOptions.map(opt => (<SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">{opt.label}</SelectItem>))}</SelectContent></Select></div><FormMessage /></FormItem> )}/>
+            
+            {/* 🟢 Enhanced Preference 1 with filtered options */}
+            <FormField control={form.control} name="preference1" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel>Preference 1</FormLabel>
+                <div className={gradientWrapperStyle}>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className={innerFieldStyle}>
+                        <SelectValue placeholder="Select Preference 1" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
+                      {getAvailableOptions(pref2).map(opt => (
+                        <SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <FormMessage />
+              </FormItem> 
+            )}/>
+            
+            {/* 🟢 Enhanced Preference 2 with filtered options */}
+            <FormField control={form.control} name="preference2" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel>Preference 2</FormLabel>
+                <div className={gradientWrapperStyle}>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className={innerFieldStyle}>
+                        <SelectValue placeholder="Select Preference 2" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
+                      {getAvailableOptions(pref1).map(opt => (
+                        <SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <FormMessage />
+              </FormItem> 
+            )}/>
+            
             <FormField control={form.control} name="expertise1" render={({ field }) => ( <FormItem><FormLabel>Expertise in Preference 1</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Describe your expertise" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="expertise2" render={({ field }) => ( <FormItem><FormLabel>Expertise in Preference 2</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Describe your expertise" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="linkedIn" render={({ field }) => ( <FormItem><FormLabel>LinkedIn</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your LinkedIn URL" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
@@ -116,7 +191,13 @@ export default function TeamEnvisionRecruitmentPage() {
             <FormField control={form.control} name="portfolio" render={({ field }) => ( <FormItem><FormLabel>Portfolio (Optional)</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your portfolio URL" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="other" render={({ field }) => ( <FormItem><FormLabel>Other Projects (Optional)</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Any other projects / links" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             
-            <div className="col-span-1 sm:col-span-2 flex justify-center mt-4 sm:mt-6"><div className="px-0 py-px rounded-full bg-gradient-to-b from-neutral-700 to-neutral-900"><Button type="submit" disabled={isLoading} className="px-10 sm:px-16 py-3 sm:py-5 rounded-full bg-gradient-to-b from-orange-500 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold text-sm sm:text-md border border-white/30 shadow-inner transition disabled:opacity-50">{isLoading ? "Submitting..." : "Submit"}</Button></div></div>
+            <div className="col-span-1 sm:col-span-2 flex justify-center mt-4 sm:mt-6">
+              <div className="px-0 py-px rounded-full bg-gradient-to-b from-neutral-700 to-neutral-900">
+                <Button type="submit" disabled={isLoading} className="px-10 sm:px-16 py-3 sm:py-5 rounded-full bg-gradient-to-b from-orange-500 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold text-sm sm:text-md border border-white/30 shadow-inner transition disabled:opacity-50">
+                  {isLoading ? "Submitting..." : "Submit"}
+                </Button>
+              </div>
+            </div>
           </form>
         </Form>
         {isTransitioning && <LogoTransition targetUrl={targetUrl} onAnimationStart={onAnimationStart} isActive={isTransitioning}/>}
