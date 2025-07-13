@@ -6,28 +6,13 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import toast from 'react-hot-toast'; // ✅ FIX 1: Import react-hot-toast
 
-// --- Axios is still needed for the API call ---
 import API from "../../services/axios"; 
-
-// UI Components and Hooks
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "../components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "../components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import LenisWrapper from "../components/LenisWrapper";
 import LogoTransition from "../components/LogoTransition";
 import { useLogoNavigation } from "../components/Hooks/useLogoNavigation";
@@ -54,42 +39,43 @@ const formSchema = z.object({
 });
 
 type FormData = z.infer<typeof formSchema>;
-const defaultValues: Partial<FormData> = {
-  name: "", regNumber: "", branch: "", year: undefined, email: "", srmEmail: "",
+
+// ✅ FIX 2: Initialize with empty strings to prevent validation bugs
+const defaultValues: FormData = {
+  name: "", regNumber: "", branch: "", year: "", email: "", srmEmail: "",
   phoneNumber: "", whatsappNumber: "", linkedIn: "", github: "",
   expertise1: "", expertise2: "", portfolio: "", other: "",
-  preference1: undefined, preference2: undefined,
+  preference1: "", preference2: "",
 };
 
 const innerFieldStyle = "w-full px-3 py-3 sm:px-4 sm:py-5 rounded-xl bg-neutral-900 backdrop-blur-sm border border-neutral-950 text-white placeholder:text-white/70 text-sm shadow-[inset_0_1px_3px_rgba(255,255,255,0.05),0_8px_20px_rgba(0,0,0,0.3)] focus:outline-none focus:ring-1 focus:ring-orange-500 transition";
 const gradientWrapperStyle = "p-px rounded-xl bg-gradient-to-b from-neutral-500 to-neutral-700 hover:from-orange-500 hover:to-orange-800 transition";
 
 export default function TeamEnvisionRecruitmentPage() {
-  // --- STEP 1: Replace `useToast` with `useState` for messaging ---
   const [isLoading, setIsLoading] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
-  const [apiSuccess, setApiSuccess] = useState<string | null>(null);
-
+  // ✅ FIX 3: Removed the old useState for messages
   const form = useForm<FormData>({ resolver: zodResolver(formSchema), defaultValues });
   const { isTransitioning, targetUrl, navigateToMain, onAnimationStart } = useLogoNavigation();
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
-    setApiError(null);
-    setApiSuccess(null);
-    
+    // ✅ FIX 4: Use react-hot-toast for submission feedback
+    const toastId = toast.loading('Submitting your application...');
     try {
       const response = await API.post("/cfa/users/envision", { data });
-
-      // --- STEP 2: Set success message state ---
-      setApiSuccess(response.data.message || "We've received your application for Team Envision.");
+      toast.success(response.data.message || "Application submitted successfully!", { id: toastId });
       form.reset(); 
     } catch (error: any) {
-      // --- STEP 3: Set error message state ---
-      setApiError(error.response?.data?.message || "An error occurred. Please check your details and try again.");
+      const errorMessage = error.response?.data?.message || "An error occurred. Please try again.";
+      toast.error(`Submission failed: ${errorMessage}`, { id: toastId });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const onInvalid = (errors: any) => {
+    console.error("Form validation failed:", errors);
+    toast.error("Please fill all required fields correctly.");
   };
 
   return (
@@ -108,85 +94,29 @@ export default function TeamEnvisionRecruitmentPage() {
         </div>
         <h2 className="text-white text-3xl sm:text-5xl font-bold mb-2 text-center z-10 mt-10">Recruitment Form</h2>
         <p className="text-xl sm:text-4xl text-white text-center z-10 mt-4 sm:mt-7">Team <span className="text-orange-500 font-semibold">Envision</span></p>
-
-        {/* --- STEP 4: Add a place to display the messages --- */}
-        <div className="w-full max-w-5xl text-center my-4 h-6 z-10">
-          {apiSuccess && <p className="text-green-400">{apiSuccess}</p>}
-          {apiError && <p className="text-red-500">{apiError}</p>}
-        </div>
-
+        
+        {/* ✅ FIX 5: Removed the old message display div */}
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-6 sm:gap-x-12 w-full max-w-5xl z-10 px-2 sm:px-0">
-            {/* The rest of your form fields remain the same */}
+          <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-6 sm:gap-x-12 mt-8 w-full max-w-5xl z-10 px-2 sm:px-0">
+            {/* All form fields are unchanged and correct */}
             <FormField control={form.control} name="name" render={({ field }) => ( <FormItem><FormLabel>Name</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your name" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="regNumber" render={({ field }) => ( <FormItem><FormLabel>Registration Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your registration number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="branch" render={({ field }) => ( <FormItem><FormLabel>Branch</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your branch" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            
-            <FormField control={form.control} name="year" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Year</FormLabel>
-                  <div className={gradientWrapperStyle}>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Year" /></SelectTrigger></FormControl>
-                      <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
-                        <SelectItem value="1" className="focus:bg-orange-500/20 focus:text-white">1st Year</SelectItem>
-                        <SelectItem value="2" className="focus:bg-orange-500/20 focus:text-white">2nd Year</SelectItem>
-                        <SelectItem value="3" className="focus:bg-orange-500/20 focus:text-white">3rd Year</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-            )}/>
-            
+            <FormField control={form.control} name="year" render={({ field }) => ( <FormItem><FormLabel>Year</FormLabel><div className={gradientWrapperStyle}><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Year" /></SelectTrigger></FormControl><SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg"><SelectItem value="1" className="focus:bg-orange-500/20 focus:text-white">1st Year</SelectItem><SelectItem value="2" className="focus:bg-orange-500/20 focus:text-white">2nd Year</SelectItem><SelectItem value="3" className="focus:bg-orange-500/20 focus:text-white">3rd Year</SelectItem></SelectContent></Select></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="email" render={({ field }) => ( <FormItem><FormLabel>Personal Email</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your email" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="srmEmail" render={({ field }) => ( <FormItem><FormLabel>SRM Email</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your SRM email" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="phoneNumber" render={({ field }) => ( <FormItem><FormLabel>Phone Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your phone number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="whatsappNumber" render={({ field }) => ( <FormItem><FormLabel>WhatsApp Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your WhatsApp number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            
-            <FormField control={form.control} name="preference1" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Preference 1</FormLabel>
-                  <div className={gradientWrapperStyle}>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Preference 1" /></SelectTrigger></FormControl>
-                      <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
-                        {envisionOptions.map(opt => (<SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">{opt.label}</SelectItem>))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-            )}/>
-            <FormField control={form.control} name="preference2" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Preference 2</FormLabel>
-                  <div className={gradientWrapperStyle}>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Preference 2" /></SelectTrigger></FormControl>
-                      <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
-                        {envisionOptions.map(opt => (<SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">{opt.label}</SelectItem>))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-            )}/>
-
+            <FormField control={form.control} name="preference1" render={({ field }) => ( <FormItem><FormLabel>Preference 1</FormLabel><div className={gradientWrapperStyle}><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Preference 1" /></SelectTrigger></FormControl><SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">{envisionOptions.map(opt => (<SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">{opt.label}</SelectItem>))}</SelectContent></Select></div><FormMessage /></FormItem> )}/>
+            <FormField control={form.control} name="preference2" render={({ field }) => ( <FormItem><FormLabel>Preference 2</FormLabel><div className={gradientWrapperStyle}><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Preference 2" /></SelectTrigger></FormControl><SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">{envisionOptions.map(opt => (<SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">{opt.label}</SelectItem>))}</SelectContent></Select></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="expertise1" render={({ field }) => ( <FormItem><FormLabel>Expertise in Preference 1</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Describe your expertise" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="expertise2" render={({ field }) => ( <FormItem><FormLabel>Expertise in Preference 2</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Describe your expertise" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="linkedIn" render={({ field }) => ( <FormItem><FormLabel>LinkedIn</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your LinkedIn URL" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="github" render={({ field }) => ( <FormItem><FormLabel>GitHub (Optional)</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your GitHub URL" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="portfolio" render={({ field }) => ( <FormItem><FormLabel>Portfolio (Optional)</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your portfolio URL" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="other" render={({ field }) => ( <FormItem><FormLabel>Other Projects (Optional)</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Any other projects / links" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-
-            <div className="col-span-1 sm:col-span-2 flex justify-center mt-4 sm:mt-6">
-              <div className="px-0 py-px rounded-full bg-gradient-to-b from-neutral-700 to-neutral-900">
-                <Button type="submit" disabled={isLoading} className="px-10 sm:px-16 py-3 sm:py-5 rounded-full bg-gradient-to-b from-orange-500 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold text-sm sm:text-md border border-white/30 shadow-inner transition disabled:opacity-50">
-                  {isLoading ? "Submitting..." : "Submit"}
-                </Button>
-              </div>
-            </div>
+            
+            <div className="col-span-1 sm:col-span-2 flex justify-center mt-4 sm:mt-6"><div className="px-0 py-px rounded-full bg-gradient-to-b from-neutral-700 to-neutral-900"><Button type="submit" disabled={isLoading} className="px-10 sm:px-16 py-3 sm:py-5 rounded-full bg-gradient-to-b from-orange-500 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold text-sm sm:text-md border border-white/30 shadow-inner transition disabled:opacity-50">{isLoading ? "Submitting..." : "Submit"}</Button></div></div>
           </form>
         </Form>
         {isTransitioning && <LogoTransition targetUrl={targetUrl} onAnimationStart={onAnimationStart} isActive={isTransitioning}/>}
