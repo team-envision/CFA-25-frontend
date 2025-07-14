@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useEffect, useState, ReactNode, useCallback } from 'react';
-import { ReactLenis, useLenis } from 'lenis/react';
 import { useScroll, AnimatePresence, useTransform, motion, MotionValue } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { useScrollManager } from './context/ScrollContext';
@@ -24,7 +23,6 @@ const cubicBezierEasing: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export default function HomePage() {
   const container = useRef<HTMLDivElement>(null);
-  const lenis = useLenis();
   const router = useRouter();
   const { scrollYProgress } = useScroll({ 
     target: container,
@@ -91,11 +89,9 @@ export default function HomePage() {
       setActivePageId(targetId);
       
       setTimeout(() => {
-        if (lenis) {
-          const vh = actualVH || window.innerHeight;
-          const targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
-          lenis.scrollTo(targetPosition, { duration: 1.0 });
-        }
+        const vh = actualVH || window.innerHeight;
+        const targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
+        window.scrollTo({ top: targetPosition, behavior: 'auto' });
       }, 150);
       
     } else if (defaultPageSequence.includes(targetId)) {
@@ -106,22 +102,20 @@ export default function HomePage() {
       setActivePageId(targetId);
       
       setTimeout(() => {
-        if (lenis) {
-          const vh = actualVH || window.innerHeight;
-          let targetPosition;
-          
-          switch (targetId) {
-            case 'main': targetPosition = 0; break;
-            case 'structure': targetPosition = isMobile ? vh * 1.15 : vh * 1.05; break;
-            case 'teams': targetPosition = isMobile ? vh * 2.22 : vh * 2.0; break;
-            default: targetPosition = 0;
-          }
-          
-          lenis.scrollTo(targetPosition, { duration: 1.0 });
+        const vh = actualVH || window.innerHeight;
+        let targetPosition;
+        
+        switch (targetId) {
+          case 'main': targetPosition = 0; break;
+          case 'structure': targetPosition = isMobile ? vh * 1.15 : vh * 1.05; break;
+          case 'teams': targetPosition = isMobile ? vh * 2.22 : vh * 2.0; break;
+          default: targetPosition = 0;
         }
+        
+        window.scrollTo({ top: targetPosition, behavior: 'auto' });
       }, 150);
     }
-  }, [activePageId, lenis, setAnimationDirection, isMobile, actualVH]);
+  }, [activePageId, setAnimationDirection, isMobile, actualVH]);
 
   const animationTransition = {
     duration: isAnimating ? 1.2 : 0,
@@ -129,9 +123,9 @@ export default function HomePage() {
   };
 
   const slideVariants = {
-    initial: { x: animationDirection === "forward" ? "100%" : "-100%", opacity: 0 },
+    initial: { x: animationDirection === "forward" ? "-100%" : "100%", opacity: 0 },
     animate: { x: 0, opacity: 1 },
-    exit: { x: animationDirection === "forward" ? "-100%" : "100%", opacity: 0 },
+    exit: { x: animationDirection === "forward" ? "100%" : "-100%", opacity: 0 },
   };
 
   const navigate = useCallback((targetId: string, source: 'scroll' | 'button' = 'button') => {
@@ -158,17 +152,15 @@ export default function HomePage() {
 
   // ← NEW: Scroll to top function for logo click
   const scrollToTop = useCallback(() => {
-    if (lenis) {
-      // Reset to default sequence if not already
-      if (currentPageSequence !== defaultPageSequence) {
-        setCurrentPageSequence(defaultPageSequence);
-        setIsAnimating(false);
-      }
-      // Scroll to top and set active page to main
-      setActivePageId('main');
-      lenis.scrollTo(0, { duration: 1.5 });
+    // Reset to default sequence if not already
+    if (currentPageSequence !== defaultPageSequence) {
+      setCurrentPageSequence(defaultPageSequence);
+      setIsAnimating(false);
     }
-  }, [lenis, currentPageSequence]);
+    // Scroll to top and set active page to main
+    setActivePageId('main');
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [currentPageSequence]);
 
   const pageComponentMap: Record<string, ReactNode> = {
     main: <MainLandingPage 
@@ -219,19 +211,7 @@ export default function HomePage() {
   const scaleArray = [scale1, scale2, scale3];
 
   return (
-    <ReactLenis
-      root
-      options={{
-        syncTouch: isMobile,
-        syncTouchLerp: isMobile ? 0.08 : undefined,
-        touchInertiaMultiplier: isMobile ? 20 : undefined,
-        touchMultiplier: isMobile ? 0.9 : undefined,
-        gestureOrientation: isMobile ? 'vertical' : undefined,
-        infinite: false,
-        smoothWheel: !isMobile,
-      }}
-    >
-      <main ref={container} className='relative bg-black' suppressHydrationWarning={true}>
+    <main ref={container} className='relative bg-black' suppressHydrationWarning={true}>
         {currentSequence.map((id, i) => (
           <ScalingCardWrapper
             key={id}
@@ -264,7 +244,6 @@ export default function HomePage() {
           />
         )}
       </main>
-    </ReactLenis>
   );
 }
 

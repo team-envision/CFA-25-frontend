@@ -48,7 +48,6 @@ body {
    height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
 }
 
 
@@ -59,4 +58,111 @@ body {
   }
 }
 
+/* styles/scrollbar.css */
+/* Force scrollbar visibility and proper containment for Radix UI SelectContent */
+[data-radix-select-content] {
+  overflow-y: scroll !important;
+  max-height: 200px !important;
+  padding-right: 12px !important;
+  box-sizing: border-box !important;
+}
+
+[data-radix-select-content]::-webkit-scrollbar {
+  width: 8px !important;
+  display: block !important;
+}
+
+[data-radix-select-content]::-webkit-scrollbar-track {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border-radius: 4px !important;
+  margin: 2px 0 !important;
+}
+
+[data-radix-select-content]::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f97316, #ea580c) !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-radix-select-content]::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ea580c, #dc2626) !important;
+}
+
+[data-radix-select-content]::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, #dc2626, #b91c1c) !important;
+}
+
+/* Firefox scrollbar for Radix UI */
+[data-radix-select-content] {
+  scrollbar-width: thin !important;
+  scrollbar-color: #f97316 #2d2d2d !important;
+}
+
+General custom scrollbar styles
+.custom-select-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  display: block !important;
+}
+
+.custom-select-scrollbar::-webkit-scrollbar-track {
+  background: rgba(45, 45, 45, 0.8);
+  border-radius: 4px;
+  margin: 2px 0;
+}
+
+.custom-select-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f97316, #ea580c);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.custom-select-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ea580c, #dc2626);
+}
+
+.custom-select-scrollbar::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, #dc2626, #b91c1c);
+}
+
+/* Firefox scrollbar */
+.custom-select-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #f97316 #2d2d2d;
+}
+
+/* Enhanced scrollbar styles for preference dropdowns */
+.preference-select-content::-webkit-scrollbar {
+  width: 10px !important;
+  display: block !important;
+}
+
+.preference-select-content::-webkit-scrollbar-track {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border-radius: 6px !important;
+  margin: 4px 0 !important;
+}
+
+.preference-select-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f97316, #ea580c) !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  transition: all 0.3s ease !important;
+}
+
+.preference-select-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ea580c, #dc2626) !important;
+  transform: scale(1.05) !important;
+}
+
+.preference-select-content::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, #dc2626, #b91c1c) !important;
+}
+
+/* Firefox scrollbar for preference dropdowns */
+.preference-select-content {
+  scrollbar-width: thin !important;
+  scrollbar-color: #f97316 #2d2d2d !important;
+}
 

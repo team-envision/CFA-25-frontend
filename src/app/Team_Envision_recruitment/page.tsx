@@ -28,7 +28,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-import LenisWrapper from "../components/LenisWrapper";
 import LogoTransition from "../components/LogoTransition";
 import { useLogoNavigation } from "../components/Hooks/useLogoNavigation";
 import envisionOptions from "../../data/envision.json";
@@ -51,6 +50,9 @@ const formSchema = z.object({
   other: z.string().optional(),
   preference1: z.string().min(1, "Preference 1 required"),
   preference2: z.string().min(1, "Preference 2 required"),
+}).refine((data) => data.preference1 !== data.preference2, {
+  message: "Preference 2 must be different from Preference 1",
+  path: ["preference2"],
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -93,8 +95,7 @@ export default function TeamEnvisionRecruitmentPage() {
   };
 
   return (
-    <LenisWrapper>
-      <div className="min-h-screen relative bg-black flex flex-col items-center justify-center px-4 py-12 overflow-hidden">
+    <div className="min-h-screen relative bg-black flex flex-col items-center justify-center px-4 py-12 overflow-hidden">
         {/* background, logo, and other elements are unchanged */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-700/30 via-black to-black" />
         <div className="absolute -bottom-60 right-1/2 translate-x-1/2 w-80 h-72 bg-gradient-to-tl from-orange-500/60 to-transparent rounded-full blur-3xl z-0" />
@@ -148,7 +149,7 @@ export default function TeamEnvisionRecruitmentPage() {
                 <FormItem>
                   <FormLabel>Preference 1</FormLabel>
                   <div className={gradientWrapperStyle}>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                       <FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Preference 1" /></SelectTrigger></FormControl>
                       <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
                         {envisionOptions.map(opt => (<SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">{opt.label}</SelectItem>))}
@@ -158,20 +159,25 @@ export default function TeamEnvisionRecruitmentPage() {
                   <FormMessage />
                 </FormItem>
             )}/>
-            <FormField control={form.control} name="preference2" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Preference 2</FormLabel>
-                  <div className={gradientWrapperStyle}>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Preference 2" /></SelectTrigger></FormControl>
-                      <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
-                        {envisionOptions.map(opt => (<SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">{opt.label}</SelectItem>))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-            )}/>
+            <FormField control={form.control} name="preference2" render={({ field }) => {
+                // Filter out the selected preference1 from the options for preference2
+                const preference1Value = form.watch("preference1");
+                const filteredOptions = envisionOptions.filter(opt => opt.value !== preference1Value);
+                return (
+                  <FormItem>
+                    <FormLabel>Preference 2</FormLabel>
+                    <div className={gradientWrapperStyle}>
+                      <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                        <FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Preference 2" /></SelectTrigger></FormControl>
+                        <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
+                          {filteredOptions.map(opt => (<SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">{opt.label}</SelectItem>))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                );
+            }}/>
 
             <FormField control={form.control} name="expertise1" render={({ field }) => ( <FormItem><FormLabel>Expertise in Preference 1</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Describe your expertise" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="expertise2" render={({ field }) => ( <FormItem><FormLabel>Expertise in Preference 2</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Describe your expertise" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
@@ -191,6 +197,5 @@ export default function TeamEnvisionRecruitmentPage() {
         </Form>
         {isTransitioning && <LogoTransition targetUrl={targetUrl} onAnimationStart={onAnimationStart} isActive={isTransitioning}/>}
       </div>
-    </LenisWrapper>
   );
 }
