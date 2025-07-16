@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Raleway } from "next/font/google";
 
@@ -19,7 +18,6 @@ export default function MainLandingPage({
   navigateToRecruitment,
   scrollToTop, // ← Added this prop
 }: MainLandingPageProps) {
-  const router = useRouter();
 
   return (
     <div className="relative mt-[5vh] w-full h-[100vh] overflow-hidden ">

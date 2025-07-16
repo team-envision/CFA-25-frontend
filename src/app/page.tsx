@@ -3,7 +3,6 @@
 import { useRef, useEffect, useState, ReactNode, useCallback } from 'react';
 import { ReactLenis, useLenis } from 'lenis/react';
 import { useScroll, AnimatePresence, useTransform, motion, MotionValue } from 'motion/react';
-import { useRouter } from 'next/navigation';
 import { useScrollManager } from './context/ScrollContext';
 import RecruitmentPageTransition from './components/RecruitmentPageTransition';
 import { useRecruitmentNavigation } from './components/Hooks/useRecruitmentNavigation';
@@ -25,7 +24,8 @@ const cubicBezierEasing: [number, number, number, number] = [0.22, 1, 0.36, 1];
 export default function HomePage() {
   const container = useRef<HTMLDivElement>(null);
   const lenis = useLenis();
-  const router = useRouter();
+  // Remove this line since it's not used:
+  // const router = useRouter();
   const { scrollYProgress } = useScroll({ 
     target: container,
     offset: ['start start', 'end end']
@@ -156,7 +156,7 @@ export default function HomePage() {
     navigate('structure', 'button');
   }, [navigate]);
 
-  // ← NEW: Scroll to top function for logo click
+  // NEW: Scroll to top function for logo click
   const scrollToTop = useCallback(() => {
     if (lenis) {
       // Reset to default sequence if not already
@@ -174,7 +174,7 @@ export default function HomePage() {
     main: <MainLandingPage 
       scrollDown100vh={scrollDown100vh} 
       navigateToRecruitment={navigateToRecruitment}
-      scrollToTop={scrollToTop} // ← Added this prop
+      scrollToTop={scrollToTop}
     />,
     structure: <StructureSection />,
     teams: <TeamsSection />,

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ScrollProvider } from "./context/ScrollContext";
-import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +16,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // --- ADD THE PROP TO THE <html> TAG ---
     <html lang="en" suppressHydrationWarning={true}>
       <body className={inter.className}>
         <ScrollProvider>{children}</ScrollProvider>

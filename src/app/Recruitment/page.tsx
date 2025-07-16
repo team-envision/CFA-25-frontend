@@ -81,37 +81,35 @@ const RecruitmentForm: React.FC = () => {
   const handleLogoClick = () => logoNav.navigateToMain();
 
   const onSubmit = async (data: FormData) => {
-    // 🟢 Additional client-side check before submission
-    if (data.preference1 === data.preference2) {
-      toast.error("Preference 1 and Preference 2 cannot be the same");
-      return;
-    }
+  if (data.preference1 === data.preference2) {
+    toast.error("Preference 1 and Preference 2 cannot be the same");
+    return;
+  }
 
-    setIsSubmitting(true);
-    const toastId = toast.loading("Submitting your application...");
-    try {
-      await API.post("/cfa/users", { data });
-      toast.success("User added successfully!", { id: toastId });
-      form.reset();
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
-      toast.error(`Submission failed: ${errorMessage}`, { id: toastId });
-      console.error("Error submitting form:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  setIsSubmitting(true);
+  const toastId = toast.loading("Submitting your application...");
+  try {
+    await API.post("/cfa/users", { data });
+    toast.success("User added successfully!", { id: toastId });
+    form.reset();
+  } catch (error: Error | { response?: { data?: { message?: string } } } | unknown) {
+    const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "An unexpected error occurred.";
+    toast.error(`Submission failed: ${errorMessage}`, { id: toastId });
+    console.error("Error submitting form:", error);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
-  const onInvalid = (errors: any) => {
-    console.error("Form validation failed:", errors);
-    
-    // 🟢 Check for preference conflict in validation errors
-    if (errors.preference2?.message?.includes("cannot be the same")) {
-      toast.error("Please select different preferences for Preference 1 and Preference 2");
-    } else {
-      toast.error("Please fill all required fields correctly.");
-    }
-  };
+const onInvalid = (errors: Record<string, { message?: string }>) => {
+  console.error("Form validation failed:", errors);
+  
+  if (errors.preference2?.message?.includes("cannot be the same")) {
+    toast.error("Please select different preferences for Preference 1 and Preference 2");
+  } else {
+    toast.error("Please fill all required fields correctly.");
+  }
+};
 
   // 🟢 Filter grouped options to prevent duplicate selection
   const getFilteredGroupedOptions = (excludeValue: string) => {

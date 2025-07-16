@@ -17,7 +17,6 @@ import LogoTransition from "../components/LogoTransition";
 import { useLogoNavigation } from "../components/Hooks/useLogoNavigation";
 import envisionOptions from "../../data/envision.json";
 
-// 🟢 Enhanced schema with custom validation for preferences
 const formSchema = z.object({
   name: z.string().min(1, "Name is required!"),
   regNumber: z.string().min(1, "Registration number is required"),
@@ -37,7 +36,7 @@ const formSchema = z.object({
   preference2: z.string().min(1, "Preference 2 required"),
 }).refine((data) => data.preference1 !== data.preference2, {
   message: "Preference 1 and Preference 2 cannot be the same",
-  path: ["preference2"], // Show error on preference2 field
+  path: ["preference2"],
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -57,11 +56,9 @@ export default function TeamEnvisionRecruitmentPage() {
   const form = useForm<FormData>({ resolver: zodResolver(formSchema), defaultValues });
   const { isTransitioning, targetUrl, navigateToMain, onAnimationStart } = useLogoNavigation();
 
-  // 🟢 Watch both preferences to filter options
   const pref1 = form.watch("preference1");
   const pref2 = form.watch("preference2");
 
-  // 🟢 Clear preference2 if it matches preference1
   useEffect(() => {
     if (pref1 && pref2 && pref1 === pref2) {
       form.setValue("preference2", "");
@@ -70,7 +67,6 @@ export default function TeamEnvisionRecruitmentPage() {
   }, [pref1, pref2, form]);
 
   const onSubmit = async (data: FormData) => {
-    // 🟢 Additional client-side check before submission
     if (data.preference1 === data.preference2) {
       toast.error("Preference 1 and Preference 2 cannot be the same");
       return;
@@ -79,21 +75,20 @@ export default function TeamEnvisionRecruitmentPage() {
     setIsLoading(true);
     const toastId = toast.loading('Submitting your application...');
     try {
-      const response = await API.post("/cfa/users/envision", { data });
+      await API.post("/cfa/users/envision", { data });
       toast.success("User added successfully!", { id: toastId });
       form.reset(); 
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "An error occurred. Please try again.";
+    } catch (error: Error | { response?: { data?: { message?: string } } } | unknown) {
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "An error occurred. Please try again.";
       toast.error(`Submission failed: ${errorMessage}`, { id: toastId });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const onInvalid = (errors: any) => {
+  const onInvalid = (errors: Record<string, { message?: string }>) => {
     console.error("Form validation failed:", errors);
     
-    // 🟢 Check for preference conflict in validation errors
     if (errors.preference2?.message?.includes("cannot be the same")) {
       toast.error("Please select different preferences for Preference 1 and Preference 2");
     } else {
@@ -101,7 +96,6 @@ export default function TeamEnvisionRecruitmentPage() {
     }
   };
 
-  // 🟢 Filter options to prevent duplicate selection
   const getAvailableOptions = (excludeValue: string) => {
     return envisionOptions.filter(opt => opt.value !== excludeValue);
   };
@@ -136,7 +130,6 @@ export default function TeamEnvisionRecruitmentPage() {
             <FormField control={form.control} name="phoneNumber" render={({ field }) => ( <FormItem><FormLabel>Phone Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your phone number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             <FormField control={form.control} name="whatsappNumber" render={({ field }) => ( <FormItem><FormLabel>WhatsApp Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your WhatsApp number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
             
-            {/* 🟢 Enhanced Preference 1 with filtered options */}
             <FormField control={form.control} name="preference1" render={({ field }) => ( 
               <FormItem>
                 <FormLabel>Preference 1</FormLabel>
@@ -160,7 +153,6 @@ export default function TeamEnvisionRecruitmentPage() {
               </FormItem> 
             )}/>
             
-            {/* 🟢 Enhanced Preference 2 with filtered options */}
             <FormField control={form.control} name="preference2" render={({ field }) => ( 
               <FormItem>
                 <FormLabel>Preference 2</FormLabel>
