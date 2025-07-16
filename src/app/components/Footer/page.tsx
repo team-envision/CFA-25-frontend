@@ -140,7 +140,7 @@ const Footer = () => {
             />
           </Link>
           <Link
-            href="#"
+            href="https://www.facebook.com/aaruush.srm"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:opacity-80 transition-opacity"
@@ -154,7 +154,7 @@ const Footer = () => {
             />
           </Link>
           <Link
-            href="#"
+            href="https://x.com/aaruushsrmist"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:opacity-80 transition-opacity"

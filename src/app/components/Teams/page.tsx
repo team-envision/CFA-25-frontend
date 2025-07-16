@@ -20,7 +20,6 @@ const Teams = () => {
     "Game Development",
     "Web Development",
     "Embedded Systems & Mechatronics",
-    
   ];
 
   return (
@@ -28,7 +27,7 @@ const Teams = () => {
       {/* Background particles */}
       <div className="absolute top-0 left-0 w-full h-full -z-10 bg-black">
         <Particles
-          particleColors={['#ff6a00', '#ffa500', '#ffb347']}
+          particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
           particleCount={90}
           particleSpread={35}
           speed={0.15}
@@ -55,14 +54,20 @@ const Teams = () => {
             }}
           >
             {/* Heading */}
-            <h1 className="text-center text-4xl sm:text-5xl md:text-6xl font-bold mb-8 ">Teams</h1>
+            <h1 className="text-center text-4xl sm:text-5xl md:text-6xl font-bold mb-8 ">
+              Teams
+            </h1>
 
             {/* Text content */}
             <div className="flex flex-col gap-8 sm:gap-10 text-base sm:text-lg md:text-xl leading-relaxed mb-20">
               <div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-4">• Envision</h2>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-4">
+                  • Envision
+                </h2>
                 <p className="mb-4">
-                  Envision is a multi-disciplinary technical team of Aaruush, focused on creating unique, end-to-end solutions and ideas. It has the following 9 divisions:
+                  Envision is a multi-disciplinary technical team of Aaruush,
+                  focused on creating unique, end-to-end solutions and ideas. It
+                  has the following 9 divisions:
                 </p>
                 <div className="flex flex-wrap gap-2 sm:gap-3">
                   {envisionTags.map((tag, index) => (
@@ -77,9 +82,19 @@ const Teams = () => {
               </div>
 
               <div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-4">• Outreach</h2>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-4">
+                  • Outreach
+                </h2>
                 <p>
-                  Team Outreach at Aaruush excels in executing events outside SRMIST in collaboration with partner universities and clubs to enhance the name of Aaruush. They organise impactful events that engage diverse audiences and provide valuable insights into trends and needs. Their efficient coordination ensures smooth management, and by mastering these areas, Team Outreach enhances Aaruush&rsquo;s reputation, builds strong connections, and drives growth and success within the community and beyond.
+                  Team Outreach at Aaruush excels in executing events outside
+                  SRMIST in collaboration with partner universities and clubs to
+                  enhance the name of Aaruush. They organise impactful events
+                  that engage diverse audiences and provide valuable insights
+                  into trends and needs. Their efficient coordination ensures
+                  smooth management, and by mastering these areas, Team Outreach
+                  enhances Aaruush&rsquo;s reputation, builds strong
+                  connections, and drives growth and success within the
+                  community and beyond.
                 </p>
               </div>
             </div>
@@ -90,21 +105,21 @@ const Teams = () => {
             <button
               onClick={() => navigateToPage("envision_recruitment")}
               className="
-                px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
-                py-2.5 sm:py-3 md:py-3.5 lg:py-4 xl:py-4 
-                rounded-full border border-white/20 bg-[#EF65220F] text-white font-semibold 
-                backdrop-blur-[2px] 
-                shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.3)] 
-                hover:shadow-[0_12px_40px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)] 
-                transition-all duration-300 ease-out 
-                active:scale-95 hover:border-white/30
-                text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
-                leading-tight
-                text-center
-                flex-shrink-0
-                whitespace-normal
-                min-w-[120px] sm:min-w-[140px] md:min-w-[160px] lg:min-w-[180px]
-              "
+  px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
+  py-2.5 sm:py-3 md:py-3.5 lg:py-4 xl:py-4 
+  rounded-full border border-white/30 bg-[#ef66221f] text-white font-semibold 
+  backdrop-blur-[4px] 
+  shadow-[0_8px_32px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.35)] 
+  hover:shadow-[0_12px_40px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.45)] 
+  transition-all duration-300 ease-out 
+  active:scale-95 hover:border-white/40
+  text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
+  leading-tight
+  text-center
+  flex-shrink-0
+  whitespace-normal
+  min-w-[120px] sm:min-w-[140px] md:min-w-[160px] lg:min-w-[180px]
+"
             >
               <span className="block">
                 Join Team
@@ -116,21 +131,21 @@ const Teams = () => {
             <button
               onClick={() => navigateToPage("recruitment")}
               className="
-                px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
-                py-2.5 sm:py-3 md:py-3.5 lg:py-4 xl:py-4 
-                rounded-full border border-white/20 bg-[#EF65220F] text-white font-semibold 
-                backdrop-blur-[5px] 
-                shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.3)] 
-                hover:shadow-[0_12px_40px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)] 
-                transition-all duration-300 ease-out 
-                active:scale-95 hover:border-white/30
-                text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
-                leading-tight
-                text-center
-                flex-shrink-0
-                whitespace-normal
-                min-w-[120px] sm:min-w-[140px] md:min-w-[160px] lg:min-w-[180px]
-              "
+  px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
+  py-2.5 sm:py-3 md:py-3.5 lg:py-4 xl:py-4 
+  rounded-full border border-white/30 bg-[#ef66221f] text-white font-semibold 
+  backdrop-blur-[4px] 
+  shadow-[0_8px_32px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.35)] 
+  hover:shadow-[0_12px_40px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.45)] 
+  transition-all duration-300 ease-out 
+  active:scale-95 hover:border-white/40
+  text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
+  leading-tight
+  text-center
+  flex-shrink-0
+  whitespace-normal
+  min-w-[120px] sm:min-w-[140px] md:min-w-[160px] lg:min-w-[180px]
+"
             >
               <span className="block">
                 Join Team
@@ -139,7 +154,6 @@ const Teams = () => {
               </span>
             </button>
           </div>
-
         </div>
       </div>
 
