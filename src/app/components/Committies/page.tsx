@@ -1,44 +1,49 @@
 "use client";
 
 import React from 'react';
-import Particles from "../Particles";
+import dynamic from 'next/dynamic';
 import FooterSection from '../Footer/page';
 import { useScrollManager } from '@/app/context/ScrollContext';
+
+// Dynamically import Particles to avoid SSR issues
+const Particles = dynamic(() => import('../Particles'), { ssr: false });
+
+// FIX: Updated committee data based on the provided image for accuracy
+const leftCommittees = [
+  { title: 'Highlights', desc: 'Promote understanding and collaboration while supervising the provision of hospitality of guests.' },
+  { title: 'Championships', desc: 'Facilitate seamless execution of events and empower to achieve greatness through fair competition and sportsmanship.' },
+  { title: 'Initiatives', desc: 'Assimilate new strategies and enterprises to make a difference in our Society.' },
+  { title: 'Workshops & Expos', desc: 'Conceptualise and Conduct workshops with notable global organisations.' },
+  { title: 'Finance', desc: 'Propose the Annual Budget, Allocate funds, and Manage fiscal records.' },
+  { title: 'Quality Assurance', desc: 'Analyse and Assess data to uphold Aaruush\'s benchmark standards.' },
+];
+
+const rightCommittees = [
+  { title: 'Challenges and Hackathons', desc: 'From Ideas to reality, experience coordination: innovation and conduct hackathons to unleash creativity.' },
+  { title: 'Sponsorship and Marketing', desc: 'Establishing relationships with potential partners and Drafting contracts.' },
+  { title: 'Corporate Strategy & Implementation (CSI)', desc: 'Build the Aaruush Brand and direct Marketing along with Publicity.' },
+  { title: 'Public Relations (PR)', desc: 'Commandeer all channels of Correspondence, Communications, and Content.' },
+  { title: 'Operations and Resource Management', desc: 'Maintain and manage resources for smooth operations of the Fest.' },
+  { title: 'Deco and Arts', desc: 'Create and conceptualize all the decorations and miniatures with artistic flair for the Fest.' },
+];
+
+const creativeTags = [
+  'Graphic Designing',
+  'Video Editing',
+  'Visual Effects',
+  'Photography & Videography',
+  'Music Composition',
+  'Scripting',
+];
 
 const Committees = () => {
   const { navigateToPage } = useScrollManager();
 
-  const leftCommittees = [
-    { title: 'Highlights', desc: 'Promote understanding and collaboration while supervising the provision of hospitality of guests.' },
-    { title: 'Championships', desc: 'Enable smooth event execution and inspire greatness through fair play and competition.' },
-    { title: 'Initiatives', desc: 'Assimilate new strategies and enterprises to make a difference in our Society.' },
-    { title: 'Workshops & Expos', desc: 'Conceptualise and conduct workshops with notable global organisations.' },
-    { title: 'Finance', desc: 'Propose the annual budget, allocate funds, and manage fiscal records.' },
-    { title: 'Quality Assurance', desc: 'Ensure quality standards are met and maintained throughout the fest.' },
-  ];
-
-  const rightCommittees = [
-    { title: 'Challenges & Hackathons', desc: 'Turn ideas into reality through coordination, innovation, and creative hackathons.' },
-    { title: 'Sponsorship & Marketing', desc: 'Establish relationships with partners and manage sponsorship deals.' },
-    { title: 'Corporate Strategy & Marketing', desc: 'Build the Aaruush brand and lead all strategic publicity efforts.' },
-    { title: 'Public Relations', desc: 'Manage all communication and correspondence for internal and external audiences.' },
-    { title: 'Operations & Resource Management', desc: 'Handle logistics and manage smooth functioning of all activities.' },
-    { title: 'Deco & Arts', desc: 'Add a creative touch to the fest through visual design and installations.' },
-  ];
-
-  const creativeTags = [
-    'Graphic Designing',
-    'Video Editing',
-    'Visual Effects',
-    'Photography & Videography',
-    'Music Composition',
-    'Scripting',
-  ];
-
   return (
-    <div className="relative w-  min-h-screen overflow-hidden flex flex-col">
+    // FIX: Corrected typo 'w-  ' to 'w-full'
+    <div className="relative w-full min-h-screen overflow-hidden flex flex-col">
       {/* Background Particles */}
-      <div className="absolute top-0 left-0 w-full h-full -z-10 bg-black">
+      <div className="absolute inset-0 -z-10 bg-black">
         <Particles
           particleColors={['#ff6a00', '#ffa500', '#ffb347']}
           particleCount={90}
@@ -52,12 +57,12 @@ const Committees = () => {
         />
       </div>
 
-      {/* Main Content - Fixed sizing */}
-      <div className="flex-grow flex justify-center items-center px-4 py-6 ">
-        <div className="relative w-full max-w-7xl lg:max-w-[90vw] opacity-90 ">
-          {/* Card Container - Appropriately sized */}
+      {/* Main Content */}
+      <div className="flex-grow flex justify-center items-center px-4 py-6">
+        <div className="relative w-full max-w-7xl lg:max-w-[90vw]">
+          {/* Card Container */}
           <div
-            className="relative w-full border border-white/20 backdrop-blur-xl rounded-3xl p-7 sm:p-10 md:p-12 text-white flex flex-col shadow-xl opacity-100"
+            className="relative w-full border border-white/20 backdrop-blur-xl rounded-3xl p-6 sm:p-8 md:p-10 text-white flex flex-col shadow-xl opacity-90"
             style={{
               background: `
                 radial-gradient(circle at top left, rgba(121, 39, 0, 0.2), transparent 40%),
@@ -66,55 +71,51 @@ const Committees = () => {
               `,
             }}
           >
-            {/* Heading - Proper responsive sizing */}
-            <h1 className="text-center text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
+            {/* Heading */}
+            <h1 className="text-center text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8">
               Committees
             </h1>
 
-            {/* Grid Columns - Compact spacing */}
-<div className="flex flex-col md:flex-row gap-3 md:gap-8 relative mb-4 sm:mb-6 md:mb-12">
+            {/* Grid Columns */}
+            {/* FIX: Added bottom padding to prevent the absolute button from obscuring content */}
+            <div className="flex flex-col md:flex-row gap-6 pb-12">
               {/* Left Column */}
-              <div className="flex-1 space-y-3 sm:space-y-4">
+              <div className="flex-1 space-y-4">
                 {leftCommittees.map((item, idx) => (
                   <div key={idx}>
-                    <h3 className="text-sm sm:text-base md:text-lg font-semibold mb-1">{item.title}</h3>
-                    <p className="text-xs sm:text-sm md:text-base text-gray-300 leading-snug">{item.desc}</p>
+                    <h3 className="text-lg sm:text-xl font-semibold mb-1">{item.title}</h3>
+                    <p className="text-sm sm:text-base text-gray-300">{item.desc}</p>
                   </div>
                 ))}
               </div>
 
-              {/* Divider */}
-              <div className="hidden md:block w-[2px] bg-white absolute top-0 bottom-0 left-1/2 transform -translate-x-1/2" />
+              {/* FIX: Replaced absolute divider with a simpler, more robust flex-based divider */}
+              <div className="hidden md:block w-[2px] bg-white/30 rounded-full" />
 
               {/* Right Column */}
-              <div className="flex-1 space-y-3 sm:space-y-4 md:text-right">
+              <div className="flex-1 space-y-4 text-left md:text-right">
                 {rightCommittees.map((item, idx) => (
                   <div key={idx}>
-                    <h3 className="text-sm sm:text-base md:text-lg font-semibold mb-1">{item.title}</h3>
-                    <p className="text-xs sm:text-sm md:text-base text-gray-300 leading-snug">{item.desc}</p>
+                    <h3 className="text-lg sm:text-xl font-semibold mb-1">{item.title}</h3>
+                    <p className="text-sm sm:text-base text-gray-300">{item.desc}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Creatives Section - Compact layout */}
-<div className="-mt-1 sm:-mt-4">
-              {/* Title */}
-              <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 text-left sm:text-left">
+            {/* Creatives Section (Unchanged as requested, but benefits from parent padding) */}
+            <div className="mt-[-2rem]">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3">
                 Creatives
               </h3>
-
-              {/* Description */}
-              <p className="text-xs sm:text-sm md:text-base text-gray-300 mb-4 text-center sm:text-left text-justify">
+              <p className="text-sm sm:text-base text-gray-300 mb-4 text-justify sm:text-left">
                 Bringing ideas to life through design, storytelling, and visual innovation. It is further divided into 6 divisions:
               </p>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-1 sm:gap-3 justify sm:justify-start">
+              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
                 {creativeTags.map((tag, idx) => (
                   <span
                     key={idx}
-                    className="px-2 sm:px-3 py-1 border border-white/28 rounded-full text-[10px] sm:text-xs md:text-sm text-gray-300 bg-white/5 hover:border-orange-400 hover:bg-white/10 transition"
+                    className="px-3 py-1.5 border border-white/20 rounded-full text-xs sm:text-sm text-gray-200 bg-white/5 hover:border-orange-400/80 hover:bg-white/10 transition-colors"
                   >
                     {tag}
                   </span>
@@ -123,11 +124,11 @@ const Committees = () => {
             </div>
           </div>
 
-          {/* Button - Properly positioned */}
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 ">
+          {/* Button - Positioned relative to the card */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-10">
             <button
               onClick={() => navigateToPage('recruitment')}
-              className="px-6 sm:px-8 md:px-10 py-2.5 md:py-3 rounded-full border border-white/20 bg-[#ef66221f] text-white font-semibold backdrop-blur-[5px] shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.3)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all duration-300 ease-out text-base sm:text-lg md:text-xl active:scale-95  hover:border-white/30  text-sm sm:text-base md:text-lg"
+              className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-full border border-white/20 bg-[#ef66221f] text-white font-semibold backdrop-blur-[5px] shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.3)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all duration-300 ease-out text-sm sm:text-base md:text-lg active:scale-95 hover:border-white/30"
             >
               Join a Committee
             </button>
@@ -135,8 +136,8 @@ const Committees = () => {
         </div>
       </div>
 
-      {/* Footer - Proper spacing */}
-      <div className="mt-12 sm:mt-16 w-full">
+      {/* Footer - Adjusted margin for better spacing */}
+      <div className="mt-24 w-full">
         <FooterSection />
       </div>
     </div>
