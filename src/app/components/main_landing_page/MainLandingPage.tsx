@@ -79,7 +79,7 @@ export default function MainLandingPage({
         >
           <div className="flex flex-col items-center gap-2 w-full max-w-[530px] mb-20">
             <Image
-              src="/images/cfa.svg"
+              src="/images/cfapng.png"
               alt="AARUUSH Logo"
               width={577}
               height={200}
