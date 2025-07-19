@@ -17,6 +17,7 @@ import LogoTransition from "../components/LogoTransition";
 import { useLogoNavigation } from "../components/Hooks/useLogoNavigation";
 import envisionOptions from "../../data/envision.json";
 
+// Enhanced schema with custom validation for preferences
 const formSchema = z.object({
   name: z.string().min(1, "Name is required!"),
   regNumber: z.string().min(1, "Registration number is required"),
@@ -48,9 +49,6 @@ const defaultValues: FormData = {
   preference1: "", preference2: "",
 };
 
-const innerFieldStyle = "w-full px-3 py-3 sm:px-4 sm:py-5 rounded-xl bg-neutral-900 backdrop-blur-sm border border-neutral-950 text-white placeholder:text-white/70 text-sm shadow-[inset_0_1px_3px_rgba(255,255,255,0.05),0_8px_20px_rgba(0,0,0,0.3)] focus:outline-none focus:ring-1 focus:ring-orange-500 transition";
-const gradientWrapperStyle = "p-px rounded-xl bg-gradient-to-b from-neutral-500 to-neutral-700 hover:from-orange-500 hover:to-orange-800 transition";
-
 export default function TeamEnvisionRecruitmentPage() {
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<FormData>({ resolver: zodResolver(formSchema), defaultValues });
@@ -71,24 +69,22 @@ export default function TeamEnvisionRecruitmentPage() {
       toast.error("Preference 1 and Preference 2 cannot be the same");
       return;
     }
-
     setIsLoading(true);
     const toastId = toast.loading('Submitting your application...');
     try {
       await API.post("/cfa/users/envision", { data });
       toast.success("User added successfully!", { id: toastId });
       form.reset(); 
-    } catch (error: Error | { response?: { data?: { message?: string } } } | unknown) {
-      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "An error occurred. Please try again.";
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || "An error occurred. Please try again.";
       toast.error(`Submission failed: ${errorMessage}`, { id: toastId });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const onInvalid = (errors: Record<string, { message?: string }>) => {
+  const onInvalid = (errors: any) => {
     console.error("Form validation failed:", errors);
-    
     if (errors.preference2?.message?.includes("cannot be the same")) {
       toast.error("Please select different preferences for Preference 1 and Preference 2");
     } else {
@@ -100,10 +96,15 @@ export default function TeamEnvisionRecruitmentPage() {
     return envisionOptions.filter(opt => opt.value !== excludeValue);
   };
 
+  // ✅ FIXED: Unified style for all form fields. Error styles are handled with aria-invalid.
+  const fieldStyle = "w-full px-3 py-3 sm:px-4 sm:py-5 rounded-xl bg-neutral-900/80 backdrop-blur-sm border border-neutral-700/80 text-white placeholder:text-neutral-400 text-sm shadow-[inset_0_1px_3px_rgba(255,255,255,0.05),0_8px_20px_rgba(0,0,0,0.3)] focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-600 transition-all duration-200 aria-[invalid=true]:border-red-500/80 aria-[invalid=true]:ring-red-500/50";
+  const selectContentStyle = "min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg z-50";
+  const selectItemStyle = "focus:bg-orange-500/20 focus:text-white hover:bg-orange-500/10 cursor-pointer px-2 py-1.5";
+
   return (
     <LenisWrapper>
       <Toaster richColors position="top-center" />
-      <div className="min-h-screen relative bg-black flex flex-col items-center justify-center px-4 py-12 overflow-hidden">
+      <div className="min-h-screen relative bg-black flex flex-col items-center justify-center px-4 py-12">
         <div className="absolute inset-0 bg-gradient-to-br from-orange-700/30 via-black to-black" />
         <div className="absolute -bottom-60 right-1/2 translate-x-1/2 w-80 h-72 bg-gradient-to-tl from-orange-500/60 to-transparent rounded-full blur-3xl z-0" />
         <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
@@ -121,67 +122,197 @@ export default function TeamEnvisionRecruitmentPage() {
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-6 sm:gap-x-12 mt-8 w-full max-w-5xl z-10 px-2 sm:px-0">
-            <FormField control={form.control} name="name" render={({ field }) => ( <FormItem><FormLabel>Name</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your name" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="regNumber" render={({ field }) => ( <FormItem><FormLabel>Registration Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your registration number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="branch" render={({ field }) => ( <FormItem><FormLabel>Branch</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your branch" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="year" render={({ field }) => ( <FormItem><FormLabel>Year</FormLabel><div className={gradientWrapperStyle}><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={innerFieldStyle}><SelectValue placeholder="Select Year" /></SelectTrigger></FormControl><SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg"><SelectItem value="1" className="focus:bg-orange-500/20 focus:text-white">1st Year</SelectItem><SelectItem value="2" className="focus:bg-orange-500/20 focus:text-white">2nd Year</SelectItem><SelectItem value="3" className="focus:bg-orange-500/20 focus:text-white">3rd Year</SelectItem></SelectContent></Select></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="email" render={({ field }) => ( <FormItem><FormLabel>Personal Email</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your email" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="srmEmail" render={({ field }) => ( <FormItem><FormLabel>SRM Email</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your SRM email" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="phoneNumber" render={({ field }) => ( <FormItem><FormLabel>Phone Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your phone number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="whatsappNumber" render={({ field }) => ( <FormItem><FormLabel>WhatsApp Number</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your WhatsApp number" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
+             {/* ✅ FIXED: ALL fields now use the simplified structure to prevent extra divs and layout shift */}
+            <FormField control={form.control} name="name" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your name" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
+
+            <FormField control={form.control} name="regNumber" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">Registration Number</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your registration number" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
+
+            <FormField control={form.control} name="branch" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">Branch</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your branch" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
+            
+            <FormField control={form.control} name="year" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">Year</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className={fieldStyle}>
+                      <SelectValue placeholder="Select Year" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className={selectContentStyle} position="popper" sideOffset={4}>
+                    <SelectItem value="1" className={selectItemStyle}>1st Year</SelectItem>
+                    <SelectItem value="2" className={selectItemStyle}>2nd Year</SelectItem>
+                    <SelectItem value="3" className={selectItemStyle}>3rd Year</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
+
+            <FormField control={form.control} name="email" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">Personal Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your email" type="email" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
+
+            <FormField control={form.control} name="srmEmail" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">SRM Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your SRM email" type="email" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
+
+            <FormField control={form.control} name="phoneNumber" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">Phone Number</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your phone number" type="tel" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
+
+            <FormField control={form.control} name="whatsappNumber" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">WhatsApp Number</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your WhatsApp number" type="tel" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
             
             <FormField control={form.control} name="preference1" render={({ field }) => ( 
               <FormItem>
-                <FormLabel>Preference 1</FormLabel>
-                <div className={gradientWrapperStyle}>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className={innerFieldStyle}>
-                        <SelectValue placeholder="Select Preference 1" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
-                      {getAvailableOptions(pref2).map(opt => (
-                        <SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">
-                          {opt.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <FormMessage />
+                <FormLabel className="text-white">Preference 1</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className={fieldStyle}>
+                      <SelectValue placeholder="Select Preference 1" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className={selectContentStyle} position="popper" sideOffset={4}>
+                    {getAvailableOptions(pref2).map(opt => (
+                      <SelectItem key={opt.value} value={opt.value} className={selectItemStyle}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
               </FormItem> 
             )}/>
             
             <FormField control={form.control} name="preference2" render={({ field }) => ( 
               <FormItem>
-                <FormLabel>Preference 2</FormLabel>
-                <div className={gradientWrapperStyle}>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className={innerFieldStyle}>
-                        <SelectValue placeholder="Select Preference 2" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="min-w-[var(--radix-select-trigger-width)] bg-neutral-900/80 backdrop-blur-md border border-neutral-700 text-white rounded-xl shadow-lg">
-                      {getAvailableOptions(pref1).map(opt => (
-                        <SelectItem key={opt.value} value={opt.value} className="focus:bg-orange-500/20 focus:text-white">
-                          {opt.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <FormMessage />
+                <FormLabel className="text-white">Preference 2</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className={fieldStyle}>
+                      <SelectValue placeholder="Select Preference 2" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className={selectContentStyle} position="popper" sideOffset={4}>
+                    {getAvailableOptions(pref1).map(opt => (
+                      <SelectItem key={opt.value} value={opt.value} className={selectItemStyle}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
               </FormItem> 
             )}/>
             
-            <FormField control={form.control} name="expertise1" render={({ field }) => ( <FormItem><FormLabel>Expertise in Preference 1</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Describe your expertise" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="expertise2" render={({ field }) => ( <FormItem><FormLabel>Expertise in Preference 2</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Describe your expertise" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="linkedIn" render={({ field }) => ( <FormItem><FormLabel>LinkedIn</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your LinkedIn URL" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="github" render={({ field }) => ( <FormItem><FormLabel>GitHub (Optional)</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your GitHub URL" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="portfolio" render={({ field }) => ( <FormItem><FormLabel>Portfolio (Optional)</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Enter your portfolio URL" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
-            <FormField control={form.control} name="other" render={({ field }) => ( <FormItem><FormLabel>Other Projects (Optional)</FormLabel><div className={gradientWrapperStyle}><FormControl><Input placeholder="Any other projects / links" className={innerFieldStyle} {...field} /></FormControl></div><FormMessage /></FormItem> )}/>
+            <FormField control={form.control} name="expertise1" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">Expertise in Preference 1</FormLabel>
+                <FormControl>
+                  <Input placeholder="Describe your expertise" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
+
+            <FormField control={form.control} name="expertise2" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">Expertise in Preference 2</FormLabel>
+                <FormControl>
+                  <Input placeholder="Describe your expertise" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
+
+            <FormField control={form.control} name="linkedIn" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">LinkedIn</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your LinkedIn URL" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
+
+            <FormField control={form.control} name="github" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">GitHub (Optional)</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your GitHub URL" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
+
+            <FormField control={form.control} name="portfolio" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">Portfolio (Optional)</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your portfolio URL" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
+
+            <FormField control={form.control} name="other" render={({ field }) => ( 
+              <FormItem>
+                <FormLabel className="text-white">Other Projects (Optional)</FormLabel>
+                <FormControl>
+                  <Input placeholder="Any other projects / links" className={fieldStyle} {...field} />
+                </FormControl>
+                <FormMessage className="text-red-400 text-xs mt-1.5" />
+              </FormItem> 
+            )}/>
             
             <div className="col-span-1 sm:col-span-2 flex justify-center mt-4 sm:mt-6">
               <div className="px-0 py-px rounded-full bg-gradient-to-b from-neutral-700 to-neutral-900">
