@@ -347,25 +347,18 @@
 
 /* ✨ Disable hover effects for mobile and tablet (≤ 900px) */
 @media (max-width: 900px) {
-  /* 1. Disable hover content transform */
-  .structure-card:hover .card-content {
-    transform: none !important; /* Prevent zoom/perspective */
-  }
-
-  /* 2. Disable arrow animation & always keep it hidden */
   .arrow-btn {
-    opacity: 0 !important;
-    pointer-events: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
     transform: none !important;
   }
 
   .structure-card:hover .arrow-btn {
-    opacity: 0 !important;
-    pointer-events: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
     transform: none !important;
   }
 
-  /* 3. Disable background hover effects (no ::before/::after) */
   .structure-card::before,
   .structure-card::after {
     display: none !important;
@@ -378,8 +371,35 @@
     content: none !important;
   }
 
-  /* 4. Optional: remove hover cursor */
+  .structure-card:hover .card-content {
+    transform: none !important;
+  }
+
   .structure-card {
     cursor: default !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .arrow-btn {
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .arrow-btn svg {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 480px) {
+  .arrow-btn {
+    bottom: 6px;
+    right: 6px;
+  }
+
+  .arrow-btn svg {
+    width: 34px;
+    height: 34px;
   }
 }
