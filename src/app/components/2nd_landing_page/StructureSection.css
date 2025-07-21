@@ -298,21 +298,21 @@
   }
 
   .structure-card h3 {
-    font-size: 1.35rem;
+    font-size: 1.25rem;
   }
 
   .structure-card p {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 
   .arrow-btn {
-    bottom: 6px;
+    bottom: 15px;
     right: 6px;
   }
 
   .arrow-btn svg {
-    width: 32px;
-    height: 32px;
+    width: 25px;
+    height: 25px;
   }
 }
 
@@ -325,22 +325,87 @@
 }
 
 /* Optional: Short screens */
-
-@media (max-height: 670px) {
+/* @media (max-height: 670px) {
   .structure-card {
-    width: 85vw;
-    max-width: 100%;
-    padding: 16px 12px; /* shorter */
-    height: 40vw;
-    border-radius: 18px;
+    min-height: 180px;
+  }
+} */
+
+@media (max-width: 600px) {
+  .structure-section {
+    padding: 10px 10px;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .structure-cards {
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .structure-card {
+    height: 26vh;
+    width: 90vw;
+    max-width: 400px;
+    padding: 5px 10px;
     margin: 0 auto;
+    border-radius: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: default !important;
+    background: #f4f4f40d; /* maintain card shade */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.14);
   }
-  .structure-card p {
-    font-size: 0.7rem;
-    line-height: 1.6;
-  }
+
   .structure-card h3 {
-    font-size: 1.15rem;
-    margin-bottom: 12px;
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+
+  .structure-card p {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    display: block;
+  }
+
+  .structure-card:hover .arrow-btn {
+    transform: none !important;
+  }
+
+  .structure-card::before,
+  .structure-card::after,
+  .structure-card:hover::before,
+  .structure-card:hover::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .structure-card:hover .card-content {
+    transform: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .structure-card {
+    height: 25vh; /* Adjust as needed for tablet */
+  }
+}
+
+@media (max-width: 600px) {
+  .structure-card {
+    height: 25vh; /* Common mobile height */
+  }
+}
+
+@media (max-width: 400px) {
+  .structure-card {
+    height: 27vh; /* Smallest mobile devices */
   }
 }
