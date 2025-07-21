@@ -119,7 +119,7 @@ const Domains = () => {
               Domains
             </h1>
             {/* Desktop View: Image */}
-            <div className="hidden md:block w-full rounded-3xl overflow-hidden shadow-lg ">
+            <div className="hidden md:block w-full overflow-hidden shadow-lg ">
               <Image
                 src="/images/Domains.png"
                 alt="Domains"
