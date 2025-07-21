@@ -10,57 +10,58 @@ import { useScrollManager } from "@/app/context/ScrollContext";
 const Particles = dynamic(() => import("../Particles"), { ssr: false });
 
 // Committee Data
-const leftCommittees = [
+const CommitteeNames = [
   {
-    title: "Championships",
-    desc: "Promote understanding and collaboration while supervising the provision of hospitality of guests.",
+    title: "1. Championships",
+    desc: "Step up and lead the action, ignite the excitement, set up epic battles, and make every championship a legendary experience packed with fun and fair play!",
   },
   {
-    title: "Corporate Strategy and Implementation (CSI)",
-    desc: "Facilitate seamless execution of events and empower to achieve greatness through fair competition and sportsmanship.",
+    title: "2. Challenges and Hackathons",
+    desc: "Unleash your brainpower, craft creative challenges, fuel wild ideas, and turn every hackathon into a fast-paced, innovation-packed thrill ride!",
   },
   {
-    title: "Corporate Strategy and Implementation (CSI)",
-    desc: "Assimilate new strategies and enterprises to make a difference in our Society.",
+    title: "3. Corporate Strategy and Implementation (CSI)",
+    desc: "Take Aaruush to new heights, mastermind bold campaigns, spread the hype, and make our brand the ultimate standout everyone’s talking about!",
   },
   {
-    title: "Workshops & Expos",
-    desc: "Conceptualise and Conduct workshops with notable global organisations.",
+    title: "4. Deco and Arts",
+    desc: "Bring our fest to life with your creativity as you design eye-catching miniatures and decorations that add visual magic and make every corner tell a story!",
   },
   {
-    title: "Finance",
-    desc: "Propose the Annual Budget, Allocate funds, and Manage fiscal records.",
+    title: "5. Finance",
+    desc: "Own the annual budget game: plan smart, spend wisely, and keep our financial story crystal clear, to help us build a rock-solid money foundation!",
   },
   {
-    title: "Quality Assurance",
-    desc: "Analyse and Assess data to uphold Aaruush's benchmark standards.",
-  },
-];
-
-const rightCommittees = [
-  {
-    title: "Challenges and Hackathons",
-    desc: "From Ideas to reality, experience coordination: innovation and conduct hackathons to unleash creativity.",
+    title: "6. Highlights",
+    desc: "Roll out the red carpet to warmly welcome our esteemed guests, fostering meaningful connections and ensuring every dignitary feels valued through thoughtful, memorable experiences.",
   },
   {
-    title: "Sponsorship and Marketing",
-    desc: "Establishing relationships with potential partners and Drafting contracts.",
+    title: "7. Initiatives",
+    desc: "Turn big ideas into real change by dreaming up and launching innovative projects that make a lasting difference, blending purpose with progress to create a lasting impact.",
   },
   {
-    title: "Corporate Strategy & Implementation (CSI)",
-    desc: "Build the Aaruush Brand and direct Marketing along with Publicity.",
+    title: "8. Operations and Resource Management",
+    desc: "Keep everything buzzing along smoothly as you rally the teams, nail every detail, and rock the details of resource management to ensure our events run without a hitch!",
   },
   {
-    title: "Public Relations (PR)",
-    desc: "Commandeer all channels of Correspondence, Communications, and Content.",
+    title: "9. Public Relations",
+    desc: "Be the ultimate hype-builder and spin awesome messages, get everyone talking, and make our story the coolest thing in town with your slick words and charm!",
   },
   {
-    title: "Operations and Resource Management",
-    desc: "Maintain and manage resources for smooth operations of the Fest.",
+    title: "10. Quality Assurance",
+    desc: "Be the secret sauce that keeps us unstoppable as you hunt data, stay ahead, dazzle every detail, spark genius moves, and launch our fest with mind-blowing innovation and impact!",
   },
   {
-    title: "Deco and Arts",
-    desc: "Create and conceptualize all the decorations and miniatures with artistic flair for the Fest.",
+    title: "11. Sponsorship and Marketing",
+    desc: "Team up with top brands, score epic partnerships, and turn every deal into an opportunity to expand our reach and make our impact even louder!",
+  },
+  {
+    title: "12. Workshops and Expos",
+    desc: "Make tech pop by setting up hands-on workshops and rad exhibitions that turn learning into an adventure everyone’s raving about!",
+  },
+  {
+    title: "13. Creatives",
+    desc: "Unleash your inner artist and whip up eye-popping visuals, create soundscapes that wow, and spin stories through art that grabs attention and gets hearts racing!",
   },
 ];
 
@@ -125,23 +126,7 @@ const Committees = () => {
               {/* Grid Columns */}
               <div className="flex flex-col md:flex-row gap-6 pb-12 md:hidden">
                 <div className="flex-1 space-y-4">
-                  {leftCommittees.map((item, idx) => (
-                    <div key={idx}>
-                      <h3 className="text-lg sm:text-xl font-semibold mb-1">
-                        {item.title}
-                      </h3>
-
-                      <p className="text-sm sm:text-base text-gray-300">
-                        {item.desc}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="hidden md:block w-[2px] bg-white/30 rounded-full" />
-
-                <div className="flex-1 space-y-4 text-left md:text-right">
-                  {rightCommittees.map((item, idx) => (
+                  {CommitteeNames.map((item, idx) => (
                     <div key={idx}>
                       <h3 className="text-lg sm:text-xl font-semibold mb-1">
                         {item.title}
@@ -155,16 +140,7 @@ const Committees = () => {
                 </div>
               </div>
               {/* Creatives */}
-              <div className="mt-[-2rem] md:hidden">
-                <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3">
-                  Creatives
-                </h3>
-
-                <p className="text-sm sm:text-base text-gray-300 mb-4 text-justify sm:text-left">
-                  Bringing ideas to life through design, storytelling, and
-                  visual innovation. It is further divided into 6 divisions:
-                </p>
-
+              <div className="mt-[-2rem] md:hidden mb-2">
                 <div className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
                   {creativeTags.map((tag, idx) => (
                     <span
@@ -178,18 +154,6 @@ const Committees = () => {
               </div>
             </div>
           </div>
-          {/* Desktop View: Image
-          <div className="hidden md:block w-full rounded-3xl overflow-hidden shadow-lg ">
-            <Image
-              src="/images/Committees.png"
-              alt="Committee"
-              width={1080}
-              height={600}
-              className="mx-auto"
-              priority
-            />
-          </div> */}
-          {/* Button - Always Visible */}
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-10">
             <button
               onClick={() => navigateToPage("recruitment")}
