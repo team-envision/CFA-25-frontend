@@ -86,15 +86,13 @@ const Teams = () => {
                   • Outreach
                 </h2>
                 <p>
-                  Team Outreach at Aaruush excels in executing events outside
-                  SRMIST in collaboration with partner universities and clubs to
-                  enhance the name of Aaruush. They organise impactful events
-                  that engage diverse audiences and provide valuable insights
-                  into trends and needs. Their efficient coordination ensures
-                  smooth management, and by mastering these areas, Team Outreach
-                  enhances Aaruush&rsquo;s reputation, builds strong
-                  connections, and drives growth and success within the
-                  community and beyond.
+                  Join the team and take the lead in expanding Aaruush’s
+                  footprint beyond SRMIST. Cultivate distinguished partnerships
+                  with premier universities, clubs, and organisations to execute
+                  high-impact events that resonate with diverse audiences. Drive
+                  strategic outreach, foster intellectual exchange, and elevate
+                  the Aaruush brand with innovation, distinction, and purpose on
+                  every platform you touch.
                 </p>
               </div>
             </div>
