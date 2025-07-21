@@ -1,16 +1,20 @@
+/* ============ Base Section ============ */
 .structure-section {
   min-height: 100vh;
   background: black;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 60px 20px;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Title Styles */
+/* ============ Title ============ */
 .structure-title {
   color: #fff;
   font-size: 3.5rem;
@@ -30,7 +34,7 @@
   font-weight: 700;
 }
 
-/* Default Cards Layout (DESKTOP + fallback) */
+/* ============ Card Container ============ */
 .structure-cards {
   display: flex;
   flex-direction: row;
@@ -43,7 +47,7 @@
   z-index: 2;
 }
 
-/* Each Card */
+/* ============ Card ============ */
 .structure-card {
   border-radius: 24px;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -63,7 +67,7 @@
   overflow: hidden;
 }
 
-/* Desktop hover glow */
+/* Hover background glow (desktop only) */
 .structure-card::before {
   content: "";
   position: absolute;
@@ -120,18 +124,6 @@
   border-color: rgba(255, 255, 255, 0.08);
 }
 
-/* Card Content */
-.card-content {
-  flex: 1;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  z-index: 1;
-}
-
-.structure-card:hover .card-content {
-  transform: perspective(600px) translateZ(-32px);
-}
-
 /* Text */
 .structure-card h3 {
   font-size: 2rem;
@@ -145,6 +137,18 @@
   color: #fff;
   line-height: 1.7;
   letter-spacing: 0.01em;
+}
+
+/* Card Content Hover */
+.card-content {
+  flex: 1;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.structure-card:hover .card-content {
+  transform: perspective(600px) translateZ(-32px);
 }
 
 /* Arrow Button */
@@ -184,13 +188,14 @@
   outline-offset: 4px;
 }
 
-/* ---------- Responsive Breakpoints ---------- */
+/* ============ Responsive Breakpoints ============ */
 
-/* Medium desktops */
+/* Tablets & Small Desktops */
 @media (max-width: 1100px) {
   .structure-cards {
     gap: 24px;
   }
+
   .structure-card {
     padding: 28px 18px;
     width: 300px;
@@ -203,23 +208,14 @@
     flex-direction: column;
     align-items: center;
   }
+
   .structure-card {
     width: 90vw;
     max-width: 420px;
   }
-}
 
-/* Disable hover effects and show arrow on mobile/tablet (≤ 900px) */
-@media (max-width: 900px) {
-  .arrow-btn {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    transform: none !important;
-  }
-
-  .structure-card:hover .arrow-btn {
-    opacity: 1 !important;
-    transform: none !important;
+  .structure-card {
+    cursor: default !important;
   }
 
   .structure-card::before,
@@ -234,8 +230,21 @@
     transform: none !important;
   }
 
-  .structure-card {
-    cursor: default !important;
+  .arrow-btn {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .arrow-btn svg {
+    width: 42px;
+    height: 42px;
+  }
+
+  .structure-card:hover .arrow-btn {
+    transform: none !important;
   }
 }
 
@@ -247,23 +256,24 @@
   }
 
   .structure-card {
-    padding: 24px 16px;
-    border-radius: 20px;
+    padding: 18px 16px;
     width: 94vw;
+    border-radius: 20px;
   }
 
   .arrow-btn {
-    bottom: 16px;
-    right: 16px;
+    bottom: 12px;
+    right: 12px;
+    opacity: 1;
   }
 
   .arrow-btn svg {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
   }
 }
 
-/* Smaller mobile */
+/* Small Mobile */
 @media (max-width: 480px) {
   .structure-section {
     padding: 40px 12px;
@@ -292,7 +302,7 @@
   }
 
   .structure-card p {
-    font-size: 1.08rem;
+    font-size: 0.95rem;
   }
 
   .arrow-btn {
@@ -301,30 +311,12 @@
   }
 
   .arrow-btn svg {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
   }
 }
 
-/* Device width is fine, but screen is short */
-@media (max-height: 670px) {
-  .structure-card {
-    width: 85vw;
-    max-width: 100%;
-    padding: 16px 12px;
-    height: 40vw;
-  }
-
-  .structure-card h3 {
-    font-size: 1.15rem;
-  }
-
-  .structure-card p {
-    font-size: 1.08rem;
-  }
-}
-
-/* DESKTOP ONLY: 3-cards wide */
+/* Consistent 3-column desktop layout */
 @media (min-width: 901px) {
   .structure-card {
     width: 30%;
@@ -332,60 +324,23 @@
   }
 }
 
-/* ✅ Tablet and small desktops: force fixed height like desktop proportion */
-@media (max-width: 900px) and (min-width: 601px) {
-  .structure-card {
-    height: auto; /* Approx consistent size across 2 columns */
-    overflow: hidden;
-  }
+/* Optional: Short screens */
 
-  .structure-card p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    line-clamp: 4;
-  }
-}
-
-/* ✅ Slightly larger mobile */
-@media (max-width: 600px) and (min-width: 481px) {
-  .structure-card {
-    height: auto;
-    overflow: hidden;
-  }
-
-  .structure-card p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    line-clamp: 5;
-  }
-}
-
-/* ✅ Standard narrow mobile */
-@media (max-width: 480px) {
-  .structure-card {
-    height: 26vh;
-    overflow: hidden;
-  }
-
-  .structure-card p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 6;
-    -webkit-box-orient: vertical;
-    line-clamp: 6;
-  }
-}
-
-/* ✅ Optional: consistent max height on very short screens */
 @media (max-height: 670px) {
   .structure-card {
-    height: auto;
+    width: 85vw;
+    max-width: 100%;
+    padding: 16px 12px; /* shorter */
+    height: 40vw;
+    border-radius: 18px;
+    margin: 0 auto;
+  }
+  .structure-card p {
+    font-size: 0.7rem;
+    line-height: 1.6;
+  }
+  .structure-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 12px;
   }
 }
