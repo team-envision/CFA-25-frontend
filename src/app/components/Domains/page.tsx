@@ -1,34 +1,80 @@
 "use client";
 
-import React from 'react';
-import dynamic from 'next/dynamic';
-import FooterSection from '../Footer/page';
-import { useScrollManager } from '@/app/context/ScrollContext';
+import React from "react";
+import dynamic from "next/dynamic";
+import FooterSection from "../Footer/page";
+import { useScrollManager } from "@/app/context/ScrollContext";
+import Image from "next/image";
 
 // Dynamically import Particles to avoid SSR issues
-const Particles = dynamic(() => import('../Particles'), { ssr: false });
+const Particles = dynamic(() => import("../Particles"), { ssr: false });
 
 // FIX: Updated domain data based on the provided image for accuracy
-const leftDomains = [
-  { title: "FUNDAZ", desc: "Entertains and educates in Logical Science via puzzles, quizzes, and crosswords." },
-  { title: "WEBNEXUS", desc: "Focuses on web development to create innovative solutions bridging virtual and real-life experiences." },
-  { title: "KONSTRUKTION & CANOE CHALLENGE", desc: "Focuses on Civil and Infrastructure Design, Fabricating, and Practical Testing." },
-  { title: "MAGEFFICIE & ENTREPRENEURIAL SYMPOSIUM", desc: "Demonstrates techniques for Crisis Management, Marketing, and Entrepreneurship." },
-  { title: "MACHINATION", desc: "Interprets concepts of Mechanical and Automobile Engineering via blueprints." },
-  { title: "PRAESENTATIO", desc: "Imparts knowledge through challenges like J.A.M.s, Extempores, and Debates." },
-  { title: "ARCHITECTURE", desc: "Encompasses elements related to Planning, Design, and Construction." },
-  { title: "AGRITECH", desc: "Pioneers smart farming solutions by redefining agriculture with cutting-edge technology." }
-];
-
-const rightDomains = [
-  { title: "YUDDHAME", desc: "Instructs in the art of App & Web Development, Programming, and Networking." },
-  { title: "VIMANAZ", desc: "Showcases and uplifts everything related to Aeronautics and Aviation." },
-  { title: "DIGITAL DESIGN", desc: "Explores the world of Visual Communication, Graphic Designing, and Modern Art." },
-  { title: "BLUEBOOK", desc: "Delves into details of Life Sciences, Forensics, and Biometrics." },
-  { title: "X-ZONE & ESPORTS", desc: "Moves out of monotony with online gaming, treasure hunts, and brainstorming." },
-  { title: "ELECTRIZITE", desc: "Enlightenment with AI, Integrated Circuits, and a consortium of EEE, ECE, and EIE." },
-  { title: "ROBOGYAN", desc: "Elaborates on the design of autonomous and semi-autonomous robotics." },
-  { title: "COSMIC QUEST", desc: "Unlock the secrets of the cosmos and embrace the adventure of space exploration." }
+const DomainDetails = [
+  {
+    title: "1. Architecture",
+    desc: "Shape environments that inspire and unite artistic vision with smart planning and eco-conscious design solutions.",
+  },
+  {
+    title: "2. Agritech",
+    desc: "Reimagine farming with tech: develop smart, sustainable solutions for agriculture that promote food security and precision farming.",
+  },
+  {
+    title: "3. Bluebook",
+    desc: "Unlock the secrets of life sciences: dive into forensic analysis, biometrics, and scientific inquiry to explore biology and investigation.",
+  },
+  {
+    title: "4. Cosmic Quest",
+    desc: "Explore the universe: unlock the mysteries of space and celestial phenomena through astronomy and space science adventures.",
+  },
+  {
+    title: "5. Digital Design",
+    desc: "Tell stories through visuals: Dive into graphic design, media, and creative communication to bring ideas to life with artistic flair.",
+  },
+  {
+    title: "6. Electrizite",
+    desc: "Power up with smart tech: explore AI, embedded systems, and electronic circuit design to create intelligent systems that shape the future.",
+  },
+  {
+    title: "7. Fundaz",
+    desc: "Plunge into logic battles, unleash science superpowers, and dominate math quests. Ignite your inner genius to fuel the fun and triumph in every electrifying puzzle!",
+  },
+  {
+    title: "8. Konstruktion and Canoe Challenge",
+    desc: "Build, design, and innovate: test your civil engineering skills through hands-on projects in infrastructure planning and real-world problem solving.",
+  },
+  {
+    title: "9. Machination",
+    desc: "Get mechanical: design and innovate in automotive engineering, automation, and machine dynamics through hands-on blueprints and projects.",
+  },
+  {
+    title: "10. Maggifficie and Entrepreneurial Symposium",
+    desc: "Master the art of business: explore crisis management, entrepreneurship, marketing, and leadership to drive innovation and strategy.",
+  },
+  {
+    title: "11. Praesentatio",
+    desc: "Speak up, stand out, and shine as you master oratory and presentation skills in debates, speeches, JAM sessions, and theatre, growing your confidence and dramatic flair with every performance!",
+  },
+  {
+    title: "12. Robogyan",
+    desc: "Bring robots to life: design autonomous and semi-autonomous systems using sensors and smart controls to push the boundaries of robotics.",
+  },
+  {
+    title: "13. Vimanaz",
+    desc: "Soar into the science of flight: take on aeronautical challenges and explore aviation engineering and aerospace technology in action.",
+  },
+  {
+    title: "14. Webnexus",
+    desc: "Lead the way in web innovation: design sleek front-end and full-stack experiences that connect the digital world with everyday life through intuitive interfaces.",
+  },
+  {
+    title: "15. X-Zone and E-Sports",
+    desc: "Level up with high-energy gaming: sharpen your strategy and teamwork in esports, treasure hunts, interactive simulations, and game development.",
+  },
+  {
+    title: "16. Yuddhame",
+    desc: "Gear up to build apps and websites: sharpen your programming, networking, and software design skills while creating real-world tech solutions.",
+  },
 ];
 
 const Domains = () => {
@@ -39,7 +85,7 @@ const Domains = () => {
       {/* Background Particles */}
       <div className="absolute inset-0 -z-10 bg-black">
         <Particles
-          particleColors={['#ff6a00', '#ffa500', '#ffb347']}
+          particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
           particleCount={90}
           particleSpread={35}
           speed={0.15}
@@ -66,39 +112,56 @@ const Domains = () => {
             }}
           >
             {/* Heading */}
-            <h1 className="text-center text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8">Domains</h1>
-
+            <h1 className="text-center text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8">
+              Domains
+            </h1>
+            {/* Desktop View: Image */}
+            <div className="hidden md:block w-full overflow-hidden shadow-lg ">
+              <Image
+                src="/images/Domains.png"
+                alt="Domains"
+                width={1250}
+                height={600}
+                className="mx-auto"
+                priority
+              />
+            </div>
             {/* Domains Container */}
             {/* FIX: Added padding-bottom to prevent the button from covering the last items */}
-            <div className="flex flex-col md:flex-row gap-6 pb-10">
+            <div className="flex flex-col gap-6 pb-10 md:hidden">
               {/* Left Column */}
               <div className="flex-1 space-y-4">
-                {leftDomains.map((item, idx) => (
+                {DomainDetails.map((item, idx) => (
                   <div key={idx}>
-                    <h3 className="text-lg sm:text-xl font-semibold mb-1">{item.title}</h3>
-                    <p className="text-sm sm:text-base text-gray-300">{item.desc}</p>
+                    <h3 className="text-lg sm:text-xl font-semibold mb-1">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm sm:text-base text-gray-300">
+                      {item.desc}
+                    </p>
                   </div>
                 ))}
               </div>
 
-              {/* Divider */}
-              <div className="hidden md:block w-[2px] bg-white/30 rounded-full" />
-
-              {/* Right Column */}
+              {/* Right Column
               <div className="flex-1 space-y-4 text-left md:text-right">
                 {rightDomains.map((item, idx) => (
                   <div key={idx}>
-                    <h3 className="text-lg sm:text-xl font-semibold mb-1">{item.title}</h3>
-                    <p className="text-sm sm:text-base text-gray-300">{item.desc}</p>
+                    <h3 className="text-lg sm:text-xl font-semibold mb-1">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm sm:text-base text-gray-300">
+                      {item.desc}
+                    </p>
                   </div>
                 ))}
-              </div>
+              </div> */}
             </div>
 
             {/* Button Container */}
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-10">
               <button
-                onClick={() => navigateToPage('recruitment')}
+                onClick={() => navigateToPage("recruitment")}
                 className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-full border border-white/20 bg-[#ef66221f] text-white font-semibold backdrop-blur-[5px] shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.3)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all duration-300 ease-out text-sm sm:text-base md:text-lg active:scale-95 hover:border-white/30"
               >
                 Join a Domain

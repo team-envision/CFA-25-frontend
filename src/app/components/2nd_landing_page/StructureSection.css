@@ -1,15 +1,20 @@
+/* ============ Base Section ============ */
 .structure-section {
   min-height: 100vh;
   background: black;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 60px 20px;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
+/* ============ Title ============ */
 .structure-title {
   color: #fff;
   font-size: 3.5rem;
@@ -29,8 +34,10 @@
   font-weight: 700;
 }
 
+/* ============ Card Container ============ */
 .structure-cards {
   display: flex;
+  flex-direction: row;
   gap: 40px;
   justify-content: center;
   align-items: stretch;
@@ -40,13 +47,14 @@
   z-index: 2;
 }
 
+/* ============ Card ============ */
 .structure-card {
- border-radius: 24px;
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
-  background: #F4F4F40D;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background: #f4f4f40d;
   backdrop-filter: blur(3.7578125px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 36px 32px;
   width: 340px;
   max-width: 90vw;
@@ -57,17 +65,26 @@
   transition: all 0.3s ease;
   cursor: pointer;
   overflow: hidden;
-  
 }
+
+/* Hover background glow (desktop only) */
 .structure-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at top left, rgba(255, 68, 0, 0.119) 0%, transparent 10%),
-              radial-gradient(circle at bottom right, rgba(255, 68, 0, 0.119) 0%, transparent 10%);
+  background: radial-gradient(
+      circle at top left,
+      rgba(255, 68, 0, 0.119) 0%,
+      transparent 10%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(255, 68, 0, 0.119) 0%,
+      transparent 10%
+    );
   opacity: 1;
   transition: opacity 0.3s ease, background 0.3s ease;
   pointer-events: none;
@@ -77,18 +94,25 @@
 .structure-card:hover::before {
   opacity: 0;
   background: transparent;
-  transition: opacity 0.3s ease, background 0.3s ease;
 }
 
 .structure-card:hover::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at top right, rgba(255, 68, 0, 0.119) 0%, transparent 10%),
-              radial-gradient(circle at bottom left, rgba(255, 68, 0, 0.119) 0%, transparent 10%);
+  background: radial-gradient(
+      circle at top right,
+      rgba(255, 68, 0, 0.119) 0%,
+      transparent 10%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      rgba(255, 68, 0, 0.119) 0%,
+      transparent 10%
+    );
   opacity: 1;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -96,26 +120,15 @@
 }
 
 .structure-card:hover {
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
-  border-color: rgba(255,255,255,0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
-.card-content {
-  flex: 1;
-  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-  position: relative;
-  z-index: 1;
-}
-
-.structure-card:hover .card-content {
-  transform: perspective(600px) translateZ(-32px);
-}
-
+/* Text */
 .structure-card h3 {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 18px;
-  color: #fff;
 }
 
 .structure-card p {
@@ -124,20 +137,31 @@
   color: #fff;
   line-height: 1.7;
   letter-spacing: 0.01em;
-  margin-bottom: 0;
 }
 
+/* Card Content Hover */
+.card-content {
+  flex: 1;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.structure-card:hover .card-content {
+  transform: perspective(600px) translateZ(-32px);
+}
+
+/* Arrow Button */
 .arrow-btn {
   position: absolute;
-  bottom: 0px;
-  right: 0px;
-  /* transform: rotate(-45deg) translate(20px,20px); */
+  bottom: 0;
+  right: 0;
   background: none;
   border: none;
   outline: none;
   cursor: pointer;
-  transform: translate(0,0) rotate(-45deg);
-  transition: transform 1s ease,opacity 1s ease;
+  transform: translate(0, 0) rotate(-45deg);
+  transition: transform 1s ease, opacity 1s ease;
   z-index: 2;
   padding: 0;
   opacity: 0;
@@ -149,13 +173,14 @@
   height: 50px;
 }
 
+.arrow-btn svg path {
+  stroke: #fff;
+}
+
 .structure-card:hover .arrow-btn {
   opacity: 1;
   pointer-events: auto;
-  transform: rotate(-45deg) translate(-15px,-30px);
-}
-.arrow-btn svg path {
-  stroke: #fff;
+  transform: rotate(-45deg) translate(-15px, -30px);
 }
 
 .structure-card:focus-visible {
@@ -163,93 +188,54 @@
   outline-offset: 4px;
 }
 
+/* ============ Responsive Breakpoints ============ */
+
+/* Tablets & Small Desktops */
 @media (max-width: 1100px) {
   .structure-cards {
     gap: 24px;
   }
+
   .structure-card {
     padding: 28px 18px;
     width: 300px;
   }
 }
 
+/* Tablets */
 @media (max-width: 900px) {
   .structure-cards {
     flex-direction: column;
     align-items: center;
   }
+
   .structure-card {
     width: 90vw;
     max-width: 420px;
   }
-}
 
-@media (max-width: 600px) {
-  .structure-title {
-    font-size: 2.5rem;
-    margin-bottom: 32px;
-  }
   .structure-card {
-    padding: 24px 16px;
-    border-radius: 20px;
+    cursor: default !important;
   }
+
+  .structure-card::before,
+  .structure-card::after,
+  .structure-card:hover::before,
+  .structure-card:hover::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .structure-card:hover .card-content {
+    transform: none !important;
+  }
+
   .arrow-btn {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
     bottom: 16px;
     right: 16px;
-  }
-} 
-/* Responsive Queries */
-@media (max-width: 1100px) {
-  .structure-cards {
-    gap: 24px;
-  }
-  .structure-card {
-    padding: 28px 18px;
-    width: 300px;
-  }
-}
-
-/* Mid-sized screens (tablets) */
-@media (max-width: 900px) and (min-width: 601px) {
-  .structure-cards {
-    flex-direction: row;
-    gap: 24px;
-  }
-  .structure-card {
-    width: 60vw;
-    padding: 20px 22px; /* shorter */
-    height: 24vh;
-    border-radius: 24px;
-  }
-}
-
-/* Slightly larger mobile */
-@media (max-width: 600px) and (min-width: 481px) {
-  .structure-cards {
-    gap: 20px;
-    padding-bottom: 24px;
-  }
-
-  .structure-card {
-    width: 94vw;
-    max-width: 400px;
-    padding: 18px 16px; /* shorter */
-    height: 24vh;
-    border-radius: 22px;
-    margin: 0 auto;
-  }
-
-  .structure-card h3 {
-    font-size: 1.6rem;
-  }
-
-  .structure-card p {
-    font-size: 1.03rem;
-  }
-
-  .arrow-btn {
-    bottom: 10px;
-    right: 10px;
   }
 
   .arrow-btn svg {
@@ -258,11 +244,36 @@
   }
 
   .structure-card:hover .arrow-btn {
-    transform: rotate(-45deg) translate(-10px, -20px);
+    transform: none !important;
   }
 }
 
-/* Standard mobile */
+/* Mobile */
+@media (max-width: 600px) {
+  .structure-title {
+    font-size: 2.5rem;
+    margin-bottom: 32px;
+  }
+
+  .structure-card {
+    padding: 18px 16px;
+    width: 94vw;
+    border-radius: 20px;
+  }
+
+  .arrow-btn {
+    bottom: 12px;
+    right: 12px;
+    opacity: 1;
+  }
+
+  .arrow-btn svg {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Small Mobile */
 @media (max-width: 480px) {
   .structure-section {
     padding: 40px 12px;
@@ -276,25 +287,22 @@
 
   .structure-cards {
     gap: 20px;
-    padding: 0px 22px 22px; /* Ensures equal side margins */
+    padding: 0 22px 22px;
   }
 
- .structure-card {
+  .structure-card {
     width: 100%;
     padding: 16px 12px;
     border-radius: 18px;
-    margin: 2px; /* ✅ Equal margin around the card */
-    box-sizing: border-box;
+    margin: 2px;
   }
 
   .structure-card h3 {
     font-size: 1.35rem;
-    margin-bottom: 15px;
   }
 
   .structure-card p {
-    font-size: 0.8rem;
-    line-height: 1.6;
+    font-size: 0.95rem;
   }
 
   .arrow-btn {
@@ -303,15 +311,22 @@
   }
 
   .arrow-btn svg {
-    width: 35px;
-    height: 35px;
-  }
-
-  .structure-card:hover .arrow-btn {
-    transform: rotate(-45deg) translate(-10px, -20px);
+    width: 32px;
+    height: 32px;
   }
 }
-@media (max-height: 670px){
+
+/* Consistent 3-column desktop layout */
+@media (min-width: 901px) {
+  .structure-card {
+    width: 30%;
+    max-width: none;
+  }
+}
+
+/* Optional: Short screens */
+
+@media (max-height: 670px) {
   .structure-card {
     width: 85vw;
     max-width: 100%;
