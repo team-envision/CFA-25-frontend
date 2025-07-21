@@ -10,6 +10,7 @@
   overflow: hidden;
 }
 
+/* Title Styles */
 .structure-title {
   color: #fff;
   font-size: 3.5rem;
@@ -29,8 +30,10 @@
   font-weight: 700;
 }
 
+/* Default Cards Layout (DESKTOP + fallback) */
 .structure-cards {
   display: flex;
+  flex-direction: row;
   gap: 40px;
   justify-content: center;
   align-items: stretch;
@@ -40,6 +43,7 @@
   z-index: 2;
 }
 
+/* Each Card */
 .structure-card {
   border-radius: 24px;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -58,6 +62,8 @@
   cursor: pointer;
   overflow: hidden;
 }
+
+/* Desktop hover glow */
 .structure-card::before {
   content: "";
   position: absolute;
@@ -84,7 +90,6 @@
 .structure-card:hover::before {
   opacity: 0;
   background: transparent;
-  transition: opacity 0.3s ease, background 0.3s ease;
 }
 
 .structure-card:hover::after {
@@ -115,6 +120,7 @@
   border-color: rgba(255, 255, 255, 0.08);
 }
 
+/* Card Content */
 .card-content {
   flex: 1;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -126,11 +132,11 @@
   transform: perspective(600px) translateZ(-32px);
 }
 
+/* Text */
 .structure-card h3 {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 18px;
-  color: #fff;
 }
 
 .structure-card p {
@@ -139,14 +145,13 @@
   color: #fff;
   line-height: 1.7;
   letter-spacing: 0.01em;
-  margin-bottom: 0;
 }
 
+/* Arrow Button */
 .arrow-btn {
   position: absolute;
-  bottom: 0px;
-  right: 0px;
-  /* transform: rotate(-45deg) translate(20px,20px); */
+  bottom: 0;
+  right: 0;
   background: none;
   border: none;
   outline: none;
@@ -164,13 +169,14 @@
   height: 50px;
 }
 
+.arrow-btn svg path {
+  stroke: #fff;
+}
+
 .structure-card:hover .arrow-btn {
   opacity: 1;
   pointer-events: auto;
   transform: rotate(-45deg) translate(-15px, -30px);
-}
-.arrow-btn svg path {
-  stroke: #fff;
 }
 
 .structure-card:focus-visible {
@@ -178,6 +184,9 @@
   outline-offset: 4px;
 }
 
+/* ---------- Responsive Breakpoints ---------- */
+
+/* Medium desktops */
 @media (max-width: 1100px) {
   .structure-cards {
     gap: 24px;
@@ -188,6 +197,7 @@
   }
 }
 
+/* Tablets */
 @media (max-width: 900px) {
   .structure-cards {
     flex-direction: column;
@@ -199,153 +209,7 @@
   }
 }
 
-@media (max-width: 600px) {
-  .structure-title {
-    font-size: 2.5rem;
-    margin-bottom: 32px;
-  }
-  .structure-card {
-    padding: 24px 16px;
-    border-radius: 20px;
-  }
-  .arrow-btn {
-    bottom: 16px;
-    right: 16px;
-  }
-}
-/* Responsive Queries */
-@media (max-width: 1100px) {
-  .structure-cards {
-    gap: 24px;
-  }
-  .structure-card {
-    padding: 28px 18px;
-    width: 300px;
-  }
-}
-
-/* Mid-sized screens (tablets) */
-@media (max-width: 900px) and (min-width: 601px) {
-  .structure-cards {
-    flex-direction: row;
-    gap: 24px;
-  }
-  .structure-card {
-    width: 60vw;
-    padding: 20px 22px; /* shorter */
-    height: 24vh;
-    border-radius: 24px;
-  }
-}
-
-/* Slightly larger mobile */
-@media (max-width: 600px) and (min-width: 481px) {
-  .structure-cards {
-    gap: 20px;
-    padding-bottom: 24px;
-  }
-
-  .structure-card {
-    width: 94vw;
-    max-width: 400px;
-    padding: 18px 16px; /* shorter */
-    height: 24vh;
-    border-radius: 22px;
-    margin: 0 auto;
-  }
-
-  .structure-card h3 {
-    font-size: 1.6rem;
-  }
-
-  .structure-card p {
-    font-size: 1.03rem;
-  }
-
-  .arrow-btn {
-    bottom: 10px;
-    right: 10px;
-  }
-
-  .arrow-btn svg {
-    width: 42px;
-    height: 42px;
-  }
-
-  .structure-card:hover .arrow-btn {
-    transform: rotate(-45deg) translate(-10px, -20px);
-  }
-}
-
-/* Standard mobile */
-@media (max-width: 480px) {
-  .structure-section {
-    padding: 40px 12px;
-  }
-
-  .structure-title {
-    font-size: 2.1rem;
-    line-height: 1.2;
-    padding: 0 10px;
-  }
-
-  .structure-cards {
-    gap: 20px;
-    padding: 0px 22px 22px; /* Ensures equal side margins */
-  }
-
-  .structure-card {
-    width: 100%;
-    padding: 16px 12px;
-    border-radius: 18px;
-    margin: 2px; /* ✅ Equal margin around the card */
-    box-sizing: border-box;
-  }
-
-  .structure-card h3 {
-    font-size: 1.35rem;
-    margin-bottom: 15px;
-  }
-
-  .structure-card p {
-    font-size: 0.8rem;
-    line-height: 1.6;
-  }
-
-  .arrow-btn {
-    bottom: 6px;
-    right: 6px;
-  }
-
-  .arrow-btn svg {
-    width: 35px;
-    height: 35px;
-  }
-
-  .structure-card:hover .arrow-btn {
-    transform: rotate(-45deg) translate(-10px, -20px);
-  }
-}
-@media (max-height: 670px) {
-  .structure-card {
-    width: 85vw;
-    max-width: 100%;
-    padding: 16px 12px; /* shorter */
-    height: 40vw;
-    border-radius: 18px;
-    margin: 0 auto;
-  }
-  .structure-card p {
-    font-size: 0.7rem;
-    line-height: 1.6;
-  }
-  .structure-card h3 {
-    font-size: 1.15rem;
-    margin-bottom: 12px;
-  }
-}
-
-/* ✨ Disable hover effects for mobile and tablet (≤ 900px) */
+/* Disable hover effects and show arrow on mobile/tablet (≤ 900px) */
 @media (max-width: 900px) {
   .arrow-btn {
     opacity: 1 !important;
@@ -355,16 +219,11 @@
 
   .structure-card:hover .arrow-btn {
     opacity: 1 !important;
-    pointer-events: auto !important;
     transform: none !important;
   }
 
   .structure-card::before,
-  .structure-card::after {
-    display: none !important;
-    content: none !important;
-  }
-
+  .structure-card::after,
   .structure-card:hover::before,
   .structure-card:hover::after {
     display: none !important;
@@ -380,10 +239,22 @@
   }
 }
 
+/* Mobile */
 @media (max-width: 600px) {
+  .structure-title {
+    font-size: 2.5rem;
+    margin-bottom: 32px;
+  }
+
+  .structure-card {
+    padding: 24px 16px;
+    border-radius: 20px;
+    width: 94vw;
+  }
+
   .arrow-btn {
-    bottom: 10px;
-    right: 10px;
+    bottom: 16px;
+    right: 16px;
   }
 
   .arrow-btn svg {
@@ -392,7 +263,38 @@
   }
 }
 
+/* Smaller mobile */
 @media (max-width: 480px) {
+  .structure-section {
+    padding: 40px 12px;
+  }
+
+  .structure-title {
+    font-size: 2.1rem;
+    line-height: 1.2;
+    padding: 0 10px;
+  }
+
+  .structure-cards {
+    gap: 20px;
+    padding: 0 22px 22px;
+  }
+
+  .structure-card {
+    width: 100%;
+    padding: 16px 12px;
+    border-radius: 18px;
+    margin: 2px;
+  }
+
+  .structure-card h3 {
+    font-size: 1.35rem;
+  }
+
+  .structure-card p {
+    font-size: 1.08rem;
+  }
+
   .arrow-btn {
     bottom: 6px;
     right: 6px;
@@ -401,5 +303,89 @@
   .arrow-btn svg {
     width: 34px;
     height: 34px;
+  }
+}
+
+/* Device width is fine, but screen is short */
+@media (max-height: 670px) {
+  .structure-card {
+    width: 85vw;
+    max-width: 100%;
+    padding: 16px 12px;
+    height: 40vw;
+  }
+
+  .structure-card h3 {
+    font-size: 1.15rem;
+  }
+
+  .structure-card p {
+    font-size: 1.08rem;
+  }
+}
+
+/* DESKTOP ONLY: 3-cards wide */
+@media (min-width: 901px) {
+  .structure-card {
+    width: 30%;
+    max-width: none;
+  }
+}
+
+/* ✅ Tablet and small desktops: force fixed height like desktop proportion */
+@media (max-width: 900px) and (min-width: 601px) {
+  .structure-card {
+    height: auto; /* Approx consistent size across 2 columns */
+    overflow: hidden;
+  }
+
+  .structure-card p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    line-clamp: 4;
+  }
+}
+
+/* ✅ Slightly larger mobile */
+@media (max-width: 600px) and (min-width: 481px) {
+  .structure-card {
+    height: auto;
+    overflow: hidden;
+  }
+
+  .structure-card p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    line-clamp: 5;
+  }
+}
+
+/* ✅ Standard narrow mobile */
+@media (max-width: 480px) {
+  .structure-card {
+    height: 26vh;
+    overflow: hidden;
+  }
+
+  .structure-card p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    line-clamp: 6;
+  }
+}
+
+/* ✅ Optional: consistent max height on very short screens */
+@media (max-height: 670px) {
+  .structure-card {
+    height: auto;
   }
 }
