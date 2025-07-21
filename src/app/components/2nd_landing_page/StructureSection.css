@@ -41,12 +41,12 @@
 }
 
 .structure-card {
- border-radius: 24px;
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
-  background: #F4F4F40D;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background: #f4f4f40d;
   backdrop-filter: blur(3.7578125px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 36px 32px;
   width: 340px;
   max-width: 90vw;
@@ -57,17 +57,24 @@
   transition: all 0.3s ease;
   cursor: pointer;
   overflow: hidden;
-  
 }
 .structure-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at top left, rgba(255, 68, 0, 0.119) 0%, transparent 10%),
-              radial-gradient(circle at bottom right, rgba(255, 68, 0, 0.119) 0%, transparent 10%);
+  background: radial-gradient(
+      circle at top left,
+      rgba(255, 68, 0, 0.119) 0%,
+      transparent 10%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(255, 68, 0, 0.119) 0%,
+      transparent 10%
+    );
   opacity: 1;
   transition: opacity 0.3s ease, background 0.3s ease;
   pointer-events: none;
@@ -81,14 +88,22 @@
 }
 
 .structure-card:hover::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at top right, rgba(255, 68, 0, 0.119) 0%, transparent 10%),
-              radial-gradient(circle at bottom left, rgba(255, 68, 0, 0.119) 0%, transparent 10%);
+  background: radial-gradient(
+      circle at top right,
+      rgba(255, 68, 0, 0.119) 0%,
+      transparent 10%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      rgba(255, 68, 0, 0.119) 0%,
+      transparent 10%
+    );
   opacity: 1;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -96,13 +111,13 @@
 }
 
 .structure-card:hover {
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
-  border-color: rgba(255,255,255,0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .card-content {
   flex: 1;
-  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   z-index: 1;
 }
@@ -136,8 +151,8 @@
   border: none;
   outline: none;
   cursor: pointer;
-  transform: translate(0,0) rotate(-45deg);
-  transition: transform 1s ease,opacity 1s ease;
+  transform: translate(0, 0) rotate(-45deg);
+  transition: transform 1s ease, opacity 1s ease;
   z-index: 2;
   padding: 0;
   opacity: 0;
@@ -152,7 +167,7 @@
 .structure-card:hover .arrow-btn {
   opacity: 1;
   pointer-events: auto;
-  transform: rotate(-45deg) translate(-15px,-30px);
+  transform: rotate(-45deg) translate(-15px, -30px);
 }
 .arrow-btn svg path {
   stroke: #fff;
@@ -197,7 +212,7 @@
     bottom: 16px;
     right: 16px;
   }
-} 
+}
 /* Responsive Queries */
 @media (max-width: 1100px) {
   .structure-cards {
@@ -279,7 +294,7 @@
     padding: 0px 22px 22px; /* Ensures equal side margins */
   }
 
- .structure-card {
+  .structure-card {
     width: 100%;
     padding: 16px 12px;
     border-radius: 18px;
@@ -311,7 +326,7 @@
     transform: rotate(-45deg) translate(-10px, -20px);
   }
 }
-@media (max-height: 670px){
+@media (max-height: 670px) {
   .structure-card {
     width: 85vw;
     max-width: 100%;
@@ -327,5 +342,44 @@
   .structure-card h3 {
     font-size: 1.15rem;
     margin-bottom: 12px;
+  }
+}
+
+/* ✨ Disable hover effects for mobile and tablet (≤ 900px) */
+@media (max-width: 900px) {
+  /* 1. Disable hover content transform */
+  .structure-card:hover .card-content {
+    transform: none !important; /* Prevent zoom/perspective */
+  }
+
+  /* 2. Disable arrow animation & always keep it hidden */
+  .arrow-btn {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: none !important;
+  }
+
+  .structure-card:hover .arrow-btn {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: none !important;
+  }
+
+  /* 3. Disable background hover effects (no ::before/::after) */
+  .structure-card::before,
+  .structure-card::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .structure-card:hover::before,
+  .structure-card:hover::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* 4. Optional: remove hover cursor */
+  .structure-card {
+    cursor: default !important;
   }
 }
