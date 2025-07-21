@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Toaster, toast } from "sonner";
-
+import FooterSection from "../components/Footer/page";
 import API from "../../services/axios";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -162,7 +162,7 @@ export default function TeamEnvisionRecruitmentPage() {
       <Toaster richColors position="top-center" />
       <div className="min-h-screen relative bg-black flex flex-col items-center justify-center px-4 py-12">
         <div className="absolute inset-0 bg-gradient-to-br from-orange-700/30 via-black to-black" />
-        <div className="absolute -bottom-60 right-1/2 translate-x-1/2 w-80 h-72 bg-gradient-to-tl from-orange-500/60 to-transparent rounded-full blur-3xl z-0" />
+        <div className="absolute right-1/2 translate-x-1/2 w-80 h-72 bg-gradient-to-tl from-orange-500/60 to-transparent rounded-full blur-3xl z-0" />
         <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
           <button onClick={navigateToMain} className="hover:opacity-80">
             <Image
@@ -567,6 +567,9 @@ export default function TeamEnvisionRecruitmentPage() {
             isActive={isTransitioning}
           />
         )}
+      </div>
+      <div>
+        <FooterSection />
       </div>
     </LenisWrapper>
   );
