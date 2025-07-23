@@ -95,9 +95,9 @@ const StructureSection = () => {
             <div className="card-content">
               <h3>Committees</h3>
               <p>
-                The backbone of Aaruush, ensuring seamless execution by managing
-                logistics, hospitality, sponsorships, marketing, and more. They
-                handle the fest&#39;s planning, outreach, and operations.
+                Blueprints, grand moves, and smooth execution. Our Committees form the backbone of each chapter of Aaruush. From outlining the grand plan to initiating strategies or bringing events to life, this team keeps the fest going with flawless finesse.
+                Dream, decide, do.
+
               </p>
             </div>
             <ArrowButton onClick={() => handleCardClick("/Committees")} />
@@ -111,10 +111,9 @@ const StructureSection = () => {
             <div className="card-content">
               <h3>Domains</h3>
               <p>
-                The core of Aaruush&#39;s technical and managerial events,
-                covering diverse fields such as AI, robotics, cybersecurity,
-                business strategy, and sustainability, fostering innovation and
-                competition.
+                Where engineering becomes adventure. Domains are your entry to hands-on technology, innovations, and creative sparks. Enter, solve real-world problems, create the next revolution, and leave your impact.
+
+
               </p>
             </div>
             <ArrowButton onClick={() => handleCardClick("/Domains")} />
@@ -128,9 +127,7 @@ const StructureSection = () => {
             <div className="card-content">
               <h3>Teams</h3>
               <p>
-                Specialized groups driving key aspects like design, tech, media,
-                and content. These teams bring Aaruush to life through branding,
-                digital presence, and innovative solutions.
+                The force behind the process. Our teams bring the technological advantage, take our story outside campus, and see that innovation never ends. By linking talent, skills, and new horizons, they power all success at Aaruush.
               </p>
             </div>
             <ArrowButton onClick={() => handleCardClick("/Teams")} />
