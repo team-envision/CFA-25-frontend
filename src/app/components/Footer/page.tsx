@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-
+import { Smartphone } from "lucide-react";
 const Footer = () => {
   return (
     <div className="footer bottom-0 w-[100vw] min-h-[25vh] bg-black z-20 flex flex-col lg:flex-row px-4 sm:px-6 lg:px-[5vw] pt-4 lg:pt-[2vw] pb-4 box-border ">
@@ -86,6 +86,14 @@ const Footer = () => {
               height={16.01}
               className="object-contain"
             />
+          </Link>
+          <Link
+            href="https://linktr.ee/Aaruushconnect"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition-opacity"
+          >
+            <Smartphone strokeWidth={2} size={18} />
           </Link>
         </div>
       </div>
