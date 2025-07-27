@@ -6,6 +6,7 @@ import React from "react";
 import { useScrollManager } from "@/app/context/ScrollContext"; // ADDED: The new navigation logic
 import "./StructureSection.css"; // RESTORED: Your original CSS import path
 import Particles from "../Particles"; // RESTORED: Your original Particles import path
+import { ArrowUpRight } from "lucide-react";
 
 // This is your original ArrowButton component, unchanged.
 const ArrowButton = ({ onClick }: { onClick?: () => void }) => (
@@ -17,21 +18,7 @@ const ArrowButton = ({ onClick }: { onClick?: () => void }) => (
       onClick?.();
     }}
   >
-    <svg
-      width="32"
-      height="32"
-      viewBox="0 0 32 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M8 16H24" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
-      <path
-        d="M18 10L24 16L18 22"
-        stroke="#fff"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-    </svg>
+    <ArrowUpRight size={35} strokeWidth={3} />
   </button>
 );
 
@@ -95,9 +82,11 @@ const StructureSection = () => {
             <div className="card-content">
               <h3>Committees</h3>
               <p>
-                Blueprints, grand moves, and smooth execution. Our Committees form the backbone of each chapter of Aaruush. From outlining the grand plan to initiating strategies or bringing events to life, this team keeps the fest going with flawless finesse.
-                Dream, decide, do.
-
+                Blueprints, grand moves, and smooth execution. Our Committees
+                form the backbone of each chapter of Aaruush. From outlining the
+                grand plan to initiating strategies or bringing events to life,
+                this team keeps the fest going with flawless finesse. Dream,
+                decide, do.
               </p>
             </div>
             <ArrowButton onClick={() => handleCardClick("/Committees")} />
@@ -111,9 +100,10 @@ const StructureSection = () => {
             <div className="card-content">
               <h3>Domains</h3>
               <p>
-                Where engineering becomes adventure. Domains are your entry to hands-on technology, innovations, and creative sparks. Enter, solve real-world problems, create the next revolution, and leave your impact.
-
-
+                Where engineering becomes adventure. Domains are your entry to
+                hands-on technology, innovations, and creative sparks. Enter,
+                solve real-world problems, create the next revolution, and leave
+                your impact.
               </p>
             </div>
             <ArrowButton onClick={() => handleCardClick("/Domains")} />
@@ -127,7 +117,10 @@ const StructureSection = () => {
             <div className="card-content">
               <h3>Teams</h3>
               <p>
-                The force behind the process. Our teams bring the technological advantage, take our story outside campus, and see that innovation never ends. By linking talent, skills, and new horizons, they power all success at Aaruush.
+                The force behind the process. Our teams bring the technological
+                advantage, take our story outside campus, and see that
+                innovation never ends. By linking talent, skills, and new
+                horizons, they power all success at Aaruush.
               </p>
             </div>
             <ArrowButton onClick={() => handleCardClick("/Teams")} />

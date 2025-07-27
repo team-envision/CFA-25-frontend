@@ -160,7 +160,7 @@
   border: none;
   outline: none;
   cursor: pointer;
-  transform: translate(0, 0) rotate(-45deg);
+  /* transform: translate(0, 0) rotate(-45deg); */
   transition: transform 1s ease, opacity 1s ease;
   z-index: 2;
   padding: 0;
@@ -168,19 +168,19 @@
   pointer-events: none;
 }
 
-.arrow-btn svg {
+/* .arrow-btn svg {
   width: 50px;
   height: 50px;
 }
 
 .arrow-btn svg path {
   stroke: #fff;
-}
+} */
 
 .structure-card:hover .arrow-btn {
   opacity: 1;
   pointer-events: auto;
-  transform: rotate(-45deg) translate(-15px, -30px);
+  transform: translate(-30px, -20px);
 }
 
 .structure-card:focus-visible {
@@ -261,6 +261,12 @@
     border-radius: 20px;
   }
 
+  .structure-card h3 {
+    /* font-size: 2rem;
+  font-weight: 700; */
+    margin-bottom: 10px;
+  }
+
   .arrow-btn {
     bottom: 12px;
     right: 12px;
@@ -302,12 +308,12 @@
   }
 
   .structure-card p {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
   }
 
   .arrow-btn {
     bottom: 15px;
-    right: 6px;
+    right: 15px;
   }
 
   .arrow-btn svg {
@@ -341,20 +347,18 @@
 
   .structure-cards {
     flex-direction: column;
-    gap: 12px;
+    gap: 0.7rem;
     padding: 0;
     margin: 0;
   }
 
   .structure-card {
-    height: 26vh;
-    width: 90vw;
-    max-width: 400px;
-    padding: 5px 10px;
-    margin: 0 auto;
+    height: auto;
+    width: 95%;
+    padding: 1rem 1.5rem;
     border-radius: 20px;
-    box-sizing: border-box;
-    overflow: hidden;
+    /* box-sizing: border-box;
+    overflow: hidden; */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -362,10 +366,10 @@
     background: #f4f4f40d; /* maintain card shade */
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.14);
   }
-up
-  .structure-card h3 {
+
+  up .structure-card h3 {
     font-size: 1.3rem;
-    margin-bottom: 4px;
+    margin-bottom: 0px;
   }
 
   .structure-card p {
@@ -373,6 +377,7 @@ up
     overflow: visible;
     text-overflow: unset;
     display: block;
+    font-size: 0.82rem;
   }
 
   .structure-card:hover .arrow-btn {

@@ -336,12 +336,12 @@ const ScalingCardWrapper: React.FC<ScalingCardWrapperProps> = ({
   return (
     <div
       ref={container}
-      className=" sticky top-0 flex items-center justify-center h-[100%]"
+      className=" sticky top-0 flex items-center justify-center h-full"
     >
       <motion.div
         style={{
           scale,
-          top: `calc(-5vh + ${index * 25}px)`,
+          top: `calc(-5vh + ${index * 1}px)`,
         }}
         className="relative h-full w-full origin-top"
       >
