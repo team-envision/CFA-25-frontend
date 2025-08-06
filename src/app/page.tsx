@@ -1,3 +1,4 @@
+// src/app/page.tsx
 "use client";
 
 import { useRef, useEffect, useState, ReactNode, useCallback } from "react";
@@ -27,11 +28,51 @@ const defaultPageSequence = ["main", "structure", "teams"];
 const recruitmentPageIds = ["recruitment", "envision_recruitment"];
 const cubicBezierEasing: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
+// Smooth interpolation function for responsive scroll threshold
+const getInterpolatedThreshold = () => {
+  const width = window.innerWidth;
+  
+  // Clamp width between 320px (mobile) and 1920px (large desktop)
+  const clampedWidth = Math.max(320, Math.min(1920, width));
+  
+  // Linear interpolation from 0.25 (mobile) to 0.5 (desktop)
+  const minThreshold = 0.25;
+  const maxThreshold = 0.5;
+  const minWidth = 320;
+  const maxWidth = 1920;
+  
+  const progress = (clampedWidth - minWidth) / (maxWidth - minWidth);
+  return minThreshold + (progress * (maxThreshold - minThreshold));
+};
+
+// Advanced responsive threshold with device detection
+const getAdvancedThreshold = () => {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const aspectRatio = width / height;
+  const userAgent = navigator.userAgent;
+  
+  // Detect device type
+  const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+  const isTablet = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(userAgent);
+  
+  if (isMobile && !isTablet) {
+    // Mobile phones
+    return aspectRatio > 1 ? 0.3 : 0.25; // Landscape vs Portrait
+  } else if (isTablet) {
+    // Tablets
+    return aspectRatio > 1 ? 0.4 : 0.35; // Landscape vs Portrait
+  } else {
+    // Desktop/Laptop
+    if (width >= 1440) return 0.5;
+    if (width >= 1024) return 0.45;
+    return 0.4;
+  }
+};
+
 export default function HomePage() {
   const container = useRef<HTMLDivElement>(null);
   const lenis = useLenis();
-  // Remove this line since it's not used:
-  // const router = useRouter();
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ["start start", "end end"],
@@ -50,6 +91,9 @@ export default function HomePage() {
   >(null);
   const [actualVH, setActualVH] = useState(0);
 
+  // NEW: State for responsive scroll threshold
+  const [scrollThreshold, setScrollThreshold] = useState(0.25);
+
   // Add recruitment navigation hook
   const {
     isTransitioning,
@@ -58,7 +102,7 @@ export default function HomePage() {
     onAnimationStart,
   } = useRecruitmentNavigation();
 
-  // Enhanced mobile viewport detection
+  // Enhanced mobile viewport detection with threshold calculation
   useEffect(() => {
     const updateViewport = () => {
       const isMobileDevice =
@@ -77,6 +121,11 @@ export default function HomePage() {
       } else {
         setActualVH(window.innerHeight);
       }
+
+      // NEW: Update scroll threshold based on viewport
+      setScrollThreshold(getInterpolatedThreshold());
+      // Alternative: Use advanced threshold instead
+      // setScrollThreshold(getAdvancedThreshold());
     };
 
     updateViewport();
@@ -196,7 +245,6 @@ export default function HomePage() {
     navigate("structure", "button");
   }, [navigate]);
 
-  // NEW: Scroll to top function for logo click
   const scrollToTop = useCallback(() => {
     if (lenis) {
       // Reset to default sequence if not already
@@ -260,10 +308,17 @@ export default function HomePage() {
     setNavigationSource(null);
   };
 
-  const currentSequence = currentPageSequence.slice(0, 3);
+  // Enhanced transform logic with responsive threshold
   const scale1 = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
   const scale2 = useTransform(scrollYProgress, [0.33, 1], [1, 0.9]);
   const scale3 = useTransform(scrollYProgress, [0.66, 1], [1, 0.95]);
+
+  // NEW: Responsive transform to move first page upward using dynamic threshold
+  const firstPageY = useTransform(
+    scrollYProgress, 
+    [0, scrollThreshold, 1], 
+    [0, 0, -(actualVH || window.innerHeight) * 1.2]
+  );
 
   const scaleArray = [scale1, scale2, scale3];
 
@@ -285,8 +340,15 @@ export default function HomePage() {
         className="relative bg-black"
         suppressHydrationWarning={true}
       >
-        {currentSequence.map((id, i) => (
-          <ScalingCardWrapper key={id} scale={scaleArray[i]} index={i}>
+
+        {currentPageSequence.slice(0, 3).map((id, i) => (
+          <ScalingCardWrapper 
+            key={id} 
+            scale={scaleArray[i]} 
+            index={i}
+            // Apply upward movement to first page only with responsive threshold
+            additionalY={i === 0 ? firstPageY : undefined}
+          >
             {pageComponentMap[id]}
           </ScalingCardWrapper>
         ))}
@@ -320,28 +382,33 @@ export default function HomePage() {
   );
 }
 
+// Updated wrapper to handle additional Y transform with responsive behavior
 interface ScalingCardWrapperProps {
   children: ReactNode;
   scale: MotionValue<number>;
   index: number;
+  additionalY?: MotionValue<number>;
 }
 
 const ScalingCardWrapper: React.FC<ScalingCardWrapperProps> = ({
   children,
   scale,
   index,
+  additionalY,
 }) => {
   const container = useRef<HTMLDivElement>(null);
 
   return (
     <div
       ref={container}
-      className=" sticky top-0 flex items-center justify-center h-full"
+      className="sticky top-0 flex items-center justify-center h-full"
     >
       <motion.div
         style={{
           scale,
           top: `calc(-5vh + ${index * 1}px)`,
+          // Apply responsive Y transform for first page
+          y: additionalY || 0,
         }}
         className="relative h-full w-full origin-top"
       >
