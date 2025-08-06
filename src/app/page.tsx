@@ -28,8 +28,13 @@ const defaultPageSequence = ["main", "structure", "teams"];
 const recruitmentPageIds = ["recruitment", "envision_recruitment"];
 const cubicBezierEasing: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-// Smooth interpolation function for responsive scroll threshold
+// FIXED: Smooth interpolation function with SSR safety - no early return
 const getInterpolatedThreshold = () => {
+  // Return default mobile threshold during SSR or if window is not available
+  if (typeof window === "undefined") {
+    return 0.25;
+  }
+  
   const width = window.innerWidth;
   
   // Clamp width between 320px (mobile) and 1920px (large desktop)
@@ -43,31 +48,6 @@ const getInterpolatedThreshold = () => {
   
   const progress = (clampedWidth - minWidth) / (maxWidth - minWidth);
   return minThreshold + (progress * (maxThreshold - minThreshold));
-};
-
-// Advanced responsive threshold with device detection
-const getAdvancedThreshold = () => {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  const aspectRatio = width / height;
-  const userAgent = navigator.userAgent;
-  
-  // Detect device type
-  const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-  const isTablet = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(userAgent);
-  
-  if (isMobile && !isTablet) {
-    // Mobile phones
-    return aspectRatio > 1 ? 0.3 : 0.25; // Landscape vs Portrait
-  } else if (isTablet) {
-    // Tablets
-    return aspectRatio > 1 ? 0.4 : 0.35; // Landscape vs Portrait
-  } else {
-    // Desktop/Laptop
-    if (width >= 1440) return 0.5;
-    if (width >= 1024) return 0.45;
-    return 0.4;
-  }
 };
 
 export default function HomePage() {
@@ -89,10 +69,8 @@ export default function HomePage() {
   const [navigationSource, setNavigationSource] = useState<
     "scroll" | "button" | null
   >(null);
-  const [actualVH, setActualVH] = useState(0);
-
-  // NEW: State for responsive scroll threshold
-  const [scrollThreshold, setScrollThreshold] = useState(0.25);
+  const [actualVH, setActualVH] = useState(800); // Default fallback value
+  const [scrollThreshold, setScrollThreshold] = useState(0.25); // Default to mobile threshold
 
   // Add recruitment navigation hook
   const {
@@ -102,9 +80,11 @@ export default function HomePage() {
     onAnimationStart,
   } = useRecruitmentNavigation();
 
-  // Enhanced mobile viewport detection with threshold calculation
+  // FIXED: Enhanced mobile viewport detection - runs immediately on client side
   useEffect(() => {
     const updateViewport = () => {
+      if (typeof window === "undefined") return;
+      
       const isMobileDevice =
         window.innerWidth <= 768 ||
         /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -122,13 +102,13 @@ export default function HomePage() {
         setActualVH(window.innerHeight);
       }
 
-      // NEW: Update scroll threshold based on viewport
+      // Update scroll threshold based on viewport
       setScrollThreshold(getInterpolatedThreshold());
-      // Alternative: Use advanced threshold instead
-      // setScrollThreshold(getAdvancedThreshold());
     };
 
+    // Run immediately on mount
     updateViewport();
+
     window.addEventListener("resize", updateViewport);
     window.addEventListener("orientationchange", updateViewport);
 
@@ -143,7 +123,7 @@ export default function HomePage() {
         window.visualViewport?.removeEventListener("resize", updateViewport);
       }
     };
-  }, []);
+  }, []); // Empty dependency array - run once on mount
 
   // Direct page loading function with enhanced mobile positioning
   const loadPageDirectly = useCallback(
@@ -156,7 +136,7 @@ export default function HomePage() {
 
         setTimeout(() => {
           if (lenis) {
-            const vh = actualVH || window.innerHeight;
+            const vh = actualVH;
             const targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
             lenis.scrollTo(targetPosition, { duration: 1.0 });
           }
@@ -170,7 +150,7 @@ export default function HomePage() {
 
         setTimeout(() => {
           if (lenis) {
-            const vh = actualVH || window.innerHeight;
+            const vh = actualVH;
             let targetPosition;
 
             switch (targetId) {
@@ -313,15 +293,16 @@ export default function HomePage() {
   const scale2 = useTransform(scrollYProgress, [0.33, 1], [1, 0.9]);
   const scale3 = useTransform(scrollYProgress, [0.66, 1], [1, 0.95]);
 
-  // NEW: Responsive transform to move first page upward using dynamic threshold
+  // Responsive transform with safe fallback
   const firstPageY = useTransform(
     scrollYProgress, 
     [0, scrollThreshold, 1], 
-    [0, 0, -(actualVH || window.innerHeight) * 1.2]
+    [0, 0, -actualVH * 1.2]
   );
 
   const scaleArray = [scale1, scale2, scale3];
 
+  // REMOVED: No longer returning null - render immediately
   return (
     <ReactLenis
       root
@@ -340,7 +321,6 @@ export default function HomePage() {
         className="relative bg-black"
         suppressHydrationWarning={true}
       >
-
         {currentPageSequence.slice(0, 3).map((id, i) => (
           <ScalingCardWrapper 
             key={id} 
