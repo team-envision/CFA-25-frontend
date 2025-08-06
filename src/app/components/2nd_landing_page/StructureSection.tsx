@@ -2,11 +2,11 @@
 "use client";
 
 import React from "react";
-// REMOVED: import { useRouter } from 'next/navigation';
 import { useScrollManager } from "@/app/context/ScrollContext"; // ADDED: The new navigation logic
 import "./StructureSection.css"; // RESTORED: Your original CSS import path
 import Particles from "../Particles"; // RESTORED: Your original Particles import path
 import { ArrowUpRight } from "lucide-react";
+import { useIsMobile } from "../Hooks/useIsMobile";
 
 // This is your original ArrowButton component, unchanged.
 const ArrowButton = ({ onClick }: { onClick?: () => void }) => (
@@ -23,8 +23,8 @@ const ArrowButton = ({ onClick }: { onClick?: () => void }) => (
 );
 
 const StructureSection = () => {
-  // REMOVED: const router = useRouter();
   const { navigateToPage } = useScrollManager(); // ADDED: Get the function from our context
+  const isMobile = useIsMobile();
 
   // This function now correctly handles the path format from your original design.
   const handleCardClick = (pagePath: string) => {
@@ -49,17 +49,19 @@ const StructureSection = () => {
           zIndex: 0,
         }}
       >
-        <Particles
-          particleColors={["#ff6a00", "#ffa500", "#ffb347"]} // Only orange tones
-          particleCount={90}
-          particleSpread={35}
-          speed={0.15}
-          particleBaseSize={150}
-          moveParticlesOnHover={false}
-          alphaParticles={true}
-          disableRotation={true}
-          cameraDistance={30}
-        />
+        {!isMobile && (
+          <Particles
+            particleColors={["#ff6a00", "#ffa500", "#ffb347"]} // Only orange tones
+            particleCount={90}
+            particleSpread={35}
+            speed={0.15}
+            particleBaseSize={150}
+            moveParticlesOnHover={false}
+            alphaParticles={true}
+            disableRotation={true}
+            cameraDistance={30}
+          />
+        )}
       </div>
       <div
         style={{

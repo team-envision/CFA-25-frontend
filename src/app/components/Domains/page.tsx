@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import FooterSection from "../Footer/page";
 import { useScrollManager } from "@/app/context/ScrollContext";
 import Image from "next/image";
+import { useIsMobile } from "../Hooks/useIsMobile";
 
 // Dynamically import Particles to avoid SSR issues
 const Particles = dynamic(() => import("../Particles"), { ssr: false });
@@ -79,22 +80,25 @@ const DomainDetails = [
 
 const Domains = () => {
   const { navigateToPage } = useScrollManager();
+  const isMobile = useIsMobile();
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden flex flex-col">
       {/* Background Particles */}
       <div className="absolute inset-0 -z-10 bg-black">
-        <Particles
-          particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
-          particleCount={90}
-          particleSpread={35}
-          speed={0.15}
-          particleBaseSize={150}
-          moveParticlesOnHover={false}
-          alphaParticles={true}
-          disableRotation={true}
-          cameraDistance={30}
-        />
+        {!isMobile && (
+          <Particles
+            particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
+            particleCount={90}
+            particleSpread={35}
+            speed={0.15}
+            particleBaseSize={150}
+            moveParticlesOnHover={false}
+            alphaParticles={true}
+            disableRotation={true}
+            cameraDistance={30}
+          />
+        )}
       </div>
 
       {/* Main Content */}
