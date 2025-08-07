@@ -31,9 +31,10 @@ const CardWrapper: React.FC<CardWrapperProps> = ({
         exit="exit"
         transition={transition}
         onAnimationComplete={onAnimationComplete}
-        className='relative h-full w-full'
-        style={{ touchAction: 'auto' }} // ← ADDED sync-touch equivalent
-        drag={false} // ← ENSURES NO DRAG INTERFERENCE
+        // OPTIMIZED: Added will-change-transform and touch optimizations
+        className='relative h-full w-full will-change-transform'
+        style={{ touchAction: 'auto' }}
+        drag={false}
       >
         {children}
       </motion.div>

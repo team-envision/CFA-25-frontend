@@ -9,6 +9,8 @@ import {
   useTransform,
   motion,
   MotionValue,
+  useReducedMotion,
+  useMotionValue,
 } from "motion/react";
 import { useScrollManager } from "./context/ScrollContext";
 import RecruitmentPageTransition from "./components/RecruitmentPageTransition";
@@ -28,28 +30,6 @@ const defaultPageSequence = ["main", "structure", "teams"];
 const recruitmentPageIds = ["recruitment", "envision_recruitment"];
 const cubicBezierEasing: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-// FIXED: Smooth interpolation function with SSR safety - no early return
-const getInterpolatedThreshold = () => {
-  // Return default mobile threshold during SSR or if window is not available
-  if (typeof window === "undefined") {
-    return 0.25;
-  }
-  
-  const width = window.innerWidth;
-  
-  // Clamp width between 320px (mobile) and 1920px (large desktop)
-  const clampedWidth = Math.max(320, Math.min(1920, width));
-  
-  // Linear interpolation from 0.25 (mobile) to 0.5 (desktop)
-  const minThreshold = 0.25;
-  const maxThreshold = 0.5;
-  const minWidth = 320;
-  const maxWidth = 1920;
-  
-  const progress = (clampedWidth - minWidth) / (maxWidth - minWidth);
-  return minThreshold + (progress * (maxThreshold - minThreshold));
-};
-
 export default function HomePage() {
   const container = useRef<HTMLDivElement>(null);
   const lenis = useLenis();
@@ -57,6 +37,12 @@ export default function HomePage() {
     target: container,
     offset: ["start start", "end end"],
   });
+
+  // Performance optimization for reduced motion
+  const prefersReducedMotion = useReducedMotion();
+  
+  // Static MotionValue for reduced motion fallback
+  const staticScale = useMotionValue(1);
 
   const { setNavigateToPage, animationDirection, setAnimationDirection } =
     useScrollManager();
@@ -69,8 +55,7 @@ export default function HomePage() {
   const [navigationSource, setNavigationSource] = useState<
     "scroll" | "button" | null
   >(null);
-  const [actualVH, setActualVH] = useState(800); // Default fallback value
-  const [scrollThreshold, setScrollThreshold] = useState(0.25); // Default to mobile threshold
+  const [actualVH, setActualVH] = useState(800);
 
   // Add recruitment navigation hook
   const {
@@ -80,7 +65,7 @@ export default function HomePage() {
     onAnimationStart,
   } = useRecruitmentNavigation();
 
-  // FIXED: Enhanced mobile viewport detection - runs immediately on client side
+  // Enhanced mobile viewport detection
   useEffect(() => {
     const updateViewport = () => {
       if (typeof window === "undefined") return;
@@ -101,14 +86,9 @@ export default function HomePage() {
       } else {
         setActualVH(window.innerHeight);
       }
-
-      // Update scroll threshold based on viewport
-      setScrollThreshold(getInterpolatedThreshold());
     };
 
-    // Run immediately on mount
     updateViewport();
-
     window.addEventListener("resize", updateViewport);
     window.addEventListener("orientationchange", updateViewport);
 
@@ -123,9 +103,9 @@ export default function HomePage() {
         window.visualViewport?.removeEventListener("resize", updateViewport);
       }
     };
-  }, []); // Empty dependency array - run once on mount
+  }, []);
 
-  // Direct page loading function with enhanced mobile positioning
+  // Direct page loading function
   const loadPageDirectly = useCallback(
     (targetId: string) => {
       if (targetId === "committees" || targetId === "domains") {
@@ -227,12 +207,10 @@ export default function HomePage() {
 
   const scrollToTop = useCallback(() => {
     if (lenis) {
-      // Reset to default sequence if not already
       if (currentPageSequence !== defaultPageSequence) {
         setCurrentPageSequence(defaultPageSequence);
         setIsAnimating(false);
       }
-      // Scroll to top and set active page to main
       setActivePageId("main");
       lenis.scrollTo(0, { duration: 1.5 });
     }
@@ -288,30 +266,28 @@ export default function HomePage() {
     setNavigationSource(null);
   };
 
-  // Enhanced transform logic with responsive threshold
+  // Transform logic with reduced motion fallback
   const scale1 = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
   const scale2 = useTransform(scrollYProgress, [0.33, 1], [1, 0.9]);
   const scale3 = useTransform(scrollYProgress, [0.66, 1], [1, 0.95]);
 
-  // Responsive transform with safe fallback
-  const firstPageY = useTransform(
-    scrollYProgress, 
-    [0, scrollThreshold, 1], 
-    [0, 0, -actualVH * 1.2]
-  );
+  // Apply reduced motion fallback with proper MotionValue types
+  const effectiveScale1 = prefersReducedMotion ? staticScale : scale1;
+  const effectiveScale2 = prefersReducedMotion ? staticScale : scale2;
+  const effectiveScale3 = prefersReducedMotion ? staticScale : scale3;
 
-  const scaleArray = [scale1, scale2, scale3];
+  const scaleArray = [effectiveScale1, effectiveScale2, effectiveScale3];
 
-  // REMOVED: No longer returning null - render immediately
   return (
     <ReactLenis
       root
       options={{
         syncTouch: isMobile,
-        syncTouchLerp: isMobile ? 0.08 : undefined,
-        touchInertiaMultiplier: isMobile ? 20 : undefined,
-        touchMultiplier: isMobile ? 0.9 : undefined,
-        gestureOrientation: isMobile ? "vertical" : undefined,
+        // Optimized mobile settings for better performance
+        syncTouchLerp: isMobile ? 0.08 : undefined, // smoother (was 0.08)
+        touchInertiaMultiplier: isMobile ? 20 : undefined, // lighter (was 20)
+        touchMultiplier: isMobile ? 0.9 : undefined, // lighter (was 0.9)
+        gestureOrientation: "vertical", // always vertical
         infinite: false,
         smoothWheel: !isMobile,
       }}
@@ -321,16 +297,15 @@ export default function HomePage() {
         className="relative bg-black"
         suppressHydrationWarning={true}
       >
+        {/* Optimized rendering for main 3 pages with performance fixes */}
         {currentPageSequence.slice(0, 3).map((id, i) => (
-          <ScalingCardWrapper 
+          <OptimizedScalingCardWrapper 
             key={id} 
             scale={scaleArray[i]} 
             index={i}
-            // Apply upward movement to first page only with responsive threshold
-            additionalY={i === 0 ? firstPageY : undefined}
           >
             {pageComponentMap[id]}
-          </ScalingCardWrapper>
+          </OptimizedScalingCardWrapper>
         ))}
 
         <AnimatePresence mode="popLayout">
@@ -362,19 +337,17 @@ export default function HomePage() {
   );
 }
 
-// Updated wrapper to handle additional Y transform with responsive behavior
-interface ScalingCardWrapperProps {
+// Optimized wrapper with performance fixes
+interface OptimizedScalingCardWrapperProps {
   children: ReactNode;
   scale: MotionValue<number>;
   index: number;
-  additionalY?: MotionValue<number>;
 }
 
-const ScalingCardWrapper: React.FC<ScalingCardWrapperProps> = ({
+const OptimizedScalingCardWrapper: React.FC<OptimizedScalingCardWrapperProps> = ({
   children,
   scale,
   index,
-  additionalY,
 }) => {
   const container = useRef<HTMLDivElement>(null);
 
@@ -382,15 +355,13 @@ const ScalingCardWrapper: React.FC<ScalingCardWrapperProps> = ({
     <div
       ref={container}
       className="sticky top-0 flex items-center justify-center h-full"
+      // FIXED: Moved top styling to static outer container to avoid layout thrashing
+      style={{ top: `calc(-5vh + ${index * 1}px)` }}
     >
       <motion.div
-        style={{
-          scale,
-          top: `calc(-5vh + ${index * 1}px)`,
-          // Apply responsive Y transform for first page
-          y: additionalY || 0,
-        }}
-        className="relative h-full w-full origin-top"
+        style={{ scale }}
+        // FIXED: Added will-change-transform for GPU optimization
+        className="relative h-full w-full origin-top will-change-transform"
       >
         {children}
       </motion.div>

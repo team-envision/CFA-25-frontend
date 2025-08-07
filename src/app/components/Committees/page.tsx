@@ -7,9 +7,6 @@ import FooterSection from "../Footer/page";
 import { useScrollManager } from "@/app/context/ScrollContext";
 import { useIsMobile } from "../Hooks/useIsMobile";
 
-// Dynamically import Particles to avoid SSR issues
-const Particles = dynamic(() => import("../Particles"), { ssr: false });
-
 // Committee Data
 const CommitteeNames = [
   {
@@ -82,21 +79,7 @@ const Committees = () => {
   return (
     <div className="relative w-full min-h-screen overflow-hidden flex flex-col">
       {/* Background Particles */}
-      <div className="absolute inset-0 -z-10 bg-black">
-        {!isMobile && (
-          <Particles
-            particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
-            particleCount={90}
-            particleSpread={35}
-            speed={0.15}
-            particleBaseSize={150}
-            moveParticlesOnHover={false}
-            alphaParticles={true}
-            disableRotation={true}
-            cameraDistance={30}
-          />
-        )}
-      </div>
+      {/* Removed Particles effect and container div */}
       {/* Main Content */}
       <div className="flex-grow flex justify-center items-center px-4 py-6">
         <div className="relative w-full max-w-7xl lg:max-w-[90vw]">

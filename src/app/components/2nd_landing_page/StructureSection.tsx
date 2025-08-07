@@ -4,7 +4,6 @@
 import React from "react";
 import { useScrollManager } from "@/app/context/ScrollContext"; // ADDED: The new navigation logic
 import "./StructureSection.css"; // RESTORED: Your original CSS import path
-import Particles from "../Particles"; // RESTORED: Your original Particles import path
 import { ArrowUpRight } from "lucide-react";
 import { useIsMobile } from "../Hooks/useIsMobile";
 
@@ -38,31 +37,7 @@ const StructureSection = () => {
       className="structure-section"
       style={{ position: "relative", overflow: "hidden" }}
     >
-      <div
-        className="particles-bg"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 0,
-        }}
-      >
-        {!isMobile && (
-          <Particles
-            particleColors={["#ff6a00", "#ffa500", "#ffb347"]} // Only orange tones
-            particleCount={90}
-            particleSpread={35}
-            speed={0.15}
-            particleBaseSize={150}
-            moveParticlesOnHover={false}
-            alphaParticles={true}
-            disableRotation={true}
-            cameraDistance={30}
-          />
-        )}
-      </div>
+      {/* Removed Particles effect and container div */}
       <div
         style={{
           display: "flex",
