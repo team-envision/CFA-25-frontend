@@ -4,6 +4,7 @@ import React from "react";
 import { useScrollManager } from "@/app/context/ScrollContext";
 import FooterSection from "../Footer/page";
 import { useIsMobile } from "../Hooks/useIsMobile";
+import dynamic from "next/dynamic";
 
 
 const Teams = () => {
@@ -22,10 +23,26 @@ const Teams = () => {
     "Embedded Systems & Mechatronics",
   ];
 
+  const Particles = dynamic(() => import("../Particles"), { ssr: false });
+
   return (
     <div className="relative w-full min-h-screen overflow-hidden flex flex-col">
       {/* Background particles */}
-      {/* Removed Particles effect and container div */}
+      <div className="absolute top-0 left-0 w-full h-full -z-10 bg-black">
+        {!isMobile && (
+          <Particles
+            particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
+            particleCount={90}
+            particleSpread={35}
+            speed={0.15}
+            particleBaseSize={150}
+            moveParticlesOnHover={false}
+            alphaParticles={true}
+            disableRotation={true}
+            cameraDistance={30}
+          />
+        )}
+      </div>
 
       {/* Teams Section - Full Width */}
       <div className="flex-grow flex justify-center items-center px-4 py-6 ">

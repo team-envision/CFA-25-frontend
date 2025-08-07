@@ -6,6 +6,7 @@ import { useScrollManager } from "@/app/context/ScrollContext"; // ADDED: The ne
 import "./StructureSection.css"; // RESTORED: Your original CSS import path
 import { ArrowUpRight } from "lucide-react";
 import { useIsMobile } from "../Hooks/useIsMobile";
+import Particles from "../Particles";
 
 // This is your original ArrowButton component, unchanged.
 const ArrowButton = ({ onClick }: { onClick?: () => void }) => (
@@ -37,7 +38,22 @@ const StructureSection = () => {
       className="structure-section"
       style={{ position: "relative", overflow: "hidden" }}
     >
-      {/* Removed Particles effect and container div */}
+      {/* Particles effect background */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+        {!isMobile && (
+          <Particles
+            particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
+            particleCount={90}
+            particleSpread={35}
+            speed={0.15}
+            particleBaseSize={150}
+            moveParticlesOnHover={false}
+            alphaParticles={true}
+            disableRotation={true}
+            cameraDistance={30}
+          />
+        )}
+      </div>
       <div
         style={{
           display: "flex",
