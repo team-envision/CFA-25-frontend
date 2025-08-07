@@ -73,7 +73,7 @@ const StructureSection = () => {
             <div className="card-content">
               <h3>Committees</h3>
               <p>
-                The force behind the plan. Our committees shape the strategy, manage the flow, and execute every event with precision. With structure, vision, and flawless finesse, they make Aaruush a seamless celebration of innovation.
+                Blueprints, grand moves, and smooth execution. Committees form the backbone of each chapter of Aaruush. From outlining plans to implementing strategies well, this team ensures the fest runs with great finesse.
               </p>
             </div>
             <ArrowButton onClick={() => handleCardClick("/Committees")} />
@@ -87,7 +87,7 @@ const StructureSection = () => {
             <div className="card-content">
               <h3>Domains</h3>
               <p>
-                Where ideas take shape. Our domains offer a hands-on gateway to tech, design, and innovation. Solve real-world problems, build solutions that matter, and ignite change—one spark at a time.
+                Where engineering becomes adventure and fun. Domains are your entry to hands-on tech and innovation. With creative sparks, solve real problems boldly, create the next revolution, and leave your lasting impact here.
               </p>
             </div>
             <ArrowButton onClick={() => handleCardClick("/Domains")} />
@@ -101,7 +101,7 @@ const StructureSection = () => {
             <div className="card-content">
               <h3>Teams</h3>
               <p>
-                The force behind the process. Our teams bring the technological advantage, take our story outside campus, and see that innovation never ends. By linking talent, skills, and new horizons, they power all success at Aaruush.
+                The force behind the process. Our teams bring the technological advantage, take our story outside campus, and see that innovation never ends. By linking talent, skills, and new horizons, they power all success at Aaruush.
               </p>
             </div>
             <ArrowButton onClick={() => handleCardClick("/Teams")} />
