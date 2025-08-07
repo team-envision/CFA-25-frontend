@@ -26,6 +26,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Toaster, toast } from "sonner";
+import Link from "next/link";
+
 
 import API from "../../services/axios";
 import { useRecruitmentNavigation } from "../components/Hooks/useRecruitmentNavigation";
@@ -141,8 +143,23 @@ const RecruitmentForm: React.FC = () => {
     const toastId = toast.loading("Submitting your application...");
     try {
       await API.post("/cfa/users", { data });
-      toast.success("User added successfully!", { id: toastId });
-      form.reset();
+      
+  toast.success(
+    <div>
+      <p>User added successfully!</p>
+      <p>
+        Interested in tech and innovation?{" "}
+        <Link href="/Team_Envision_recruitment" className="underline text-blue-500">
+          Apply to Team Envision
+        </Link>
+        , the technical arm of Aaruush.
+      </p>
+    </div>,
+    { id: toastId }
+  );
+
+  form.reset();
+
     } catch (error: any) {
       const errorMessage =
         error?.response?.data?.message || "An unexpected error occurred.";
