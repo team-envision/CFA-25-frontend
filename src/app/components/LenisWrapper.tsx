@@ -31,6 +31,7 @@ const LenisWrapper: React.FC<LenisWrapperProps> = ({ children }) => {
         gestureOrientation: isMobile ? 'vertical' : undefined,
         infinite: false,
         smoothWheel: !isMobile,
+        
       }}
     >
       {children}

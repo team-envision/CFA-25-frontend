@@ -40,7 +40,7 @@ export default function HomePage() {
 
   // Performance optimization for reduced motion
   const prefersReducedMotion = useReducedMotion();
-  
+
   // Static MotionValue for reduced motion fallback
   const staticScale = useMotionValue(1);
 
@@ -69,7 +69,7 @@ export default function HomePage() {
   useEffect(() => {
     const updateViewport = () => {
       if (typeof window === "undefined") return;
-      
+
       const isMobileDevice =
         window.innerWidth <= 768 ||
         /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -267,9 +267,26 @@ export default function HomePage() {
   };
 
   // Transform logic with reduced motion fallback
-  const scale1 = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
-  const scale2 = useTransform(scrollYProgress, [0.33, 1], [1, 0.9]);
-  const scale3 = useTransform(scrollYProgress, [0.66, 1], [1, 0.95]);
+  const scale1 = useTransform(
+    scrollYProgress,
+    [0, 1],
+    // ENHANCED: More dramatic scaling on mobile
+    isMobile ? [1, 0.75] : [1, 0.85] // Mobile: scales to 75%, Desktop: 85%
+  );
+
+  const scale2 = useTransform(
+    scrollYProgress,
+    [0.33, 1],
+    // ENHANCED: More dramatic scaling on mobile
+    isMobile ? [1, 0.8] : [1, 0.9] // Mobile: scales to 80%, Desktop: 90%
+  );
+
+  const scale3 = useTransform(
+    scrollYProgress,
+    [0.66, 1],
+    // ENHANCED: More dramatic scaling on mobile
+    isMobile ? [1, 0.85] : [1, 0.95] // Mobile: scales to 85%, Desktop: 95%
+  );
 
   // Apply reduced motion fallback with proper MotionValue types
   const effectiveScale1 = prefersReducedMotion ? staticScale : scale1;
@@ -277,6 +294,8 @@ export default function HomePage() {
   const effectiveScale3 = prefersReducedMotion ? staticScale : scale3;
 
   const scaleArray = [effectiveScale1, effectiveScale2, effectiveScale3];
+  
+  
 
   return (
     <ReactLenis
@@ -299,11 +318,7 @@ export default function HomePage() {
       >
         {/* Optimized rendering for main 3 pages with performance fixes */}
         {currentPageSequence.slice(0, 3).map((id, i) => (
-          <OptimizedScalingCardWrapper 
-            key={id} 
-            scale={scaleArray[i]} 
-            index={i}
-          >
+          <OptimizedScalingCardWrapper key={id} scale={scaleArray[i]} index={i}>
             {pageComponentMap[id]}
           </OptimizedScalingCardWrapper>
         ))}
@@ -355,12 +370,18 @@ const OptimizedScalingCardWrapper: React.FC<OptimizedScalingCardWrapperProps> = 
     <div
       ref={container}
       className="sticky top-0 flex items-center justify-center h-full"
-      // FIXED: Moved top styling to static outer container to avoid layout thrashing
-      style={{ top: `calc(-5vh + ${index * 1}px)` }}
+      style={{ 
+        top: `calc(-5vh + ${index * 1}px)`,
+        // ADD THIS: Force the last page to be the scroll boundary
+        ...(index === 2 && {
+          position: 'sticky',
+          bottom: '0',
+          zIndex: 999,
+        })
+      }}
     >
       <motion.div
         style={{ scale }}
-        // FIXED: Added will-change-transform for GPU optimization
         className="relative h-full w-full origin-top will-change-transform"
       >
         {children}
@@ -368,3 +389,4 @@ const OptimizedScalingCardWrapper: React.FC<OptimizedScalingCardWrapperProps> = 
     </div>
   );
 };
+

@@ -6,7 +6,6 @@ import FooterSection from "../Footer/page";
 import { useIsMobile } from "../Hooks/useIsMobile";
 import dynamic from "next/dynamic";
 
-
 const Teams = () => {
   const { navigateToPage } = useScrollManager();
   const isMobile = useIsMobile();
@@ -26,22 +25,20 @@ const Teams = () => {
   const Particles = dynamic(() => import("../Particles"), { ssr: false });
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden flex flex-col">
+    <div className="relative w-full h-full overflow-hidden flex flex-col gap-0">
       {/* Background particles */}
       <div className="absolute top-0 left-0 w-full h-full -z-10 bg-black">
-        {!isMobile && (
-          <Particles
-            particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
-            particleCount={90}
-            particleSpread={35}
-            speed={0.15}
-            particleBaseSize={150}
-            moveParticlesOnHover={false}
-            alphaParticles={true}
-            disableRotation={true}
-            cameraDistance={30}
-          />
-        )}
+        <Particles
+          particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
+          particleCount={90}
+          particleSpread={35}
+          speed={0.15}
+          particleBaseSize={150}
+          moveParticlesOnHover={false}
+          alphaParticles={true}
+          disableRotation={true}
+          cameraDistance={30}
+        />
       </div>
 
       {/* Teams Section - Full Width */}
@@ -161,7 +158,7 @@ const Teams = () => {
       </div>
 
       {/* Footer Section */}
-      <div className="mt-16 w-[100vw]">
+      <div className="mt-[2vh] w-[100vw]">
         <FooterSection />
       </div>
     </div>

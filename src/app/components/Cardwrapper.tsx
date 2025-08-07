@@ -35,6 +35,7 @@ const CardWrapper: React.FC<CardWrapperProps> = ({
         className='relative h-full w-full will-change-transform'
         style={{ touchAction: 'auto' }}
         drag={false}
+        
       >
         {children}
       </motion.div>

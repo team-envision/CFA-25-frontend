@@ -84,19 +84,17 @@ const Domains = () => {
     <div className="relative w-full min-h-screen overflow-hidden flex flex-col">
       {/* Background Particles */}
       <div className="absolute inset-0 -z-10 bg-black">
-        {!isMobile && (
-          <Particles
-            particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
-            particleCount={90}
-            particleSpread={35}
-            speed={0.15}
-            particleBaseSize={150}
-            moveParticlesOnHover={false}
-            alphaParticles={true}
-            disableRotation={true}
-            cameraDistance={30}
-          />
-        )}
+        <Particles
+          particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
+          particleCount={90}
+          particleSpread={35}
+          speed={0.15}
+          particleBaseSize={150}
+          moveParticlesOnHover={false}
+          alphaParticles={true}
+          disableRotation={true}
+          cameraDistance={30}
+        />
       </div>
 
       {/* Main Content */}
@@ -174,7 +172,7 @@ const Domains = () => {
       </div>
 
       {/* Footer */}
-      <div className="mt-24">
+      <div className="mt-[2vh]">
         <FooterSection />
       </div>
     </div>

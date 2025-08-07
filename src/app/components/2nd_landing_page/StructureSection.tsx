@@ -40,19 +40,17 @@ const StructureSection = () => {
     >
       {/* Particles effect background */}
       <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
-        {!isMobile && (
-          <Particles
-            particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
-            particleCount={90}
-            particleSpread={35}
-            speed={0.15}
-            particleBaseSize={150}
-            moveParticlesOnHover={false}
-            alphaParticles={true}
-            disableRotation={true}
-            cameraDistance={30}
-          />
-        )}
+        <Particles
+          particleColors={["#ff6a00", "#ffa500", "#ffb347"]}
+          particleCount={90}
+          particleSpread={35}
+          speed={0.15}
+          particleBaseSize={150}
+          moveParticlesOnHover={false}
+          alphaParticles={true}
+          disableRotation={true}
+          cameraDistance={30}
+        />
       </div>
       <div
         style={{
