@@ -22,7 +22,15 @@ const CardWrapper: React.FC<CardWrapperProps> = ({
   const container = useRef<HTMLDivElement>(null);
 
   return (
-    <div ref={container} className='h-screen sticky top-0'>
+    <div 
+      ref={container} 
+      className='sticky top-0'
+      style={{
+        height: 'auto', // Changed from h-screen to auto height
+        maxHeight: '100vh', // Prevent exceeding viewport
+        overflow: 'hidden', // Prevent content overflow
+      }}
+    >
       <motion.div 
         key={customKey}
         variants={animationVariants}
@@ -31,11 +39,12 @@ const CardWrapper: React.FC<CardWrapperProps> = ({
         exit="exit"
         transition={transition}
         onAnimationComplete={onAnimationComplete}
-        // OPTIMIZED: Added will-change-transform and touch optimizations
-        className='relative h-full w-full will-change-transform'
-        style={{ touchAction: 'auto' }}
+        className='relative w-full will-change-transform'
+        style={{ 
+          touchAction: 'auto',
+          height: 'fit-content', // Let content determine height
+        }}
         drag={false}
-        
       >
         {children}
       </motion.div>

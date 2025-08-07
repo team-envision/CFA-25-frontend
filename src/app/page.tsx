@@ -11,7 +11,7 @@ import {
   MotionValue,
   useReducedMotion,
   useMotionValue,
-} from "motion/react";
+} from "framer-motion";
 import { useScrollManager } from "./context/ScrollContext";
 import RecruitmentPageTransition from "./components/RecruitmentPageTransition";
 import { useRecruitmentNavigation } from "./components/Hooks/useRecruitmentNavigation";
@@ -40,8 +40,6 @@ export default function HomePage() {
 
   // Performance optimization for reduced motion
   const prefersReducedMotion = useReducedMotion();
-
-  // Static MotionValue for reduced motion fallback
   const staticScale = useMotionValue(1);
 
   const { setNavigateToPage, animationDirection, setAnimationDirection } =
@@ -51,11 +49,18 @@ export default function HomePage() {
   const [activePageId, setActivePageId] = useState("teams");
   const [isAnimating, setIsAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [navigationSource, setNavigationSource] = useState<
     "scroll" | "button" | null
   >(null);
   const [actualVH, setActualVH] = useState(800);
+
+  // Scroll clamping
+  const [maxScrollPosition, setMaxScrollPosition] = useState<number | null>(
+    null
+  );
+  const [clampedPosition, setClampedPosition] = useState<number | null>(null);
 
   // Add recruitment navigation hook
   const {
@@ -65,17 +70,21 @@ export default function HomePage() {
     onAnimationStart,
   } = useRecruitmentNavigation();
 
-  // Enhanced mobile viewport detection
+  // Enhanced mobile and iOS viewport detection
   useEffect(() => {
     const updateViewport = () => {
       if (typeof window === "undefined") return;
 
+      const userAgent = navigator.userAgent;
       const isMobileDevice =
         window.innerWidth <= 768 ||
         /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent
+          userAgent
         );
+      const isIOSDevice = /iPhone|iPad|iPod/i.test(userAgent);
+
       setIsMobile(isMobileDevice);
+      setIsIOS(isIOSDevice);
 
       if (isMobileDevice) {
         const mobileHeight = Math.min(
@@ -105,9 +114,68 @@ export default function HomePage() {
     };
   }, []);
 
+  // Calculate max scroll position when scroll progress reaches 85%
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const unsubscribe = scrollYProgress.on("change", (progress) => {
+      if (progress >= 0.85 && maxScrollPosition === null && lenis) {
+        const currentScroll = lenis.actualScroll;
+        setMaxScrollPosition(currentScroll);
+      }
+
+      if (progress < 0.8 && maxScrollPosition !== null) {
+        setMaxScrollPosition(null);
+        setClampedPosition(null); // Reset clamped position when scrolling back up
+      }
+    });
+
+    return () => unsubscribe();
+  }, [scrollYProgress, isMobile, maxScrollPosition, lenis]);
+
+  // Clamp scroll to prevent going beyond limits but stay at the current position after threshold
+  // Replace the existing scroll clamping useEffect with this improved version
+
+  useEffect(() => {
+    if (!lenis || !isMobile || maxScrollPosition === null) {
+      return;
+    }
+
+    const extraScrollAllowance = 150; // Allow 150px extra scroll beyond threshold
+    const clampPosition = maxScrollPosition + extraScrollAllowance;
+    let lastScrollPosition = 0;
+
+    const handleScroll = ({ scroll }: { scroll: number }) => {
+      const scrollDirection = scroll > lastScrollPosition ? "down" : "up";
+      lastScrollPosition = scroll;
+
+      // If we're beyond the clamp position (maxScrollPosition + 150px)
+      if (scroll > clampPosition) {
+        // Set the clamped position if not already set
+        if (clampedPosition === null) {
+          setClampedPosition(clampPosition);
+        }
+
+        // If scrolling down beyond the clamp position, reset to clamp position
+        if (scrollDirection === "down") {
+          lenis.scrollTo(clampPosition, {
+            immediate: true,
+          });
+        }
+        // If scrolling up, allow normal scrolling (do nothing)
+      }
+    };
+
+    lenis.on("scroll", handleScroll);
+    return () => lenis.off("scroll", handleScroll);
+  }, [lenis, isMobile, maxScrollPosition, clampedPosition]);
+
   // Direct page loading function
   const loadPageDirectly = useCallback(
     (targetId: string) => {
+      setMaxScrollPosition(null); // Reset on navigation
+      setClampedPosition(null); // Reset clamped position on navigation
+
       if (targetId === "committees" || targetId === "domains") {
         setIsAnimating(true);
         setAnimationDirection("forward");
@@ -212,6 +280,8 @@ export default function HomePage() {
         setIsAnimating(false);
       }
       setActivePageId("main");
+      setMaxScrollPosition(null);
+      setClampedPosition(null);
       lenis.scrollTo(0, { duration: 1.5 });
     }
   }, [lenis, currentPageSequence]);
@@ -270,43 +340,36 @@ export default function HomePage() {
   const scale1 = useTransform(
     scrollYProgress,
     [0, 1],
-    // ENHANCED: More dramatic scaling on mobile
-    isMobile ? [1, 0.75] : [1, 0.85] // Mobile: scales to 75%, Desktop: 85%
+    isMobile ? [1, 0.75] : [1, 0.85]
   );
 
   const scale2 = useTransform(
     scrollYProgress,
     [0.33, 1],
-    // ENHANCED: More dramatic scaling on mobile
-    isMobile ? [1, 0.8] : [1, 0.9] // Mobile: scales to 80%, Desktop: 90%
+    isMobile ? [1, 0.8] : [1, 0.9]
   );
 
   const scale3 = useTransform(
     scrollYProgress,
     [0.66, 1],
-    // ENHANCED: More dramatic scaling on mobile
-    isMobile ? [1, 0.85] : [1, 0.95] // Mobile: scales to 85%, Desktop: 95%
+    isMobile ? [1, 0.85] : [1, 0.95]
   );
 
-  // Apply reduced motion fallback with proper MotionValue types
   const effectiveScale1 = prefersReducedMotion ? staticScale : scale1;
   const effectiveScale2 = prefersReducedMotion ? staticScale : scale2;
   const effectiveScale3 = prefersReducedMotion ? staticScale : scale3;
 
   const scaleArray = [effectiveScale1, effectiveScale2, effectiveScale3];
-  
-  
 
   return (
     <ReactLenis
       root
       options={{
         syncTouch: isMobile,
-        // Optimized mobile settings for better performance
-        syncTouchLerp: isMobile ? 0.08 : undefined, // smoother (was 0.08)
-        touchInertiaMultiplier: isMobile ? 20 : undefined, // lighter (was 20)
-        touchMultiplier: isMobile ? 0.9 : undefined, // lighter (was 0.9)
-        gestureOrientation: "vertical", // always vertical
+        syncTouchLerp: isMobile ? 0.08 : undefined,
+        touchInertiaMultiplier: isMobile ? 20 : undefined,
+        touchMultiplier: isMobile ? 0.9 : undefined,
+        gestureOrientation: "vertical",
         infinite: false,
         smoothWheel: !isMobile,
       }}
@@ -315,8 +378,13 @@ export default function HomePage() {
         ref={container}
         className="relative bg-black"
         suppressHydrationWarning={true}
+        style={{
+          ...(isMobile && {
+            overscrollBehavior: "none",
+            touchAction: "pan-y",
+          }),
+        }}
       >
-        {/* Optimized rendering for main 3 pages with performance fixes */}
         {currentPageSequence.slice(0, 3).map((id, i) => (
           <OptimizedScalingCardWrapper key={id} scale={scaleArray[i]} index={i}>
             {pageComponentMap[id]}
@@ -352,41 +420,32 @@ export default function HomePage() {
   );
 }
 
-// Optimized wrapper with performance fixes
+// Optimized wrapper: Combined from both, with min-h-screen for consistency
 interface OptimizedScalingCardWrapperProps {
   children: ReactNode;
   scale: MotionValue<number>;
   index: number;
 }
 
-const OptimizedScalingCardWrapper: React.FC<OptimizedScalingCardWrapperProps> = ({
-  children,
-  scale,
-  index,
-}) => {
+const OptimizedScalingCardWrapper: React.FC<
+  OptimizedScalingCardWrapperProps
+> = ({ children, scale, index }) => {
   const container = useRef<HTMLDivElement>(null);
 
   return (
     <div
       ref={container}
-      className="sticky top-0 flex items-center justify-center h-full"
-      style={{ 
+      className="sticky top-0 flex items-center justify-center"
+      style={{
         top: `calc(-5vh + ${index * 1}px)`,
-        // ADD THIS: Force the last page to be the scroll boundary
-        ...(index === 2 && {
-          position: 'sticky',
-          bottom: '0',
-          zIndex: 999,
-        })
       }}
     >
       <motion.div
         style={{ scale }}
-        className="relative h-full w-full origin-top will-change-transform"
+        className="relative h-auto w-full origin-top will-change-transform"
       >
-        {children}
+        <div className="min-h-screen">{children}</div>
       </motion.div>
     </div>
   );
 };
-

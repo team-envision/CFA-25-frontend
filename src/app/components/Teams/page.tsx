@@ -158,7 +158,7 @@ const Teams = () => {
       </div>
 
       {/* Footer Section */}
-      <div className="mt-[2vh] w-[100vw]">
+      <div className="mt-[2vh] w-[100vw] mb-[2vw]">
         <FooterSection />
       </div>
     </div>
