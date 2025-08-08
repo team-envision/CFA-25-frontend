@@ -1,4 +1,3 @@
-// src/app/page.tsx
 "use client";
 
 import { useRef, useEffect, useState, ReactNode, useCallback } from "react";
@@ -27,7 +26,9 @@ import RecruitmentForm from "./Recruitment/page";
 import Team_Envision_recruitment from "./Team_Envision_recruitment/page";
 import SimpleAssetPreloader from "./components/SimpleAssetPreloader";
 
-const defaultPageSequence = ["main", "structure", "teams"];
+// Fixed page sequence - footer is not part of scroll sequence
+const defaultPageSequence = ["main", "structure"];
+const additionalPageIds = ["teams", "committees", "domains"];
 const recruitmentPageIds = ["recruitment", "envision_recruitment"];
 const cubicBezierEasing: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -37,10 +38,10 @@ export default function HomePage() {
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ["start start", "end end"],
-    
-    
   });
-const [assetsLoaded, setAssetsLoaded] = useState(false);
+
+  // States
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
 
   // Performance optimization for reduced motion
   const prefersReducedMotion = useReducedMotion();
@@ -50,7 +51,7 @@ const [assetsLoaded, setAssetsLoaded] = useState(false);
     useScrollManager();
   const [currentPageSequence, setCurrentPageSequence] =
     useState(defaultPageSequence);
-  const [activePageId, setActivePageId] = useState("teams");
+  const [activePageId, setActivePageId] = useState("main");
   const [isAnimating, setIsAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -131,22 +132,20 @@ const [assetsLoaded, setAssetsLoaded] = useState(false);
 
       if (progress < 0.8 && maxScrollPosition !== null) {
         setMaxScrollPosition(null);
-        setClampedPosition(null); // Reset clamped position when scrolling back up
+        setClampedPosition(null);
       }
     });
 
     return () => unsubscribe();
   }, [scrollYProgress, isMobile, maxScrollPosition, lenis]);
 
-  // Clamp scroll to prevent going beyond limits but stay at the current position after threshold
-  // Replace the existing scroll clamping useEffect with this improved version
-
+  // Clamp scroll to prevent going beyond limits
   useEffect(() => {
     if (!lenis || !isMobile || maxScrollPosition === null) {
       return;
     }
 
-    const extraScrollAllowance = 150; // Allow 150px extra scroll beyond threshold
+    const extraScrollAllowance = 150;
     const clampPosition = maxScrollPosition + extraScrollAllowance;
     let lastScrollPosition = 0;
 
@@ -154,20 +153,16 @@ const [assetsLoaded, setAssetsLoaded] = useState(false);
       const scrollDirection = scroll > lastScrollPosition ? "down" : "up";
       lastScrollPosition = scroll;
 
-      // If we're beyond the clamp position (maxScrollPosition + 150px)
       if (scroll > clampPosition) {
-        // Set the clamped position if not already set
         if (clampedPosition === null) {
           setClampedPosition(clampPosition);
         }
 
-        // If scrolling down beyond the clamp position, reset to clamp position
         if (scrollDirection === "down") {
           lenis.scrollTo(clampPosition, {
             immediate: true,
           });
         }
-        // If scrolling up, allow normal scrolling (do nothing)
       }
     };
 
@@ -175,26 +170,22 @@ const [assetsLoaded, setAssetsLoaded] = useState(false);
     return () => lenis.off("scroll", handleScroll);
   }, [lenis, isMobile, maxScrollPosition, clampedPosition]);
 
-  // Direct page loading function
+  // Updated direct page loading function
   const loadPageDirectly = useCallback(
     (targetId: string) => {
-      setMaxScrollPosition(null); // Reset on navigation
-      setClampedPosition(null); // Reset clamped position on navigation
+      setMaxScrollPosition(null);
+      setClampedPosition(null);
 
-      if (targetId === "committees" || targetId === "domains") {
+      if (targetId === "teams" || targetId === "committees" || targetId === "domains") {
+        // Navigate to overlay pages
         setIsAnimating(true);
         setAnimationDirection("forward");
-        setCurrentPageSequence(["main", "structure", targetId]);
+        setCurrentPageSequence([...defaultPageSequence, targetId]);
         setActivePageId(targetId);
 
-        setTimeout(() => {
-          if (lenis) {
-            const vh = actualVH;
-            const targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
-            lenis.scrollTo(targetPosition, { duration: 1.0 });
-          }
-        }, 150);
+        // Don't scroll, just show the overlay
       } else if (defaultPageSequence.includes(targetId)) {
+        // Handle main sequence: main → structure
         if (!defaultPageSequence.includes(activePageId)) {
           setCurrentPageSequence(defaultPageSequence);
           setIsAnimating(false);
@@ -212,9 +203,6 @@ const [assetsLoaded, setAssetsLoaded] = useState(false);
                 break;
               case "structure":
                 targetPosition = isMobile ? vh * 1.15 : vh * 1.05;
-                break;
-              case "teams":
-                targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
                 break;
               default:
                 targetPosition = 0;
@@ -291,6 +279,7 @@ const [assetsLoaded, setAssetsLoaded] = useState(false);
     }
   }, [lenis, currentPageSequence]);
 
+  // pageComponentMap
   const pageComponentMap: Record<string, ReactNode> = {
     main: (
       <MainLandingPage
@@ -312,9 +301,8 @@ const [assetsLoaded, setAssetsLoaded] = useState(false);
   }, [navigate, setNavigateToPage]);
 
   useEffect(() => {
-    const isCommitteesOrDomainsActive =
-      activePageId === "committees" || activePageId === "domains";
-    if (!isCommitteesOrDomainsActive) return;
+    const isAdditionalPageActive = additionalPageIds.includes(activePageId);
+    if (!isAdditionalPageActive) return;
 
     const unsubscribe = scrollYProgress.on("change", (latest) => {
       if (latest < 1 / 3 && !isUserScrolling && navigationSource !== "button") {
@@ -322,7 +310,7 @@ const [assetsLoaded, setAssetsLoaded] = useState(false);
         setIsAnimating(true);
         setAnimationDirection("backward");
         setCurrentPageSequence(defaultPageSequence);
-        setActivePageId("teams");
+        setActivePageId("structure");
         setTimeout(() => setIsUserScrolling(false), 1000);
       }
     });
@@ -341,6 +329,33 @@ const [assetsLoaded, setAssetsLoaded] = useState(false);
     setNavigationSource(null);
   };
 
+  // Container initialization with manual scroll fix
+  useEffect(() => {
+    if (assetsLoaded && container.current && lenis) {
+      const timer = setTimeout(() => {
+        setActivePageId("main");
+        setCurrentPageSequence(defaultPageSequence);
+        setIsAnimating(false);
+        setMaxScrollPosition(null);
+        setClampedPosition(null);
+        
+        lenis.scrollTo(0, { immediate: true });
+        window.dispatchEvent(new Event('resize'));
+        
+        // QUICK FIX: Manual 0.5vh scroll to trigger state update
+        setTimeout(() => {
+          lenis.scrollTo(window.innerHeight * 0.005); // Smooth 0.5vh scroll
+          setTimeout(() => {
+            lenis.scrollTo(0); // Return to top smoothly
+          }, 100);
+        }, 200);
+        
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [assetsLoaded, lenis, setAnimationDirection]);
+
   // Transform logic with reduced motion fallback
   const scale1 = useTransform(
     scrollYProgress,
@@ -350,90 +365,92 @@ const [assetsLoaded, setAssetsLoaded] = useState(false);
 
   const scale2 = useTransform(
     scrollYProgress,
-    [0.33, 1],
+    [0.5, 1],
     isMobile ? [1, 0.8] : [1, 0.9]
-  );
-
-  const scale3 = useTransform(
-    scrollYProgress,
-    [0.66, 1],
-    isMobile ? [1, 0.85] : [1, 0.95]
   );
 
   const effectiveScale1 = prefersReducedMotion ? staticScale : scale1;
   const effectiveScale2 = prefersReducedMotion ? staticScale : scale2;
-  const effectiveScale3 = prefersReducedMotion ? staticScale : scale3;
 
-  const scaleArray = [effectiveScale1, effectiveScale2, effectiveScale3];
-if (!assetsLoaded) {
+  const scaleArray = [effectiveScale1, effectiveScale2];
+
+  // Show preloader while assets are loading
+  if (!assetsLoaded) {
+    return (
+      <SimpleAssetPreloader
+        onComplete={() => setAssetsLoaded(true)}
+        preloaderImageSrc="/images/aaruush-favicon.png"
+        alt="AARUUSH Loading"
+      />
+    );
+  }
+
   return (
-    <SimpleAssetPreloader
-      onComplete={() => setAssetsLoaded(true)}
-      preloaderImageSrc="/images/aaruush-favicon.png" // Change this to your desired preloader image
-      alt="AARUUSH Loading"
-    />
-  );
-}
-  return (
-    <ReactLenis
-      root
-      options={{
-        syncTouch: isMobile,
-        syncTouchLerp: isMobile ? 0.08 : undefined,
-        touchInertiaMultiplier: isMobile ? 20 : undefined,
-        touchMultiplier: isMobile ? 0.9 : undefined,
-        gestureOrientation: "vertical",
-        infinite: false,
-        smoothWheel: !isMobile,
-      }}
-    >
-      <main
-        ref={container}
-        className="relative bg-black"
-        suppressHydrationWarning={true}
-        style={{
-          ...(isMobile && {
-            overscrollBehavior: "none",
-            touchAction: "pan-y",
-          }),
+    <>
+      <ReactLenis
+        root
+        options={{
+          syncTouch: isMobile,
+          syncTouchLerp: isMobile ? 0.08 : undefined,
+          touchInertiaMultiplier: isMobile ? 20 : undefined,
+          touchMultiplier: isMobile ? 0.9 : undefined,
+          gestureOrientation: "vertical",
+          infinite: false,
+          smoothWheel: !isMobile,
         }}
       >
-        {currentPageSequence.slice(0, 3).map((id, i) => (
-          <OptimizedScalingCardWrapper key={id} scale={scaleArray[i]} index={i}>
-            {pageComponentMap[id]}
-          </OptimizedScalingCardWrapper>
-        ))}
+        <main
+          ref={container}
+          className="relative bg-black"
+          suppressHydrationWarning={true}
+          style={{
+            height: '200vh', // Only 2 main pages: main → structure
+            ...(isMobile && {
+              overscrollBehavior: "none",
+              touchAction: "pan-y",
+            }),
+          }}
+        >
+          {/* Main 2-page sequence: main + structure */}
+          {currentPageSequence.slice(0, 2).map((id, i) => (
+            <OptimizedScalingCardWrapper key={id} scale={scaleArray[i]} index={i}>
+              {pageComponentMap[id]}
+            </OptimizedScalingCardWrapper>
+          ))}
 
-        <AnimatePresence mode="popLayout">
-          {currentPageSequence
-            .slice(3)
-            .filter((id) => !recruitmentPageIds.includes(id))
-            .map((id) => (
-              <CardWrapper
-                key={id}
-                customKey={id}
-                animationVariants={slideVariants}
-                transition={animationTransition}
-                onAnimationComplete={onAnimationComplete}
-              >
-                {pageComponentMap[id]}
-              </CardWrapper>
-            ))}
-        </AnimatePresence>
+          {/* Additional overlay pages (Teams, Committees, Domains) */}
+          <AnimatePresence mode="popLayout">
+            {currentPageSequence
+              .slice(2)
+              .filter((id) => !recruitmentPageIds.includes(id))
+              .map((id) => (
+                <CardWrapper
+                  key={id}
+                  customKey={id}
+                  animationVariants={slideVariants}
+                  transition={animationTransition}
+                  onAnimationComplete={onAnimationComplete}
+                >
+                  {pageComponentMap[id]}
+                </CardWrapper>
+              ))}
+          </AnimatePresence>
 
-        {isTransitioning && (
-          <RecruitmentPageTransition
-            targetUrl={targetUrl}
-            onAnimationStart={onAnimationStart}
-            isActive={isTransitioning}
-          />
-        )}
-      </main>
-    </ReactLenis>
+          {/* Recruitment transition */}
+          {isTransitioning && (
+            <RecruitmentPageTransition
+              targetUrl={targetUrl}
+              onAnimationStart={onAnimationStart}
+              isActive={isTransitioning}
+            />
+          )}
+        </main>
+      </ReactLenis>
+    </>
   );
 }
 
-// Optimized wrapper: Combined from both, with min-h-screen for consistency
+// Optimized wrapper component
 interface OptimizedScalingCardWrapperProps {
   children: ReactNode;
   scale: MotionValue<number>;
