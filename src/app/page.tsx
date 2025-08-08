@@ -1,3 +1,4 @@
+// src/app/page.tsx
 "use client";
 
 import { useRef, useEffect, useState, ReactNode, useCallback } from "react";
@@ -14,6 +15,7 @@ import {
 import { useScrollManager } from "./context/ScrollContext";
 import RecruitmentPageTransition from "./components/RecruitmentPageTransition";
 import { useRecruitmentNavigation } from "./components/Hooks/useRecruitmentNavigation";
+import SimpleAssetPreloader from "./components/SimpleAssetPreloader";
 
 // Import All Page Components
 import MainLandingPage from "./components/main_landing_page/MainLandingPage";
@@ -24,11 +26,8 @@ import Domains from "./components/Domains/page";
 import CardWrapper from "./components/Cardwrapper";
 import RecruitmentForm from "./Recruitment/page";
 import Team_Envision_recruitment from "./Team_Envision_recruitment/page";
-import SimpleAssetPreloader from "./components/SimpleAssetPreloader";
 
-// Fixed page sequence - footer is not part of scroll sequence
-const defaultPageSequence = ["main", "structure"];
-const additionalPageIds = ["teams", "committees", "domains"];
+const defaultPageSequence = ["main", "structure", "teams"];
 const recruitmentPageIds = ["recruitment", "envision_recruitment"];
 const cubicBezierEasing: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -40,8 +39,8 @@ export default function HomePage() {
     offset: ["start start", "end end"],
   });
 
-  // States
-  const [assetsLoaded, setAssetsLoaded] = useState(false);
+  // Preloader State
+  const [isPreloading, setIsPreloading] = useState(true);
 
   // Performance optimization for reduced motion
   const prefersReducedMotion = useReducedMotion();
@@ -51,7 +50,7 @@ export default function HomePage() {
     useScrollManager();
   const [currentPageSequence, setCurrentPageSequence] =
     useState(defaultPageSequence);
-  const [activePageId, setActivePageId] = useState("main");
+  const [activePageId, setActivePageId] = useState("teams");
   const [isAnimating, setIsAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -132,20 +131,20 @@ export default function HomePage() {
 
       if (progress < 0.8 && maxScrollPosition !== null) {
         setMaxScrollPosition(null);
-        setClampedPosition(null);
+        setClampedPosition(null); // Reset clamped position when scrolling back up
       }
     });
 
     return () => unsubscribe();
   }, [scrollYProgress, isMobile, maxScrollPosition, lenis]);
 
-  // Clamp scroll to prevent going beyond limits
+  // Clamp scroll to prevent going beyond limits but stay at the current position after threshold
   useEffect(() => {
     if (!lenis || !isMobile || maxScrollPosition === null) {
       return;
     }
 
-    const extraScrollAllowance = 150;
+    const extraScrollAllowance = 150; // Allow 150px extra scroll beyond threshold
     const clampPosition = maxScrollPosition + extraScrollAllowance;
     let lastScrollPosition = 0;
 
@@ -153,16 +152,20 @@ export default function HomePage() {
       const scrollDirection = scroll > lastScrollPosition ? "down" : "up";
       lastScrollPosition = scroll;
 
+      // If we're beyond the clamp position (maxScrollPosition + 150px)
       if (scroll > clampPosition) {
+        // Set the clamped position if not already set
         if (clampedPosition === null) {
           setClampedPosition(clampPosition);
         }
 
+        // If scrolling down beyond the clamp position, reset to clamp position
         if (scrollDirection === "down") {
           lenis.scrollTo(clampPosition, {
             immediate: true,
           });
         }
+        // If scrolling up, allow normal scrolling (do nothing)
       }
     };
 
@@ -170,22 +173,26 @@ export default function HomePage() {
     return () => lenis.off("scroll", handleScroll);
   }, [lenis, isMobile, maxScrollPosition, clampedPosition]);
 
-  // Updated direct page loading function
+  // Direct page loading function
   const loadPageDirectly = useCallback(
     (targetId: string) => {
-      setMaxScrollPosition(null);
-      setClampedPosition(null);
+      setMaxScrollPosition(null); // Reset on navigation
+      setClampedPosition(null); // Reset clamped position on navigation
 
-      if (targetId === "teams" || targetId === "committees" || targetId === "domains") {
-        // Navigate to overlay pages
+      if (targetId === "committees" || targetId === "domains") {
         setIsAnimating(true);
         setAnimationDirection("forward");
-        setCurrentPageSequence([...defaultPageSequence, targetId]);
+        setCurrentPageSequence(["main", "structure", targetId]);
         setActivePageId(targetId);
 
-        // Don't scroll, just show the overlay
+        setTimeout(() => {
+          if (lenis) {
+            const vh = actualVH;
+            const targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
+            lenis.scrollTo(targetPosition, { duration: 1.0 });
+          }
+        }, 150);
       } else if (defaultPageSequence.includes(targetId)) {
-        // Handle main sequence: main → structure
         if (!defaultPageSequence.includes(activePageId)) {
           setCurrentPageSequence(defaultPageSequence);
           setIsAnimating(false);
@@ -203,6 +210,9 @@ export default function HomePage() {
                 break;
               case "structure":
                 targetPosition = isMobile ? vh * 1.15 : vh * 1.05;
+                break;
+              case "teams":
+                targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
                 break;
               default:
                 targetPosition = 0;
@@ -245,11 +255,6 @@ export default function HomePage() {
       );
       setNavigationSource(source);
 
-      if (targetId === activePageId && source === "button") {
-        loadPageDirectly(targetId);
-        return;
-      }
-
       if (recruitmentPageIds.includes(targetId)) {
         navigateToRecruitment(
           targetId as "recruitment" | "envision_recruitment"
@@ -279,7 +284,6 @@ export default function HomePage() {
     }
   }, [lenis, currentPageSequence]);
 
-  // pageComponentMap
   const pageComponentMap: Record<string, ReactNode> = {
     main: (
       <MainLandingPage
@@ -301,8 +305,9 @@ export default function HomePage() {
   }, [navigate, setNavigateToPage]);
 
   useEffect(() => {
-    const isAdditionalPageActive = additionalPageIds.includes(activePageId);
-    if (!isAdditionalPageActive) return;
+    const isCommitteesOrDomainsActive =
+      activePageId === "committees" || activePageId === "domains";
+    if (!isCommitteesOrDomainsActive) return;
 
     const unsubscribe = scrollYProgress.on("change", (latest) => {
       if (latest < 1 / 3 && !isUserScrolling && navigationSource !== "button") {
@@ -310,7 +315,7 @@ export default function HomePage() {
         setIsAnimating(true);
         setAnimationDirection("backward");
         setCurrentPageSequence(defaultPageSequence);
-        setActivePageId("structure");
+        setActivePageId("teams");
         setTimeout(() => setIsUserScrolling(false), 1000);
       }
     });
@@ -329,32 +334,10 @@ export default function HomePage() {
     setNavigationSource(null);
   };
 
-  // Container initialization with manual scroll fix
-  useEffect(() => {
-    if (assetsLoaded && container.current && lenis) {
-      const timer = setTimeout(() => {
-        setActivePageId("main");
-        setCurrentPageSequence(defaultPageSequence);
-        setIsAnimating(false);
-        setMaxScrollPosition(null);
-        setClampedPosition(null);
-        
-        lenis.scrollTo(0, { immediate: true });
-        window.dispatchEvent(new Event('resize'));
-        
-        // QUICK FIX: Manual 0.5vh scroll to trigger state update
-        setTimeout(() => {
-          lenis.scrollTo(window.innerHeight * 0.005); // Smooth 0.5vh scroll
-          setTimeout(() => {
-            lenis.scrollTo(0); // Return to top smoothly
-          }, 100);
-        }, 200);
-        
-      }, 100);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [assetsLoaded, lenis, setAnimationDirection]);
+  // Callback function for when the preloader is finished
+  const handlePreloaderComplete = useCallback(() => {
+    setIsPreloading(false);
+  }, []);
 
   // Transform logic with reduced motion fallback
   const scale1 = useTransform(
@@ -365,28 +348,28 @@ export default function HomePage() {
 
   const scale2 = useTransform(
     scrollYProgress,
-    [0.5, 1],
+    [0.33, 1],
     isMobile ? [1, 0.8] : [1, 0.9]
+  );
+
+  const scale3 = useTransform(
+    scrollYProgress,
+    [0.66, 1],
+    isMobile ? [1, 0.85] : [1, 0.95]
   );
 
   const effectiveScale1 = prefersReducedMotion ? staticScale : scale1;
   const effectiveScale2 = prefersReducedMotion ? staticScale : scale2;
+  const effectiveScale3 = prefersReducedMotion ? staticScale : scale3;
 
-  const scaleArray = [effectiveScale1, effectiveScale2];
-
-  // Show preloader while assets are loading
-  if (!assetsLoaded) {
-    return (
-      <SimpleAssetPreloader
-        onComplete={() => setAssetsLoaded(true)}
-        preloaderImageSrc="/images/aaruush-favicon.png"
-        alt="AARUUSH Loading"
-      />
-    );
-  }
+  const scaleArray = [effectiveScale1, effectiveScale2, effectiveScale3];
 
   return (
     <>
+      {/* This is the most critical change.
+        The main content is always rendered inside ReactLenis.
+        We use a fade animation to hide/show it, which prevents the DOM from shifting.
+      */}
       <ReactLenis
         root
         options={{
@@ -399,29 +382,30 @@ export default function HomePage() {
           smoothWheel: !isMobile,
         }}
       >
-        <main
+        <motion.main
           ref={container}
           className="relative bg-black"
           suppressHydrationWarning={true}
           style={{
-            height: '200vh', // Only 2 main pages: main → structure
             ...(isMobile && {
               overscrollBehavior: "none",
               touchAction: "pan-y",
             }),
           }}
+          // Use isPreloading state to control opacity
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isPreloading ? 0 : 1 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
         >
-          {/* Main 2-page sequence: main + structure */}
-          {currentPageSequence.slice(0, 2).map((id, i) => (
+          {currentPageSequence.slice(0, 3).map((id, i) => (
             <OptimizedScalingCardWrapper key={id} scale={scaleArray[i]} index={i}>
               {pageComponentMap[id]}
             </OptimizedScalingCardWrapper>
           ))}
 
-          {/* Additional overlay pages (Teams, Committees, Domains) */}
           <AnimatePresence mode="popLayout">
             {currentPageSequence
-              .slice(2)
+              .slice(3)
               .filter((id) => !recruitmentPageIds.includes(id))
               .map((id) => (
                 <CardWrapper
@@ -436,7 +420,6 @@ export default function HomePage() {
               ))}
           </AnimatePresence>
 
-          {/* Recruitment transition */}
           {isTransitioning && (
             <RecruitmentPageTransition
               targetUrl={targetUrl}
@@ -444,13 +427,32 @@ export default function HomePage() {
               isActive={isTransitioning}
             />
           )}
-        </main>
+        </motion.main>
       </ReactLenis>
+
+      {/* The preloader is now on top of the main content */}
+      <AnimatePresence mode="wait">
+        {isPreloading && (
+          <motion.div
+            key="preloader"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black"
+          >
+            <SimpleAssetPreloader
+              onComplete={handlePreloaderComplete}
+              preloaderImageSrc="/images/aaruush-favicon.png"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
 
-// Optimized wrapper component
+// The OptimizedScalingCardWrapper component remains the same.
 interface OptimizedScalingCardWrapperProps {
   children: ReactNode;
   scale: MotionValue<number>;
