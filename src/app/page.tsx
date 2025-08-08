@@ -15,6 +15,7 @@ import {
 import { useScrollManager } from "./context/ScrollContext";
 import RecruitmentPageTransition from "./components/RecruitmentPageTransition";
 import { useRecruitmentNavigation } from "./components/Hooks/useRecruitmentNavigation";
+import SimpleAssetPreloader from "./components/SimpleAssetPreloader";
 
 // Import All Page Components
 import MainLandingPage from "./components/main_landing_page/MainLandingPage";
@@ -37,6 +38,9 @@ export default function HomePage() {
     target: container,
     offset: ["start start", "end end"],
   });
+
+  // Preloader State
+  const [isPreloading, setIsPreloading] = useState(true);
 
   // Performance optimization for reduced motion
   const prefersReducedMotion = useReducedMotion();
@@ -135,8 +139,6 @@ export default function HomePage() {
   }, [scrollYProgress, isMobile, maxScrollPosition, lenis]);
 
   // Clamp scroll to prevent going beyond limits but stay at the current position after threshold
-  // Replace the existing scroll clamping useEffect with this improved version
-
   useEffect(() => {
     if (!lenis || !isMobile || maxScrollPosition === null) {
       return;
@@ -253,11 +255,6 @@ export default function HomePage() {
       );
       setNavigationSource(source);
 
-      if (targetId === activePageId && source === "button") {
-        loadPageDirectly(targetId);
-        return;
-      }
-
       if (recruitmentPageIds.includes(targetId)) {
         navigateToRecruitment(
           targetId as "recruitment" | "envision_recruitment"
@@ -337,6 +334,11 @@ export default function HomePage() {
     setNavigationSource(null);
   };
 
+  // Callback function for when the preloader is finished
+  const handlePreloaderComplete = useCallback(() => {
+    setIsPreloading(false);
+  }, []);
+
   // Transform logic with reduced motion fallback
   const scale1 = useTransform(
     scrollYProgress,
@@ -363,65 +365,94 @@ export default function HomePage() {
   const scaleArray = [effectiveScale1, effectiveScale2, effectiveScale3];
 
   return (
-    <ReactLenis
-      root
-      options={{
-        syncTouch: isMobile,
-        syncTouchLerp: isMobile ? 0.08 : undefined,
-        touchInertiaMultiplier: isMobile ? 20 : undefined,
-        touchMultiplier: isMobile ? 0.9 : undefined,
-        gestureOrientation: "vertical",
-        infinite: false,
-        smoothWheel: !isMobile,
-      }}
-    >
-      <main
-        ref={container}
-        className="relative bg-black"
-        suppressHydrationWarning={true}
-        style={{
-          ...(isMobile && {
-            overscrollBehavior: "none",
-            touchAction: "pan-y",
-          }),
+    <>
+      {/* This is the most critical change.
+        The main content is always rendered inside ReactLenis.
+        We use a fade animation to hide/show it, which prevents the DOM from shifting.
+      */}
+      <ReactLenis
+        root
+        options={{
+          syncTouch: isMobile,
+          syncTouchLerp: isMobile ? 0.08 : undefined,
+          touchInertiaMultiplier: isMobile ? 20 : undefined,
+          touchMultiplier: isMobile ? 0.9 : undefined,
+          gestureOrientation: "vertical",
+          infinite: false,
+          smoothWheel: !isMobile,
         }}
       >
-        {currentPageSequence.slice(0, 3).map((id, i) => (
-          <OptimizedScalingCardWrapper key={id} scale={scaleArray[i]} index={i}>
-            {pageComponentMap[id]}
-          </OptimizedScalingCardWrapper>
-        ))}
+        <motion.main
+          ref={container}
+          className="relative bg-black"
+          suppressHydrationWarning={true}
+          style={{
+            ...(isMobile && {
+              overscrollBehavior: "none",
+              touchAction: "pan-y",
+            }),
+          }}
+          // Use isPreloading state to control opacity
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isPreloading ? 0 : 1 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+        >
+          {currentPageSequence.slice(0, 3).map((id, i) => (
+            <OptimizedScalingCardWrapper key={id} scale={scaleArray[i]} index={i}>
+              {pageComponentMap[id]}
+            </OptimizedScalingCardWrapper>
+          ))}
 
-        <AnimatePresence mode="popLayout">
-          {currentPageSequence
-            .slice(3)
-            .filter((id) => !recruitmentPageIds.includes(id))
-            .map((id) => (
-              <CardWrapper
-                key={id}
-                customKey={id}
-                animationVariants={slideVariants}
-                transition={animationTransition}
-                onAnimationComplete={onAnimationComplete}
-              >
-                {pageComponentMap[id]}
-              </CardWrapper>
-            ))}
-        </AnimatePresence>
+          <AnimatePresence mode="popLayout">
+            {currentPageSequence
+              .slice(3)
+              .filter((id) => !recruitmentPageIds.includes(id))
+              .map((id) => (
+                <CardWrapper
+                  key={id}
+                  customKey={id}
+                  animationVariants={slideVariants}
+                  transition={animationTransition}
+                  onAnimationComplete={onAnimationComplete}
+                >
+                  {pageComponentMap[id]}
+                </CardWrapper>
+              ))}
+          </AnimatePresence>
 
-        {isTransitioning && (
-          <RecruitmentPageTransition
-            targetUrl={targetUrl}
-            onAnimationStart={onAnimationStart}
-            isActive={isTransitioning}
-          />
+          {isTransitioning && (
+            <RecruitmentPageTransition
+              targetUrl={targetUrl}
+              onAnimationStart={onAnimationStart}
+              isActive={isTransitioning}
+            />
+          )}
+        </motion.main>
+      </ReactLenis>
+
+      {/* The preloader is now on top of the main content */}
+      <AnimatePresence mode="wait">
+        {isPreloading && (
+          <motion.div
+            key="preloader"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black"
+          >
+            <SimpleAssetPreloader
+              onComplete={handlePreloaderComplete}
+              preloaderImageSrc="/images/aaruush-favicon.png"
+            />
+          </motion.div>
         )}
-      </main>
-    </ReactLenis>
+      </AnimatePresence>
+    </>
   );
 }
 
-// Optimized wrapper: Combined from both, with min-h-screen for consistency
+// The OptimizedScalingCardWrapper component remains the same.
 interface OptimizedScalingCardWrapperProps {
   children: ReactNode;
   scale: MotionValue<number>;
