@@ -20,7 +20,7 @@ export default function MainLandingPage({
 }: MainLandingPageProps) {
 
   return (
-    <div className="relative mt-[5vh] w-full h-[100vh] overflow-hidden ">
+    <div className="relative w-full h-[100vh] overflow-hidden ">
       {/* Background Video */}
       <video
         autoPlay

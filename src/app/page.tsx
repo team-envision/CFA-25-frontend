@@ -49,7 +49,8 @@ export default function HomePage() {
   const [activePageId, setActivePageId] = useState("teams");
   const [isAnimating, setIsAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_isIOS, setIsIOS] = useState(false);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [navigationSource, setNavigationSource] = useState<
     "scroll" | "button" | null

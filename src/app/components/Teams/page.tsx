@@ -3,12 +3,12 @@
 import React from "react";
 import { useScrollManager } from "@/app/context/ScrollContext";
 import FooterSection from "../Footer/page";
-import { useIsMobile } from "../Hooks/useIsMobile";
+// import { useIsMobile } from "../Hooks/useIsMobile";
 import dynamic from "next/dynamic";
 
 const Teams = () => {
   const { navigateToPage } = useScrollManager();
-  const isMobile = useIsMobile();
+  // const isMobile = useIsMobile();
 
   const envisionTags = [
     "Artificial Intelligence / Machine Learning",

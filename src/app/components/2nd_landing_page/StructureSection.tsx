@@ -5,7 +5,7 @@ import React from "react";
 import { useScrollManager } from "@/app/context/ScrollContext"; // ADDED: The new navigation logic
 import "./StructureSection.css"; // RESTORED: Your original CSS import path
 import { ArrowUpRight } from "lucide-react";
-import { useIsMobile } from "../Hooks/useIsMobile";
+// import { useIsMobile } from "../Hooks/useIsMobile";
 import Particles from "../Particles";
 
 // This is your original ArrowButton component, unchanged.
@@ -24,7 +24,7 @@ const ArrowButton = ({ onClick }: { onClick?: () => void }) => (
 
 const StructureSection = () => {
   const { navigateToPage } = useScrollManager(); // ADDED: Get the function from our context
-  const isMobile = useIsMobile();
+  // const isMobile = useIsMobile();
 
   // This function now correctly handles the path format from your original design.
   const handleCardClick = (pagePath: string) => {

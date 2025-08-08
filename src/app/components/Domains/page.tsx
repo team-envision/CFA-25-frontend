@@ -4,7 +4,7 @@ import React from "react";
 import FooterSection from "../Footer/page";
 import { useScrollManager } from "@/app/context/ScrollContext";
 import Image from "next/image";
-import { useIsMobile } from "../Hooks/useIsMobile";
+// import { useIsMobile } from "../Hooks/useIsMobile";
 import dynamic from "next/dynamic";
 
 // FIX: Updated domain data based on the provided image for accuracy
@@ -77,7 +77,7 @@ const DomainDetails = [
 
 const Domains = () => {
   const { navigateToPage } = useScrollManager();
-  const isMobile = useIsMobile();
+  // const isMobile = useIsMobile();
   const Particles = dynamic(() => import("../Particles"), { ssr: false });
 
   return (

@@ -102,7 +102,7 @@ const Particles: React.FC<ParticlesProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-  let animationFrameId: number;
+  const animationFrameId = useRef<number | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -173,11 +173,12 @@ const Particles: React.FC<ParticlesProps> = ({
     let lastTime = performance.now();
     let elapsed = 0;
     const update = (t: number) => {
-      animationFrameId = requestAnimationFrame(update);
+      animationFrameId.current = requestAnimationFrame(update);
       const delta = t - lastTime;
       lastTime = t;
       elapsed += delta * speed;
       program.uniforms.uTime.value = elapsed * 0.001;
+      
       if (moveParticlesOnHover) {
         particles.position.x = -mouseRef.current.x * particleHoverFactor;
         particles.position.y = -mouseRef.current.y * particleHoverFactor;
@@ -185,20 +186,27 @@ const Particles: React.FC<ParticlesProps> = ({
         particles.position.x = 0;
         particles.position.y = 0;
       }
+      
       if (!disableRotation) {
         particles.rotation.x = 0;
         particles.rotation.y = 0;
         particles.rotation.z = 0;
       }
+      
       renderer.render({ scene: particles, camera });
     };
-    animationFrameId = requestAnimationFrame(update);
+    
+    // ✅ FIX: Use .current to store the initial animation frame ID
+    animationFrameId.current = requestAnimationFrame(update);
     return () => {
-      window.removeEventListener("resize", resize);
+       window.removeEventListener("resize", resize);
       if (moveParticlesOnHover) {
         container.removeEventListener("mousemove", handleMouseMove);
       }
-      cancelAnimationFrame(animationFrameId);
+      // ✅ FIX: Check if animationFrameId.current exists before canceling
+      if (animationFrameId.current !== null) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
       if (container.contains(gl.canvas)) {
         container.removeChild(gl.canvas);
       }

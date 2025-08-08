@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import FooterSection from "../Footer/page";
 import { useScrollManager } from "@/app/context/ScrollContext";
-import { useIsMobile } from "../Hooks/useIsMobile";
+// import { useIsMobile } from "../Hooks/useIsMobile";
 
 // Committee Data
 const CommitteeNames = [
@@ -76,7 +76,7 @@ const Particles = dynamic(() => import("../Particles"), { ssr: false });
 
 const Committees = () => {
   const { navigateToPage } = useScrollManager();
-  const isMobile = useIsMobile();
+  // const isMobile = useIsMobile();
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden flex flex-col">
