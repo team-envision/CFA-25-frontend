@@ -25,6 +25,7 @@ import Domains from "./components/Domains/page";
 import CardWrapper from "./components/Cardwrapper";
 import RecruitmentForm from "./Recruitment/page";
 import Team_Envision_recruitment from "./Team_Envision_recruitment/page";
+import SimpleAssetPreloader from "./components/SimpleAssetPreloader";
 
 const defaultPageSequence = ["main", "structure", "teams"];
 const recruitmentPageIds = ["recruitment", "envision_recruitment"];
@@ -36,7 +37,10 @@ export default function HomePage() {
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ["start start", "end end"],
+    
+    
   });
+const [assetsLoaded, setAssetsLoaded] = useState(false);
 
   // Performance optimization for reduced motion
   const prefersReducedMotion = useReducedMotion();
@@ -361,7 +365,15 @@ export default function HomePage() {
   const effectiveScale3 = prefersReducedMotion ? staticScale : scale3;
 
   const scaleArray = [effectiveScale1, effectiveScale2, effectiveScale3];
-
+if (!assetsLoaded) {
+  return (
+    <SimpleAssetPreloader
+      onComplete={() => setAssetsLoaded(true)}
+      preloaderImageSrc="/images/aaruush-favicon.png" // Change this to your desired preloader image
+      alt="AARUUSH Loading"
+    />
+  );
+}
   return (
     <ReactLenis
       root
