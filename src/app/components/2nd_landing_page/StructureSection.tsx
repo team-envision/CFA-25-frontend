@@ -27,10 +27,9 @@ const StructureSection = () => {
   // const isMobile = useIsMobile();
 
   // This function now correctly handles the path format from your original design.
-  const handleCardClick = (pagePath: string) => {
-    // Transform the path ('/Committees') into the ID ('committees') that our system expects.
-    const pageId = pagePath.replace("/", "").toLowerCase();
-    navigateToPage(pageId);
+  const handleCardClick = () => {
+    // Since all sections are now combined, we navigate to the combined_sections page
+    navigateToPage("combined_sections");
   };
 
   return (
@@ -66,45 +65,52 @@ const StructureSection = () => {
         <div className="structure-cards">
           <div
             className="structure-card"
-            onClick={() => handleCardClick("/Committees")}
+            onClick={handleCardClick}
             role="button"
             tabIndex={0}
           >
             <div className="card-content">
               <h3>Committees</h3>
               <p>
-               Blueprints, bold strategies, and seamless execution. Our Committees shape every chapter of Aaruush. From planning to execution, they ensure every event runs with perfect precision and impact.
+                Blueprints, bold strategies, and seamless execution. Our
+                Committees shape every chapter of Aaruush. From planning to
+                execution, they ensure every event runs with perfect precision
+                and impact.
               </p>
             </div>
-            <ArrowButton onClick={() => handleCardClick("/Committees")} />
+            <ArrowButton onClick={handleCardClick} />
           </div>
           <div
             className="structure-card"
-            onClick={() => handleCardClick("/Domains")}
+            onClick={handleCardClick}
             role="button"
             tabIndex={0}
           >
             <div className="card-content">
               <h3>Domains</h3>
               <p>
-                Where engineering meets experience. Domains are your gateway to tech, innovation, and creativity. Tackle real-world challenges, craft solutions, and leave your mark on the future.
+                Where engineering meets experience. Domains are your gateway to
+                tech, innovation, and creativity. Tackle real-world challenges,
+                craft solutions, and leave your mark on the future.
               </p>
             </div>
-            <ArrowButton onClick={() => handleCardClick("/Domains")} />
+            <ArrowButton onClick={handleCardClick} />
           </div>
           <div
             className="structure-card"
-            onClick={() => handleCardClick("/Teams")}
+            onClick={handleCardClick}
             role="button"
             tabIndex={0}
           >
             <div className="card-content">
               <h3>Teams</h3>
               <p>
-                The engine behind the fest. Our Teams drive tech innovation, outreach, and continuity. They connect talent and ideas, ensuring that the spirit of Aaruush thrives and grows.
+                The engine behind the fest. Our Teams drive tech innovation,
+                outreach, and continuity. They connect talent and ideas,
+                ensuring that the spirit of Aaruush thrives and grows.
               </p>
             </div>
-            <ArrowButton onClick={() => handleCardClick("/Teams")} />
+            <ArrowButton onClick={handleCardClick} />
           </div>
         </div>
       </div>
