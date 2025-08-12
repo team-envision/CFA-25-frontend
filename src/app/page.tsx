@@ -20,16 +20,12 @@ import SimpleAssetPreloader from "./components/SimpleAssetPreloader";
 // Import All Page Components
 import MainLandingPage from "./components/main_landing_page/MainLandingPage";
 import StructureSection from "./components/2nd_landing_page/StructureSection";
-import TeamsSection from "./components/Teams/page";
-import Committees from "./components/Committees/page";
-import Domains from "./components/Domains/page";
-import CardWrapper from "./components/Cardwrapper";
+import CombinedSections from "./components/CombinedSections/page";
 import RecruitmentForm from "./Recruitment/page";
 import Team_Envision_recruitment from "./Team_Envision_recruitment/page";
 
-const defaultPageSequence = ["main", "structure", "teams"];
+const defaultPageSequence = ["main", "structure", "combined_sections"];
 const recruitmentPageIds = ["recruitment", "envision_recruitment"];
-const cubicBezierEasing: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export default function HomePage() {
   const container = useRef<HTMLDivElement>(null);
@@ -46,19 +42,13 @@ export default function HomePage() {
   const prefersReducedMotion = useReducedMotion();
   const staticScale = useMotionValue(1);
 
-  const { setNavigateToPage, animationDirection, setAnimationDirection } =
-    useScrollManager();
+  const { setNavigateToPage } = useScrollManager();
   const [currentPageSequence, setCurrentPageSequence] =
     useState(defaultPageSequence);
-  const [activePageId, setActivePageId] = useState("teams");
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [activePageId, setActivePageId] = useState("combined_sections");
   const [isMobile, setIsMobile] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_isIOS, setIsIOS] = useState(false);
-  const [isUserScrolling, setIsUserScrolling] = useState(false);
-  const [navigationSource, setNavigationSource] = useState<
-    "scroll" | "button" | null
-  >(null);
   const [actualVH, setActualVH] = useState(800);
 
   // Scroll clamping
@@ -179,23 +169,10 @@ export default function HomePage() {
       setMaxScrollPosition(null); // Reset on navigation
       setClampedPosition(null); // Reset clamped position on navigation
 
-      if (targetId === "committees" || targetId === "domains") {
-        setIsAnimating(true);
-        setAnimationDirection("forward");
-        setCurrentPageSequence(["main", "structure", targetId]);
-        setActivePageId(targetId);
-
-        setTimeout(() => {
-          if (lenis) {
-            const vh = actualVH;
-            const targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
-            lenis.scrollTo(targetPosition, { duration: 1.0 });
-          }
-        }, 150);
-      } else if (defaultPageSequence.includes(targetId)) {
+      // Since we now have combined sections, we don't need separate handling for committees/domains
+      if (defaultPageSequence.includes(targetId)) {
         if (!defaultPageSequence.includes(activePageId)) {
           setCurrentPageSequence(defaultPageSequence);
-          setIsAnimating(false);
         }
         setActivePageId(targetId);
 
@@ -211,7 +188,7 @@ export default function HomePage() {
               case "structure":
                 targetPosition = isMobile ? vh * 1.15 : vh * 1.05;
                 break;
-              case "teams":
+              case "combined_sections":
                 targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
                 break;
               default:
@@ -223,25 +200,8 @@ export default function HomePage() {
         }, 150);
       }
     },
-    [activePageId, lenis, setAnimationDirection, isMobile, actualVH]
+    [activePageId, lenis, isMobile, actualVH]
   );
-
-  const animationTransition = {
-    duration: isAnimating ? 1.2 : 0,
-    ease: cubicBezierEasing,
-  };
-
-  const slideVariants = {
-    initial: {
-      x: animationDirection === "forward" ? "100%" : "-100%",
-      opacity: 0,
-    },
-    animate: { x: 0, opacity: 1 },
-    exit: {
-      x: animationDirection === "forward" ? "-100%" : "100%",
-      opacity: 0,
-    },
-  };
 
   const navigate = useCallback(
     (targetId: string, source: "scroll" | "button" = "button") => {
@@ -253,7 +213,6 @@ export default function HomePage() {
         "Source:",
         source
       );
-      setNavigationSource(source);
 
       if (recruitmentPageIds.includes(targetId)) {
         navigateToRecruitment(
@@ -275,7 +234,6 @@ export default function HomePage() {
     if (lenis) {
       if (currentPageSequence !== defaultPageSequence) {
         setCurrentPageSequence(defaultPageSequence);
-        setIsAnimating(false);
       }
       setActivePageId("main");
       setMaxScrollPosition(null);
@@ -293,9 +251,7 @@ export default function HomePage() {
       />
     ),
     structure: <StructureSection />,
-    teams: <TeamsSection />,
-    committees: <Committees />,
-    domains: <Domains />,
+    combined_sections: <CombinedSections />,
     recruitment: <RecruitmentForm />,
     envision_recruitment: <Team_Envision_recruitment />,
   };
@@ -303,36 +259,6 @@ export default function HomePage() {
   useEffect(() => {
     setNavigateToPage(() => navigate);
   }, [navigate, setNavigateToPage]);
-
-  useEffect(() => {
-    const isCommitteesOrDomainsActive =
-      activePageId === "committees" || activePageId === "domains";
-    if (!isCommitteesOrDomainsActive) return;
-
-    const unsubscribe = scrollYProgress.on("change", (latest) => {
-      if (latest < 1 / 3 && !isUserScrolling && navigationSource !== "button") {
-        setIsUserScrolling(true);
-        setIsAnimating(true);
-        setAnimationDirection("backward");
-        setCurrentPageSequence(defaultPageSequence);
-        setActivePageId("teams");
-        setTimeout(() => setIsUserScrolling(false), 1000);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [
-    scrollYProgress,
-    activePageId,
-    setAnimationDirection,
-    isUserScrolling,
-    navigationSource,
-  ]);
-
-  const onAnimationComplete = () => {
-    setIsAnimating(false);
-    setNavigationSource(null);
-  };
 
   // Callback function for when the preloader is finished
   const handlePreloaderComplete = useCallback(() => {
@@ -398,27 +324,14 @@ export default function HomePage() {
           transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
         >
           {currentPageSequence.slice(0, 3).map((id, i) => (
-            <OptimizedScalingCardWrapper key={id} scale={scaleArray[i]} index={i}>
+            <OptimizedScalingCardWrapper
+              key={id}
+              scale={scaleArray[i]}
+              index={i}
+            >
               {pageComponentMap[id]}
             </OptimizedScalingCardWrapper>
           ))}
-
-          <AnimatePresence mode="popLayout">
-            {currentPageSequence
-              .slice(3)
-              .filter((id) => !recruitmentPageIds.includes(id))
-              .map((id) => (
-                <CardWrapper
-                  key={id}
-                  customKey={id}
-                  animationVariants={slideVariants}
-                  transition={animationTransition}
-                  onAnimationComplete={onAnimationComplete}
-                >
-                  {pageComponentMap[id]}
-                </CardWrapper>
-              ))}
-          </AnimatePresence>
 
           {isTransitioning && (
             <RecruitmentPageTransition
