@@ -20,16 +20,12 @@ import SimpleAssetPreloader from "./components/SimpleAssetPreloader";
 // Import All Page Components
 import MainLandingPage from "./components/main_landing_page/MainLandingPage";
 import StructureSection from "./components/2nd_landing_page/StructureSection";
-import TeamsSection from "./components/Teams/page";
-import Committees from "./components/Committees/page";
-import Domains from "./components/Domains/page";
-import CardWrapper from "./components/Cardwrapper";
+import CombinedSections from "./components/CombinedSections/page";
 import RecruitmentForm from "./Recruitment/page";
 import Team_Envision_recruitment from "./Team_Envision_recruitment/page";
 
-const defaultPageSequence = ["main", "structure", "teams"];
+const defaultPageSequence = ["main", "structure", "combined_sections"];
 const recruitmentPageIds = ["recruitment", "envision_recruitment"];
-const cubicBezierEasing: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export default function HomePage() {
   const container = useRef<HTMLDivElement>(null);
@@ -46,19 +42,13 @@ export default function HomePage() {
   const prefersReducedMotion = useReducedMotion();
   const staticScale = useMotionValue(1);
 
-  const { setNavigateToPage, animationDirection, setAnimationDirection } =
-    useScrollManager();
+  const { setNavigateToPage } = useScrollManager();
   const [currentPageSequence, setCurrentPageSequence] =
     useState(defaultPageSequence);
-  const [activePageId, setActivePageId] = useState("teams");
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [activePageId, setActivePageId] = useState("combined_sections");
   const [isMobile, setIsMobile] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_isIOS, setIsIOS] = useState(false);
-  const [isUserScrolling, setIsUserScrolling] = useState(false);
-  const [navigationSource, setNavigationSource] = useState<
-    "scroll" | "button" | null
-  >(null);
   const [actualVH, setActualVH] = useState(800);
 
   // Scroll clamping
@@ -124,14 +114,14 @@ export default function HomePage() {
     if (!isMobile) return;
 
     const unsubscribe = scrollYProgress.on("change", (progress) => {
-      if (progress >= 0.85 && maxScrollPosition === null && lenis) {
+      if (progress >= 0.88 && maxScrollPosition === null && lenis) {
         const currentScroll = lenis.actualScroll;
         setMaxScrollPosition(currentScroll);
       }
 
       if (progress < 0.8 && maxScrollPosition !== null) {
         setMaxScrollPosition(null);
-        setClampedPosition(null); // Reset clamped position when scrolling back up
+        setClampedPosition(null);
       }
     });
 
@@ -144,7 +134,7 @@ export default function HomePage() {
       return;
     }
 
-    const extraScrollAllowance = 150; // Allow 150px extra scroll beyond threshold
+    const extraScrollAllowance = 150;
     const clampPosition = maxScrollPosition + extraScrollAllowance;
     let lastScrollPosition = 0;
 
@@ -152,20 +142,16 @@ export default function HomePage() {
       const scrollDirection = scroll > lastScrollPosition ? "down" : "up";
       lastScrollPosition = scroll;
 
-      // If we're beyond the clamp position (maxScrollPosition + 150px)
       if (scroll > clampPosition) {
-        // Set the clamped position if not already set
         if (clampedPosition === null) {
           setClampedPosition(clampPosition);
         }
 
-        // If scrolling down beyond the clamp position, reset to clamp position
         if (scrollDirection === "down") {
           lenis.scrollTo(clampPosition, {
             immediate: true,
           });
         }
-        // If scrolling up, allow normal scrolling (do nothing)
       }
     };
 
@@ -173,29 +159,65 @@ export default function HomePage() {
     return () => lenis.off("scroll", handleScroll);
   }, [lenis, isMobile, maxScrollPosition, clampedPosition]);
 
-  // Direct page loading function
+  // ADD THIS: PC-ONLY scroll clamping (separate from mobile)
+useEffect(() => {
+  if (isMobile) return; // ONLY for PC, skip mobile entirely
+
+  const unsubscribe = scrollYProgress.on("change", (progress) => {
+    if (progress >= 0.95 && maxScrollPosition === null && lenis) {
+      const currentScroll = lenis.actualScroll;
+      setMaxScrollPosition(currentScroll);
+    }
+
+    if (progress < 0.90 && maxScrollPosition !== null) {
+      setMaxScrollPosition(null);
+      setClampedPosition(null);
+    }
+  });
+
+  return () => unsubscribe();
+}, [scrollYProgress, isMobile, maxScrollPosition, lenis]);
+
+// ADD THIS: PC-ONLY scroll clamp handler (separate from mobile)
+useEffect(() => {
+  if (isMobile || !lenis || maxScrollPosition === null) return; // ONLY for PC
+
+  const extraScrollAllowance = 50; // PC gets only 50px
+  const clampPosition = maxScrollPosition + extraScrollAllowance;
+  let lastScrollPosition = 0;
+
+  const handleScroll = ({ scroll }: { scroll: number }) => {
+    const scrollDirection = scroll > lastScrollPosition ? "down" : "up";
+    lastScrollPosition = scroll;
+
+    if (scroll > clampPosition) {
+      if (clampedPosition === null) {
+        setClampedPosition(clampPosition);
+      }
+
+      if (scrollDirection === "down") {
+        lenis.scrollTo(clampPosition, {
+          immediate: true,
+        });
+      }
+    }
+  };
+
+  lenis.on("scroll", handleScroll);
+  return () => lenis.off("scroll", handleScroll);
+}, [lenis, isMobile, maxScrollPosition, clampedPosition]);
+
+
+  // Enhanced navigation function to support section-specific scrolling
+  // Enhanced navigation function to support section-specific scrolling
   const loadPageDirectly = useCallback(
-    (targetId: string) => {
-      setMaxScrollPosition(null); // Reset on navigation
-      setClampedPosition(null); // Reset clamped position on navigation
+    (targetId: string, section?: string) => {
+      setMaxScrollPosition(null);
+      setClampedPosition(null);
 
-      if (targetId === "committees" || targetId === "domains") {
-        setIsAnimating(true);
-        setAnimationDirection("forward");
-        setCurrentPageSequence(["main", "structure", targetId]);
-        setActivePageId(targetId);
-
-        setTimeout(() => {
-          if (lenis) {
-            const vh = actualVH;
-            const targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
-            lenis.scrollTo(targetPosition, { duration: 1.0 });
-          }
-        }, 150);
-      } else if (defaultPageSequence.includes(targetId)) {
+      if (defaultPageSequence.includes(targetId)) {
         if (!defaultPageSequence.includes(activePageId)) {
           setCurrentPageSequence(defaultPageSequence);
-          setIsAnimating(false);
         }
         setActivePageId(targetId);
 
@@ -211,49 +233,79 @@ export default function HomePage() {
               case "structure":
                 targetPosition = isMobile ? vh * 1.15 : vh * 1.05;
                 break;
-              case "teams":
-                targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
+              case "combined_sections":
+                if (section) {
+                  // Use element-based scrolling for more accuracy
+                  const sectionElement = document.getElementById(
+                    `${section}-section`
+                  );
+                  if (sectionElement) {
+                    const rect = sectionElement.getBoundingClientRect();
+                    const scrollTop =
+                      window.pageYOffset || document.documentElement.scrollTop;
+
+                    // Teams-specific offset handling to prevent overscrolling
+                    let offset;
+                    if (section === "teams") {
+                      offset = isMobile ? 0 : 100; // Larger offset for teams to prevent overscroll
+                    } else {
+                      offset = isMobile ? 0 : 20; // Your current offsets
+                    }
+
+                    targetPosition = rect.top + scrollTop - offset;
+
+                    // Add maximum scroll position check for teams
+                    if (section === "teams") {
+                      const maxScroll =
+                        document.documentElement.scrollHeight -
+                        window.innerHeight -
+                        100;
+                      targetPosition = Math.min(targetPosition, maxScroll);
+                    }
+                  } else {
+                    // Fallback to calculated positions with better offsets
+                    let basePosition = isMobile ? vh * 2.22 : vh * 2.0;
+
+                    if (section === "domains") {
+                      basePosition += isMobile ? vh * 1.5 : vh * 1.3;
+                    } else if (section === "teams") {
+                      basePosition += isMobile ? vh * 2.2 : vh * 2.0; // Reduced values
+                    }
+                    targetPosition = basePosition;
+                  }
+                } else {
+                  // Default to committees section
+                  targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
+                }
                 break;
               default:
                 targetPosition = 0;
             }
 
-            lenis.scrollTo(targetPosition, { duration: 1.0 });
+            lenis.scrollTo(targetPosition, { duration: 1.2 }); // Slightly longer duration for smoother scroll
           }
-        }, 150);
+        }, 200); // Increased timeout to ensure DOM is ready
       }
     },
-    [activePageId, lenis, setAnimationDirection, isMobile, actualVH]
+    [activePageId, lenis, isMobile, actualVH]
   );
 
-  const animationTransition = {
-    duration: isAnimating ? 1.2 : 0,
-    ease: cubicBezierEasing,
-  };
-
-  const slideVariants = {
-    initial: {
-      x: animationDirection === "forward" ? "100%" : "-100%",
-      opacity: 0,
-    },
-    animate: { x: 0, opacity: 1 },
-    exit: {
-      x: animationDirection === "forward" ? "-100%" : "100%",
-      opacity: 0,
-    },
-  };
-
   const navigate = useCallback(
-    (targetId: string, source: "scroll" | "button" = "button") => {
+    (
+      targetId: string,
+      source: "scroll" | "button" = "button",
+      section?: string
+    ) => {
       console.log(
         "Navigating to:",
         targetId,
+        "Section:",
+        section,
         "Current active:",
         activePageId,
         "Source:",
         source
       );
-      setNavigationSource(source);
 
       if (recruitmentPageIds.includes(targetId)) {
         navigateToRecruitment(
@@ -262,7 +314,7 @@ export default function HomePage() {
         return;
       }
 
-      loadPageDirectly(targetId);
+      loadPageDirectly(targetId, section);
     },
     [activePageId, navigateToRecruitment, loadPageDirectly]
   );
@@ -275,7 +327,6 @@ export default function HomePage() {
     if (lenis) {
       if (currentPageSequence !== defaultPageSequence) {
         setCurrentPageSequence(defaultPageSequence);
-        setIsAnimating(false);
       }
       setActivePageId("main");
       setMaxScrollPosition(null);
@@ -292,10 +343,8 @@ export default function HomePage() {
         scrollToTop={scrollToTop}
       />
     ),
-    structure: <StructureSection />,
-    teams: <TeamsSection />,
-    committees: <Committees />,
-    domains: <Domains />,
+    structure: <StructureSection navigate={navigate} />,
+    combined_sections: <CombinedSections />,
     recruitment: <RecruitmentForm />,
     envision_recruitment: <Team_Envision_recruitment />,
   };
@@ -303,36 +352,6 @@ export default function HomePage() {
   useEffect(() => {
     setNavigateToPage(() => navigate);
   }, [navigate, setNavigateToPage]);
-
-  useEffect(() => {
-    const isCommitteesOrDomainsActive =
-      activePageId === "committees" || activePageId === "domains";
-    if (!isCommitteesOrDomainsActive) return;
-
-    const unsubscribe = scrollYProgress.on("change", (latest) => {
-      if (latest < 1 / 3 && !isUserScrolling && navigationSource !== "button") {
-        setIsUserScrolling(true);
-        setIsAnimating(true);
-        setAnimationDirection("backward");
-        setCurrentPageSequence(defaultPageSequence);
-        setActivePageId("teams");
-        setTimeout(() => setIsUserScrolling(false), 1000);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [
-    scrollYProgress,
-    activePageId,
-    setAnimationDirection,
-    isUserScrolling,
-    navigationSource,
-  ]);
-
-  const onAnimationComplete = () => {
-    setIsAnimating(false);
-    setNavigationSource(null);
-  };
 
   // Callback function for when the preloader is finished
   const handlePreloaderComplete = useCallback(() => {
@@ -366,10 +385,6 @@ export default function HomePage() {
 
   return (
     <>
-      {/* This is the most critical change.
-        The main content is always rendered inside ReactLenis.
-        We use a fade animation to hide/show it, which prevents the DOM from shifting.
-      */}
       <ReactLenis
         root
         options={{
@@ -392,33 +407,19 @@ export default function HomePage() {
               touchAction: "pan-y",
             }),
           }}
-          // Use isPreloading state to control opacity
           initial={{ opacity: 0 }}
           animate={{ opacity: isPreloading ? 0 : 1 }}
           transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
         >
           {currentPageSequence.slice(0, 3).map((id, i) => (
-            <OptimizedScalingCardWrapper key={id} scale={scaleArray[i]} index={i}>
+            <OptimizedScalingCardWrapper
+              key={id}
+              scale={scaleArray[i]}
+              index={i}
+            >
               {pageComponentMap[id]}
             </OptimizedScalingCardWrapper>
           ))}
-
-          <AnimatePresence mode="popLayout">
-            {currentPageSequence
-              .slice(3)
-              .filter((id) => !recruitmentPageIds.includes(id))
-              .map((id) => (
-                <CardWrapper
-                  key={id}
-                  customKey={id}
-                  animationVariants={slideVariants}
-                  transition={animationTransition}
-                  onAnimationComplete={onAnimationComplete}
-                >
-                  {pageComponentMap[id]}
-                </CardWrapper>
-              ))}
-          </AnimatePresence>
 
           {isTransitioning && (
             <RecruitmentPageTransition
@@ -430,7 +431,6 @@ export default function HomePage() {
         </motion.main>
       </ReactLenis>
 
-      {/* The preloader is now on top of the main content */}
       <AnimatePresence mode="wait">
         {isPreloading && (
           <motion.div
@@ -452,7 +452,6 @@ export default function HomePage() {
   );
 }
 
-// The OptimizedScalingCardWrapper component remains the same.
 interface OptimizedScalingCardWrapperProps {
   children: ReactNode;
   scale: MotionValue<number>;
