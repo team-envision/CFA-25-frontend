@@ -6,7 +6,7 @@ import Image from "next/image";
 import FooterSection from "../Footer/page";
 import { useScrollManager } from "@/app/context/ScrollContext";
 
-// Import data
+// Import data (keeping your existing data arrays)
 const CommitteeNames = [
   {
     title: "1. Championships",
@@ -175,7 +175,7 @@ const CombinedSections = () => {
       {/* Desktop and Mobile: Vertical scroll sections */}
       <div className="w-full">
         {/* Committees Section */}
-        <div className="min-h-screen flex items-center justify-center px-4 py-6">
+        <div id="committees-section" className="min-h-screen flex items-center justify-center px-4 py-6 mb-16 md:mb-24">
           <div className="relative w-full max-w-7xl lg:max-w-[90vw]">
             <div
               className="relative w-full border border-white/20 backdrop-blur-xl rounded-3xl p-6 sm:p-8 md:p-10 text-white flex flex-col shadow-xl opacity-90"
@@ -253,7 +253,7 @@ const CombinedSections = () => {
         </div>
 
         {/* Domains Section */}
-        <div className="min-h-screen flex items-center justify-center px-4 py-6">
+        <div id="domains-section" className="min-h-screen flex items-center justify-center px-4 py-6 mb-16 md:mb-24">
           <div className="relative w-full max-w-7xl lg:max-w-[90vw]">
             <div
               className="relative w-full border border-white/20 backdrop-blur-xl rounded-3xl p-6 sm:p-8 md:p-10 text-white flex flex-col shadow-xl opacity-90"
@@ -307,7 +307,7 @@ const CombinedSections = () => {
         </div>
 
         {/* Teams Section */}
-        <div className="min-h-screen flex items-center justify-center px-4 py-6">
+        <div id="teams-section" className="min-h-screen flex items-center justify-center px-4 py-6 mb-16 md:mb-24">
           <div className="relative w-full max-w-7xl lg:max-w-[90vw] opacity-90">
             <div
               className="relative w-full border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-10 md:p-12 text-white flex flex-col shadow-xl opacity-100"
@@ -389,7 +389,7 @@ const CombinedSections = () => {
         </div>
 
         {/* Footer Section */}
-        <div className="mt-[2vh] w-full mb-[2vw]">
+        <div className="mt-[4vh] w-full mb-[2vw]">
           <FooterSection />
         </div>
       </div>

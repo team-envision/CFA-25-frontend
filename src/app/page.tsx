@@ -114,14 +114,14 @@ export default function HomePage() {
     if (!isMobile) return;
 
     const unsubscribe = scrollYProgress.on("change", (progress) => {
-      if (progress >= 0.85 && maxScrollPosition === null && lenis) {
+      if (progress >= 0.88 && maxScrollPosition === null && lenis) {
         const currentScroll = lenis.actualScroll;
         setMaxScrollPosition(currentScroll);
       }
 
       if (progress < 0.8 && maxScrollPosition !== null) {
         setMaxScrollPosition(null);
-        setClampedPosition(null); // Reset clamped position when scrolling back up
+        setClampedPosition(null);
       }
     });
 
@@ -134,7 +134,7 @@ export default function HomePage() {
       return;
     }
 
-    const extraScrollAllowance = 150; // Allow 150px extra scroll beyond threshold
+    const extraScrollAllowance = 150;
     const clampPosition = maxScrollPosition + extraScrollAllowance;
     let lastScrollPosition = 0;
 
@@ -142,20 +142,16 @@ export default function HomePage() {
       const scrollDirection = scroll > lastScrollPosition ? "down" : "up";
       lastScrollPosition = scroll;
 
-      // If we're beyond the clamp position (maxScrollPosition + 150px)
       if (scroll > clampPosition) {
-        // Set the clamped position if not already set
         if (clampedPosition === null) {
           setClampedPosition(clampPosition);
         }
 
-        // If scrolling down beyond the clamp position, reset to clamp position
         if (scrollDirection === "down") {
           lenis.scrollTo(clampPosition, {
             immediate: true,
           });
         }
-        // If scrolling up, allow normal scrolling (do nothing)
       }
     };
 
@@ -163,13 +159,62 @@ export default function HomePage() {
     return () => lenis.off("scroll", handleScroll);
   }, [lenis, isMobile, maxScrollPosition, clampedPosition]);
 
-  // Direct page loading function
-  const loadPageDirectly = useCallback(
-    (targetId: string) => {
-      setMaxScrollPosition(null); // Reset on navigation
-      setClampedPosition(null); // Reset clamped position on navigation
+  // ADD THIS: PC-ONLY scroll clamping (separate from mobile)
+useEffect(() => {
+  if (isMobile) return; // ONLY for PC, skip mobile entirely
 
-      // Since we now have combined sections, we don't need separate handling for committees/domains
+  const unsubscribe = scrollYProgress.on("change", (progress) => {
+    if (progress >= 0.95 && maxScrollPosition === null && lenis) {
+      const currentScroll = lenis.actualScroll;
+      setMaxScrollPosition(currentScroll);
+    }
+
+    if (progress < 0.90 && maxScrollPosition !== null) {
+      setMaxScrollPosition(null);
+      setClampedPosition(null);
+    }
+  });
+
+  return () => unsubscribe();
+}, [scrollYProgress, isMobile, maxScrollPosition, lenis]);
+
+// ADD THIS: PC-ONLY scroll clamp handler (separate from mobile)
+useEffect(() => {
+  if (isMobile || !lenis || maxScrollPosition === null) return; // ONLY for PC
+
+  const extraScrollAllowance = 50; // PC gets only 50px
+  const clampPosition = maxScrollPosition + extraScrollAllowance;
+  let lastScrollPosition = 0;
+
+  const handleScroll = ({ scroll }: { scroll: number }) => {
+    const scrollDirection = scroll > lastScrollPosition ? "down" : "up";
+    lastScrollPosition = scroll;
+
+    if (scroll > clampPosition) {
+      if (clampedPosition === null) {
+        setClampedPosition(clampPosition);
+      }
+
+      if (scrollDirection === "down") {
+        lenis.scrollTo(clampPosition, {
+          immediate: true,
+        });
+      }
+    }
+  };
+
+  lenis.on("scroll", handleScroll);
+  return () => lenis.off("scroll", handleScroll);
+}, [lenis, isMobile, maxScrollPosition, clampedPosition]);
+
+
+  // Enhanced navigation function to support section-specific scrolling
+  // Enhanced navigation function to support section-specific scrolling
+  const loadPageDirectly = useCallback(
+    (targetId: string, section?: string) => {
+      setMaxScrollPosition(null);
+      setClampedPosition(null);
+
       if (defaultPageSequence.includes(targetId)) {
         if (!defaultPageSequence.includes(activePageId)) {
           setCurrentPageSequence(defaultPageSequence);
@@ -189,25 +234,73 @@ export default function HomePage() {
                 targetPosition = isMobile ? vh * 1.15 : vh * 1.05;
                 break;
               case "combined_sections":
-                targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
+                if (section) {
+                  // Use element-based scrolling for more accuracy
+                  const sectionElement = document.getElementById(
+                    `${section}-section`
+                  );
+                  if (sectionElement) {
+                    const rect = sectionElement.getBoundingClientRect();
+                    const scrollTop =
+                      window.pageYOffset || document.documentElement.scrollTop;
+
+                    // Teams-specific offset handling to prevent overscrolling
+                    let offset;
+                    if (section === "teams") {
+                      offset = isMobile ? 0 : 100; // Larger offset for teams to prevent overscroll
+                    } else {
+                      offset = isMobile ? 0 : 20; // Your current offsets
+                    }
+
+                    targetPosition = rect.top + scrollTop - offset;
+
+                    // Add maximum scroll position check for teams
+                    if (section === "teams") {
+                      const maxScroll =
+                        document.documentElement.scrollHeight -
+                        window.innerHeight -
+                        100;
+                      targetPosition = Math.min(targetPosition, maxScroll);
+                    }
+                  } else {
+                    // Fallback to calculated positions with better offsets
+                    let basePosition = isMobile ? vh * 2.22 : vh * 2.0;
+
+                    if (section === "domains") {
+                      basePosition += isMobile ? vh * 1.5 : vh * 1.3;
+                    } else if (section === "teams") {
+                      basePosition += isMobile ? vh * 2.2 : vh * 2.0; // Reduced values
+                    }
+                    targetPosition = basePosition;
+                  }
+                } else {
+                  // Default to committees section
+                  targetPosition = isMobile ? vh * 2.22 : vh * 2.0;
+                }
                 break;
               default:
                 targetPosition = 0;
             }
 
-            lenis.scrollTo(targetPosition, { duration: 1.0 });
+            lenis.scrollTo(targetPosition, { duration: 1.2 }); // Slightly longer duration for smoother scroll
           }
-        }, 150);
+        }, 200); // Increased timeout to ensure DOM is ready
       }
     },
     [activePageId, lenis, isMobile, actualVH]
   );
 
   const navigate = useCallback(
-    (targetId: string, source: "scroll" | "button" = "button") => {
+    (
+      targetId: string,
+      source: "scroll" | "button" = "button",
+      section?: string
+    ) => {
       console.log(
         "Navigating to:",
         targetId,
+        "Section:",
+        section,
         "Current active:",
         activePageId,
         "Source:",
@@ -221,7 +314,7 @@ export default function HomePage() {
         return;
       }
 
-      loadPageDirectly(targetId);
+      loadPageDirectly(targetId, section);
     },
     [activePageId, navigateToRecruitment, loadPageDirectly]
   );
@@ -250,7 +343,7 @@ export default function HomePage() {
         scrollToTop={scrollToTop}
       />
     ),
-    structure: <StructureSection />,
+    structure: <StructureSection navigate={navigate} />,
     combined_sections: <CombinedSections />,
     recruitment: <RecruitmentForm />,
     envision_recruitment: <Team_Envision_recruitment />,
@@ -292,10 +385,6 @@ export default function HomePage() {
 
   return (
     <>
-      {/* This is the most critical change.
-        The main content is always rendered inside ReactLenis.
-        We use a fade animation to hide/show it, which prevents the DOM from shifting.
-      */}
       <ReactLenis
         root
         options={{
@@ -318,7 +407,6 @@ export default function HomePage() {
               touchAction: "pan-y",
             }),
           }}
-          // Use isPreloading state to control opacity
           initial={{ opacity: 0 }}
           animate={{ opacity: isPreloading ? 0 : 1 }}
           transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
@@ -343,7 +431,6 @@ export default function HomePage() {
         </motion.main>
       </ReactLenis>
 
-      {/* The preloader is now on top of the main content */}
       <AnimatePresence mode="wait">
         {isPreloading && (
           <motion.div
@@ -365,7 +452,6 @@ export default function HomePage() {
   );
 }
 
-// The OptimizedScalingCardWrapper component remains the same.
 interface OptimizedScalingCardWrapperProps {
   children: ReactNode;
   scale: MotionValue<number>;

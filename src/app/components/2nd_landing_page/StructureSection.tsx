@@ -1,14 +1,10 @@
-// src/app/components/2nd_landing_page/StructureSection.tsx
 "use client";
 
 import React from "react";
-import { useScrollManager } from "@/app/context/ScrollContext"; // ADDED: The new navigation logic
-import "./StructureSection.css"; // RESTORED: Your original CSS import path
+import "./StructureSection.css";
 import { ArrowUpRight } from "lucide-react";
-// import { useIsMobile } from "../Hooks/useIsMobile";
 import Particles from "../Particles";
 
-// This is your original ArrowButton component, unchanged.
 const ArrowButton = ({ onClick }: { onClick?: () => void }) => (
   <button
     className="arrow-btn"
@@ -22,14 +18,24 @@ const ArrowButton = ({ onClick }: { onClick?: () => void }) => (
   </button>
 );
 
-const StructureSection = () => {
-  const { navigateToPage } = useScrollManager(); // ADDED: Get the function from our context
-  // const isMobile = useIsMobile();
+// Define the props interface for StructureSection
+interface StructureSectionProps {
+  navigate: (targetId: string, source?: "scroll" | "button", section?: string) => void;
+}
 
-  // This function now correctly handles the path format from your original design.
-  const handleCardClick = () => {
-    // Since all sections are now combined, we navigate to the combined_sections page
-    navigateToPage("combined_sections");
+// Make sure to use the interface in the component definition
+const StructureSection: React.FC<StructureSectionProps> = ({ navigate }) => {
+  // Individual handlers for each card
+  const handleCommitteesClick = () => {
+    navigate("combined_sections", "button", "committees");
+  };
+
+  const handleDomainsClick = () => {
+    navigate("combined_sections", "button", "domains");
+  };
+
+  const handleTeamsClick = () => {
+    navigate("combined_sections", "button", "teams");
   };
 
   return (
@@ -65,7 +71,7 @@ const StructureSection = () => {
         <div className="structure-cards">
           <div
             className="structure-card"
-            onClick={handleCardClick}
+            onClick={handleCommitteesClick}
             role="button"
             tabIndex={0}
           >
@@ -78,11 +84,11 @@ const StructureSection = () => {
                 and impact.
               </p>
             </div>
-            <ArrowButton onClick={handleCardClick} />
+            <ArrowButton onClick={handleCommitteesClick} />
           </div>
           <div
             className="structure-card"
-            onClick={handleCardClick}
+            onClick={handleDomainsClick}
             role="button"
             tabIndex={0}
           >
@@ -94,11 +100,11 @@ const StructureSection = () => {
                 craft solutions, and leave your mark on the future.
               </p>
             </div>
-            <ArrowButton onClick={handleCardClick} />
+            <ArrowButton onClick={handleDomainsClick} />
           </div>
           <div
             className="structure-card"
-            onClick={handleCardClick}
+            onClick={handleTeamsClick}
             role="button"
             tabIndex={0}
           >
@@ -110,7 +116,7 @@ const StructureSection = () => {
                 ensuring that the spirit of Aaruush thrives and grows.
               </p>
             </div>
-            <ArrowButton onClick={handleCardClick} />
+            <ArrowButton onClick={handleTeamsClick} />
           </div>
         </div>
       </div>
