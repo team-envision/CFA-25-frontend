@@ -11,51 +11,51 @@ import dynamic from "next/dynamic";
 const DomainDetails = [
   {
     title: "1. Architecture",
-    desc: "Shape environments that inspire and unite artistic vision with smart planning and eco-conscious design solutions.",
+    desc: "Dream big as you blend tech and creativity to design jaw-dropping, smart spaces that set the trends and shape tomorrow!",
   },
   {
     title: "2. Agritech",
-    desc: "Reimagine farming with tech: develop smart, sustainable solutions for agriculture that promote food security and precision farming.",
+    desc: "Revolutionise your roots as you mix technology with tradition to power up farmers and spark unstoppable harvests!",
   },
   {
     title: "3. Bluebook",
-    desc: "Unlock the secrets of life sciences: dive into forensic analysis, biometrics, and scientific inquiry to explore biology and investigation.",
+    desc: "Step in where genes meet genius, petri dishes spark ideas and you cook up the next big biotech breakthrough!",
   },
   {
     title: "4. Cosmic Quest",
-    desc: "Explore the universe: unlock the mysteries of space and celestial phenomena through astronomy and space science adventures.",
+    desc: "Reach for the stars as you dive into space science and imagination- each journey reveals incredible new wonders!",
   },
   {
     title: "5. Digital Design",
-    desc: "Tell stories through visuals: Dive into graphic design, media, and creative communication to bring ideas to life with artistic flair.",
+    desc: "Make it pop: Unleash your creative fire with striking images, beats, animation, and effects that turn heads and leave your signature!",
   },
   {
     title: "6. Electrizite",
-    desc: "Power up with smart tech: explore AI, embedded systems, and electronic circuit design to create intelligent systems that shape the future.",
+    desc: "Get wired! Dive into electronics, master circuits and embedded tech, and spark smart ideas to life.",
   },
   {
     title: "7. Fundaz",
-    desc: "Plunge into logic battles, unleash science superpowers, and dominate math quests. Ignite your inner genius to fuel the fun and triumph in every electrifying puzzle!",
+    desc: "Bring your brain to the game: tackle mind-bending quizzes blending science, math, and news, making thinking fun, fresh, and unforgettable!",
   },
   {
     title: "8. Konstruktion and Canoe Challenge",
-    desc: "Build, design, and innovate: test your civil engineering skills through hands-on projects in infrastructure planning and real-world problem solving.",
+    desc: "Build boldly as you solve real-world engineering puzzles in construction and sustainability, flexing hands-on genius and creative grit!",
   },
   {
     title: "9. Machination",
-    desc: "Get mechanical: design and innovate in automotive engineering, automation, and machine dynamics through hands-on blueprints and projects.",
+    desc: "Crank up the ideas as you design and perfect machines and vehicles, pushing mechanical magic to high-performance glory!",
   },
   {
     title: "10. Maggifficie and Entrepreneurial Symposium",
-    desc: "Master the art of business: explore crisis management, entrepreneurship, marketing, and leadership to drive innovation and strategy.",
+    desc: "Go big in business: Tackle strategy, law, and real-world challenges, learning, competing, and leading like a future boss!",
   },
   {
     title: "11. Praesentatio",
-    desc: "Speak up, stand out, and shine as you master oratory and presentation skills in debates, speeches, JAM sessions, and theatre, growing your confidence and dramatic flair with every performance!",
+    desc: "Speak loud and shine bright as you master the stage with debates, poetry, drama, and stories as you level up your confidence every time!",
   },
   {
     title: "12. Robogyan",
-    desc: "Bring robots to life: design autonomous and semi-autonomous systems using sensors and smart controls to push the boundaries of robotics.",
+    desc: "Dive into robotics as you design, build, and program robots for challenges like football and line following, exploring creativity and problem-solving in an exciting, hands-on setting!",
   },
   {
     title: "13. Vimanaz",
@@ -63,15 +63,15 @@ const DomainDetails = [
   },
   {
     title: "14. Webnexus",
-    desc: "Lead the way in web innovation: design sleek front-end and full-stack experiences that connect the digital world with everyday life through intuitive interfaces.",
+    desc: "Blaze trails in Breakthrough: Tech like Web3, Blockchain, DeFi, and Quantum Computing as you join inspiring events and collaborate to empower tomorrow’s tech visionaries!",
   },
   {
     title: "15. X-Zone and E-Sports",
-    desc: "Level up with high-energy gaming: sharpen your strategy and teamwork in esports, treasure hunts, interactive simulations, and game development.",
+    desc: "Level up your game! Dive into gaming, AR/VR, and dev, building skills, strategy, and creativity for epic digital battles!",
   },
   {
     title: "16. Yuddhame",
-    desc: "Gear up to build apps and websites: sharpen your programming, networking, and software design skills while creating real-world tech solutions.",
+    desc: "Gear up your genius as you conquer software and hardware challenges in web, apps, AI, and more- fueling innovation and skill!",
   },
 ];
 
