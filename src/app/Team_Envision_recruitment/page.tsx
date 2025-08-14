@@ -53,7 +53,7 @@ const formSchema = z
       .string()
       .regex(/^[6789]\d{9}$/, "Invalid WhatsApp number")
       .length(10, "Must be 10 digits"),
-    linkedIn: z.string().url("Invalid URL").min(1, "LinkedIn is required"),
+    linkedIn: z.string().optional(),
     github: z.string().optional(),
     expertise1: z.string().min(1, "Required"),
     expertise2: z.string().min(1, "Required"),
